@@ -17,12 +17,12 @@ close all;
 
 
 %setup which flow-calculation to use
-indicatorcalc = 'conv';
-% indicatorcalc = 'PDE';
+% indicatorcalc = 'conv';
+indicatorcalc = 'PDE';
 
 
 %setup oscillation index OI
-OI = .0005; %for PDE;
+OI = .01; %for PDE;
 % OI = 10; %for CONV;
 
 
@@ -36,7 +36,7 @@ step = 1;
 %% load data
 
 %settings
-prm               = settings;
+prm               = perfusion1c.settings;
 basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
 basenameFlow      = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
 

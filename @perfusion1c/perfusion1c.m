@@ -35,6 +35,7 @@ classdef perfusion1c
       cell2tex(A,filename,n);
       [u] = transim(varargin);
       basename = struct2nameIndicator(prm,varargin);
+      qcc = convertFlowStagToCC(qmat)
    end 
       
 end

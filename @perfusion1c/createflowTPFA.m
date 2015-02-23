@@ -2,7 +2,7 @@ function [] = createflowTPFA
 
 
 % settings
-[prm,Fmat] = settings;
+[prm,Fmat] = perfusion1c.settings;
 dim = prm.dim;
 
 

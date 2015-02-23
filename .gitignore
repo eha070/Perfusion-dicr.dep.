@@ -1,0 +1,12 @@
+#latex-ignores
+
+*.aux
+*.log
+*.lb
+*.synctex.gz
+
+#matlab-ignores
+*.m~
+
+#MAC-Ignores
+.DS_Store

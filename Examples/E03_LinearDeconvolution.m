@@ -1,8 +1,7 @@
 % ------------------------------------------------------------------------- 
 %                    E03_LinearDeconvolution
 % 
-% Cirvular deconvolution on the synthetic flow model, set up with
-% exponential residue functions
+% Linear deconvolution on one of the synthetic flow models.
 % 
 % 
 % 
@@ -15,23 +14,36 @@ clear;
 clc;
 close all;
 
-
 %setup which flow-calculation to use
-% indicatorcalc = 'conv';
-indicatorcalc = 'PDE';
+indicatorcalc = 'conv';
+% indicatorcalc = 'PDE';
+
+
+
+%setup the flow to compare the results to
+trueFlow = 'perfusion';
+% trueFlow = 'averaging'; %do NOT use this for indicatorcalc='conv'
+
+
+
+%which results to show?
+showFlowMaps       = 1;
+showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
+showSingleCurve    = 0;
 
 
 %setup area where to run the deconvolution
-idxi  = (1:64);
-idxj  = (1:64);
+idxi  = (1:128);
+idxj  = (1:128);
 
 
 %setup oscillation index OI
-OI = .5; %determined experimentally;
+OI = .5; %determined experimentally for 'conv'.
+% OI = .01; %determined experimentally for 'PDE'
 
 
 %prepare downsampling of data (shorter runtime for SVD)
-% It will hold: Clow = Clow(:,:,1,1:step:k);
+%It will hold: Clow = Clow(:,:,1,1:step:k);
 step = 1;
 
 
@@ -40,7 +52,7 @@ step = 1;
 %% load data
 
 %settings
-prm               = settings;
+prm               = perfusion1c.settings;
 basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
 basenameFlow      = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
 
@@ -73,7 +85,21 @@ timeline = D.prm.timeline;
 msg = ['Loading ' pathloadFlow];
 disp(msg);
 E = load(pathloadFlow);
-CBF = E.perfmat;
+
+switch trueFlow
+    case 'perfusion'
+        CBF = E.perfmat; 
+        CBF(1,1) = 2*CBF(1,1);
+        CBF(end,end) = 2*CBF(end,end);
+        
+    case 'averaging'
+        qcc = perfusion1c.convertFlowStagToCC(E.qmat);
+        CBF = .5*(qcc{1} + qcc{2});
+
+    otherwise
+        error('Value of trueFlow not right');
+end
+
 
 %clear memory
 clearvars E D;
@@ -141,99 +167,105 @@ close(h);
 
 %% show results
 
-%setup "segmented" Flow CBFseg
-seg = zeros(m);
-seg(idxi,idxj) = 1;
-CBFseg = CBF.*seg;
+if showFlowMaps
+    
+    %setup "segmented" Flow CBFseg
+    seg = zeros(m);
+    seg(idxi,idxj) = 1;
+    CBFseg = CBF.*seg;
 
-%setup scaling
-tmp  = 100*60*[reshape(CBFseg(CBFseg~=0),[],1);reshape(CBFest(CBFest~=0),[],1)];
-cmin = min(tmp);
-cmax = max(tmp);
+    %setup scaling
+    tmp  = 100*60*[reshape(CBFseg(CBFseg~=0),[],1);reshape(CBFest(CBFest~=0),[],1)];
+    cmin = min(tmp);
+    cmax = max(tmp);
 
-%setup 
-REMap = abs(CBFest-CBFseg)./CBFseg;
+    %setup 
+    REMap = abs(CBFest-CBFseg)./CBFseg;
 
-%show flow
-figure(1);clf;
-colormap jet(512);
-set(gcf,'name','Results for Convolution Model')
+    %show flow
+    figure(1);clf;
+    colormap jet(512);
+    set(gcf,'name','Results for Convolution Model')
 
 
-subplot(1,3,1);
-imagesc(CBFseg*100*60);
-caxis([cmin,cmax]);
-axis image;
-title('True flow (ml/min/100ml)')
+    subplot(1,3,1);
+    imagesc(CBFseg*100*60);
+    caxis([cmin,cmax]);
+    axis image;
+    title('True flow (ml/min/100ml)')
 
-subplot(1,3,2);
-imagesc(CBFest*100*60);
-caxis([cmin,cmax]);
-axis image;
-title('Estimated flow (ml/min/100ml)')
+    subplot(1,3,2);
+    imagesc(CBFest*100*60);
+    caxis([cmin,cmax]);
+    axis image;
+    title('Estimated flow (ml/min/100ml)')
 
-%show division
-subplot(1,3,3);
-imagesc(REMap);
-caxis([0,1]);
-axis image;
-title('Relative Error in Flows |Fest-Ftrue|/Ftrue')
+    %show division
+    subplot(1,3,3);
+    imagesc(REMap);
+    caxis([0,1]);
+    axis image;
+    title('Relative Error in Flows |Fest-Ftrue|/Ftrue')
 
+end
 
 %% show some curves
 
-%setup indices to display using steps
-stepi = 25;
-stepj = 25;
-idxiD  = (idxi(1):stepi:idxi(end));
-idxjD  = (idxj(1):stepj:idxj(end));
+if showMultipleCurves
 
-%manual setup of indices to display
-idxiD = (10:20:60);
-idxjD = (10:20:60);
-
-numi   = numel(idxiD)*numel(idxjD);
+    %setup curves to display
+    idxiD = (1:20:128);
+    idxjD = (1:20:128);    
+    numi   = numel(idxiD)*numel(idxjD);
 
 
+    %reshape everything
+    Ctr = Clow(idxiD,idxjD,:);
+    Ctr = reshape(Ctr,numi,[]);
+    Ctr = Ctr';
+
+    Crec = Cest(idxiD,idxjD,:);
+    Crec = reshape(Crec,numi,[]);
+    Crec = Crec';
+
+    Irec = Iest(idxiD,idxjD,:);
+    Irec = reshape(Irec,numi,[]);
+    Irec = Irec';
 
 
-Ctr = Clow(idxiD,idxjD,:);
-Ctr = reshape(Ctr,numi,[]);
-Ctr = Ctr';
-
-Crec = Cest(idxiD,idxjD,:);
-Crec = reshape(Crec,numi,[]);
-Crec = Crec';
-
-Irec = Iest(idxiD,idxjD,:);
-Irec = reshape(Irec,numi,[]);
-Irec = Irec';
+    REF = (CBFest(idxi,idxj)-CBF(idxi,idxj))./CBF(idxi,idxj);
+    REF = mean(REF(:));
 
 
-REF = (CBFest(idxi,idxj)-CBF(idxi,idxj))./CBF(idxi,idxj);
-REF = mean(REF(:));
+    figure(2);clf;
 
+    subplot(1,2,1);
+    plot(timelinelow,Irec);
+    title(sprintf('Reconstructed I, Average RE in Flow=%1.4f',REF))
 
-figure(2);clf;
+    subplot(1,2,2);
+    plot(timelinelow,Ctr,'-b',timelinelow,Crec,'-r');
+    title(sprintf('True C in blue, reconstructed C in red'))
 
-subplot(1,2,1);
-plot(timelinelow,Irec);
-title(sprintf('Reconstructed I, Average RE in Flow=%1.4f',REF))
+end
 
-subplot(1,2,2);
-plot(timelinelow,Ctr,'-b',timelinelow,Crec,'-r');
-title(sprintf('True C'))
+%% results for a single voxel
 
+if showSingleCurve
+    
+    %position of single curve
+    pos = [95,28];
 
+    s = @(v) squeeze(v(:));
 
-%%
-figure(1);clf;
-subplot(1,3,1);
-plot(s(Clow(32,32,:)),'LineWidth',3); set(gca,'FontSize',25)
+    figure(3);clf;
+    set(3,'name','Comparison on single voxel');
 
-subplot(1,3,2);
-plot(s(Cest(32,32,:)),'LineWidth',3); set(gca,'FontSize',25)
-
-subplot(1,3,3);
-plot(s(Iest(32,32,:)),'LineWidth',3); set(gca,'FontSize',25)
-
+    subplot(1,2,1);
+    plot(timelinelow,s(Clow(pos(1),pos(2),:)),timelinelow,s(Cest(pos(1),pos(2),:)),'LineWidth',3);
+    title('Ctrue (blue) and reconstructed C (red) at position pos')
+    
+    subplot(1,2,2);
+    plot(s(Iest(pos(1),pos(2),:)),'LineWidth',3);
+    title('estimated I at position pos')
+end

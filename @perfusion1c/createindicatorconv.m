@@ -5,7 +5,7 @@ function [] = createindicatorconv(prmin)
 
 
 % settings
-[prm,Fmat] = settings;
+[prm,Fmat] = perfusion1c.settings;
 prm = perfusion1c.mergestruct(prm,prmin);
 
 stepred = prm.stepred;
@@ -53,7 +53,7 @@ dim = [dim3,ntime];
 [tilde,delayaif] = max(E.aifval);
 % account for the delay in the true concentration map field as wel
 delay = delay - delayaif;
-delay = zeros(dim3);
+% delay = zeros(dim3);
 
 clear E;
 

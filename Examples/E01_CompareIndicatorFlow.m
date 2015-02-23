@@ -14,16 +14,16 @@ clc;
 close all;
 
 
-showFlow   = 1;
-showMaps   = 0;
-showCurves = 0;
+dynamicFlow = 0;
+showMaps    = 1;
+showCurve   = 1;
 
 
 %% load data
-prm = settings;
+prm = perfusion1c.settings;
 basename = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T','stepred');
 
-%load PDE indicatorflow
+%load PDE indicatorflow, CmatPDE
 fname = ['synt-createindicatorpde-' basename '.mat'];
 msg      = ['Loading ' fname];
 disp(msg);
@@ -32,26 +32,36 @@ CmatPDE = Cmat; clearvars Cmat;
 timeline = prm.timeline;
 
 
-%load convolution indicatorflow using Erlend's perfusion
+%load convolution indicatorflow CmatConv
 fname = ['syntconv-createindicatorconv-' basename '.mat'];
-
-msg      = ['Loading ' fname];
+msg   = ['Loading ' fname];
 disp(msg);
 load(fname,'Cmat');
 CmatConv = Cmat; clearvars Cmat;
 
 
 
-%load CBV (i.e. phimat)
-prm = settings;
+%load CBF,CBV
+prm = perfusion1c.settings;
 basenameFlow = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
 fname = ['synt-createflowTPFA-' basenameFlow '.mat'];
-
 msg   = ['Loading ' fname];
 disp(msg);
-load(fname,'phimat','perfmat');
-CBF  = perfmat;
-CBV  = phimat; clearvars phimat perfmat;
+load(fname,'phimat','perfmat','qmat');
+
+
+%setup CBV
+CBV  = phimat;
+
+
+%setup CBFPerf and CBFav, the "averaged" CBF
+CBFPerf  = perfmat;
+qcc = perfusion1c.convertFlowStagToCC(qmat);
+CBFAv = .5*(qcc{1} + qcc{2});
+CBFAv(1,1) = 2*CBFAv(1,1);
+CBFAv(end,end) = 2*CBFAv(end,end);
+
+clearvars phimat perfmat qmat;
 
 
 
@@ -60,7 +70,7 @@ k    = numel(aifval);
 
 
 
-if showFlow
+if dynamicFlow
 
     %display the two indicator flows
     step = 1;
@@ -98,7 +108,7 @@ end
 %% comparison on single curves
 
 
-if showCurves
+if showCurve
 
     i = randi(prm.dim(1)/2);
     j = randi(prm.dim(2)/2);
@@ -127,29 +137,49 @@ if showMaps
     
     
 
-    MTTConv = CBV./CBF;
+    MTTPerf = CBV./CBFPerf;
+    MTTAv   = CBV./CBFAv;
     
     %setup scaling
-    cmaxMTT = .05*max(MTTConv(:));
-    cmaxCBF = .05*max(100*60*CBF(:));
+    cmaxMTTPerf = .05*max(MTTPerf(:));
+    cmaxMTTAv   = .05*max(MTTAv(:));
+    cmaxCBFPerf = .05*max(100*60*CBFPerf(:));
+    cmaxCBFAv   = .05*max(100*60*CBFAv(:));
+    
+    cmaxCBF     = max(cmaxCBFAv,cmaxCBFPerf);
+    cmaxMTT     = max(cmaxMTTPerf,cmaxMTTAv);
 
 
     figure(3);clf; 
     colormap jet(512);
     set(3,'name','Comparison in Flow and MTT')
 
-    subplot(1,2,1)
-    imagesc(MTTConv);
+    subplot(2,2,1)
+    imagesc(MTTPerf);
     axis image;
     caxis([0,cmaxMTT])
     title('MTT (perfusion), sec');
-
-
-    subplot(1,2,2);
-    imagesc(CBF*100*60)
+    
+    subplot(2,2,3);
+    imagesc(CBFPerf*100*60)
     title('Flow (perfusion), mmol/min/100g');
     caxis([0,cmaxCBF])
+    axis image;        
+
+    
+    subplot(2,2,2)
+    imagesc(MTTAv);
     axis image;
+    caxis([0,cmaxMTT])
+    title('MTT (averaging), sec');    
+
+    subplot(2,2,4);
+    imagesc(CBFAv*100*60)
+    title('Flow (averaging), mmol/min/100g');
+    caxis([0,cmaxCBF])
+    axis image;
+    
+
     
     
 end

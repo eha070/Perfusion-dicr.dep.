@@ -1,7 +1,7 @@
 function [prm,Qmat] = settings
 
 % reduce time steps
-prm.stepred = 20;
+prm.stepred = 100;
 
 % type of porosity
 prm.phiopt = 'flat';
@@ -100,6 +100,8 @@ Qmat = zeros(dim);
 % shouldn't this be here????
 % qin = qin/prm.voxelvol; 
 
+% for plotting Cmat
+prm.scaling = 1;
 
 qout = -qin;
 for i = 1 : prm.nso
