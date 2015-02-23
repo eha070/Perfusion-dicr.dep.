@@ -1,0 +1,89 @@
+%% load necessary packages
+\RequirePackage[T1]{fontenc}
+\RequirePackage[ngerman,english]{babel}
+\RequirePackage{mathtools,amsfonts,amsthm}
+\RequirePackage{graphicx}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{datetime}
+\RequirePackage{color}
+\RequirePackage{ifdraft}
+\RequirePackage{lastpage}
+\RequirePackage{scrpage2}
+\usepackage{siunitx}
+
+
+%setup siunitx 
+%Hint: \SI{2}{\milli\meter\per\secon} and \si{\milli\meter\per\second}
+\sisetup{per-mode = symbol,qualifier-mode=brackets}
+\DeclareSIQualifier{\oxygen}{O_2}
+
+%default page-style
+\pagestyle{scrheadings}
+\cfoot{}
+\ofoot{ \thepage/\pageref{LastPage} }
+
+%% if draft: set heading
+\ifdraft{
+\setheadsepline{.5pt}
+\ihead{\pagemark}
+\ohead{\textcolor{yellow}{\today, \currenttime}}
+}
+
+
+%commands for signature
+\newcommand{\signature}[1]{
+			\begin{minipage}[t]{#1}
+				\emph{
+				Constantin Heck\\
+				MIC, University of Lübeck\\
+				heck@mic.uni-luebeck.de\\
+				\today}
+			\end{minipage}
+}
+\newcommand{\signatureAl}[2]{
+			\begin{minipage}[t]{#1}
+				\emph{#2}
+			\end{minipage}
+}
+
+%command for CHalert
+\newcommand{\CHalert}[1]{\textcolor{magenta}{CH: #1}}
+
+
+%% set text layout
+\frenchspacing
+
+%% set math commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+
+
+%renew epsilon and phi
+\newcommand{\oldphi}{\phi}
+\renewcommand{\phi}{\varphi}
+\newcommand{\oldepsilon}{\epsilon}
+\renewcommand{\epsilon}{\varepsilon}
+
+
+
+%% define theorems
+\theoremstyle{plain} %theoremstyle theorem
+\newtheorem{theorem}{Theorem}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem{corrolary}{Corrolary}
+\newtheorem*{corrolary*}{Corrolary}
+
+\theoremstyle{definition} %theoremstyle definition
+\newtheorem{definition}{Definition}
+\newtheorem*{definition*}{Definition}
+\newtheorem{assumptions}{Assumptions}
+\newtheorem*{assumptions*}{Assumptions}
+
+\theoremstyle{remark} %theoremstyle plain
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}
