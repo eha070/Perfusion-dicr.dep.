@@ -20,7 +20,9 @@ classdef perfusion1c
       aifval = getGammaAIF(timeline);
       aifval = getParkerAIF(timeline);
       A = getCircularConvolutionMatrix(AIFHat,deltaT);
-      [F,Irec,Crec] = circularDeconvolution(C,AIF,timeline,OI,U,S,V); 
+      A = getLinearConvolutionMatrix(AIF,deltaT);
+      [F,Irec,Crec] = circularDeconvolution(C,timeline,OI,U,S,V); 
+      [F,Irec,Crec] = linearDeconvolution(C,timeline,OI,U,S,V);
       [lenim] = arclength(q,Q,h);
       [a] = distimage(minima,conn);
       [im] = constborder(im,p,v);
@@ -30,8 +32,9 @@ classdef perfusion1c
       printstructscreen(var);
       [data] = im2vec4D(varargin);
       [A] = mat2celldirect(a);
-      cell2tex(A,filename,n)
-      [u] = transim(varargin)
+      cell2tex(A,filename,n);
+      [u] = transim(varargin);
+      basename = struct2nameIndicator(prm,varargin);
    end 
       
 end

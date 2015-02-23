@@ -276,22 +276,22 @@
 			Going back to the Eulerian approach, we observe that since $\q$ is independent of $t$ we can fix the position by assuming that $t-t_0=k$ for constant $k\in\R^+$. 
 			For each starting timepoint $t_0$ the concentration at the location $x_k:=x(k)$ is hence given by \eqref{eq:Sol} in the following way:
 			\[
-				c(x_k,t_0) = \int_{t_0}^{t_0+k} e^{-(R(t_0+k)-R(v-t_0))}c_a(v)\tQso(v-t_0)\diff v
+				c_{t_0}(x_k) = \int_{t_0}^{t_0+k} e^{-(R(k)-R(v-t_0))}c_a(v)\tQso(v-t_0)\diff v
 			\]
 			Since the flow first arrives at location $x_k$ at timepoint $k$, this yields \CHalert{I'm not sure if it is allowed to change from Lagrangian $t_0$ to Eulerian $t$}:
 			\[
 				c(x_k,t) =
 				\begin{cases}
 					0 & t<k\\
-					\int_{t}^{t+k} e^{-(R(t+k)-R(v))}c_a(v)\tQso(v-t)\diff v & t \ge k
+					\int_{t}^{t+k} e^{-(R(k)-R(v-t))}c_a(v)\tQso(v-t)\diff v & t \ge k
 				\end{cases} 
 			\]
-			Doing the analysis in the same way as Erlend did yields:
+			Assuming that $\Qso(x) = \qi \delta_{\xso}$ and hence $\tQso(s) = 1$ for $s=0$ and $0$ elsewhere yields:
 			\[
 				c(x_k,t) =
 				\begin{cases}
 					0 & t<k\\
-					\qin\int_{t}^{t+k} e^{-(R(t+k)-R(v))}c_a(v)\tQso(v-t)\diff v & t \ge k
+					\qi e^{-\qi} c_a(t) & t \ge k
 				\end{cases} 			
 			\]
 		\end{remark}
@@ -305,10 +305,11 @@
 		$$
 		c(x_0,t) = \frac{1}{\phi}\int_0^{t}e^{-(R(t) - R(s))}c_a(s)Q_{so}(x_0)ds
 		$$
-		where $R(t) = \frac{1}{\phi}\int_0^t Q_{so}(x_0)du = \frac{tQ_{so}}{\phi}$ since $Q_{so}$ is independent of time in our case. This again can be rephrased as
+		where $R(t) = \frac{1}{\phi}\int_0^t Q_{so}(x_0)du = \frac{tQ_{so}}{\phi}$ since $Q_{so}$ is independent of time in our case \CHalert{This would be valid only if $Q_{so}(x(s))$ is constant in $\Omega$. I was under the impression that $Q_{so}(x(s)) = 1$ for $s=0$ and $Q_{so}(x(s))=0$ for $s>0$. In this case $R(t)$ would become independent of $t$ and hence $R(t) = \frac{Q_{so}}{\phi}$}. This again can be rephrased as
 		$$
 		c(x_0,t) = \frac{Q_{so}(x_0)}{\phi}\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)ds
 		$$
+		\CHalert{This would also only be valid if $Q_{so}(x)$ would be constant in $\Omega$.}
 		for $T = \phi/Q_{so}$. Ideally we would be able to project this solution back to Eulerian coordinates (as they do in Evans) but this is hard since we don't have an explicit expression for $q$ and $Q_{so}$. So, lets stay within Lagrangian coordinates. Multipllying with $\phi$ now gives the solution in terms of big $C$,
 		$$
 		C(x_0,t) = Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)ds
