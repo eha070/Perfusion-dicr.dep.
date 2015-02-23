@@ -57,6 +57,17 @@
 %\setlength{\columnsep}{0.6cm}
 
 
+\newcommand{\qi}{q_{\mathrm{in}}}
+\newcommand{\Qso}{Q_{\mathrm{so}}}
+\newcommand{\tQso}{\tilde{Q}_{\mathrm{so}}}
+\newcommand{\Qsi}{Q_{\mathrm{si}}}
+\newcommand{\tQsi}{\tilde{Q}_{\mathrm{si}}}
+\newcommand{\q}{\vec{q}}
+\newcommand{\xso}{x_\mathrm{so}}
+\newcommand{\xsi}{x_\mathrm{si}}
+\newcommand{\ce}{c^\epsilon}
+
+
 \begin{document}
 
 \title{A validation of the classical one-compartment model for perfusion}
@@ -175,9 +186,45 @@ Upon application of the divergence theorem, Eq. (\ref{eq:conteq2}) is consistent
 	\phi \frac{\partial c}{\partial t} + \nabla \cdot (cq) = c_{so}Q_{so} + cQ_{si},
 	\label{eq:conteqlocal}
 \end{equation}
-a quasi-linear transport equation in $c(x,t)$. The input tracer concentration $c_{so}$ is assumed known at all time points as well as the source and sink terms $Q_{so}$ and $Q_{si}$. Inserting (\ref{eq:syntcontsimp2}) and applying $Q = Q_{si} + Q_{so}$ leads to
+a quasi-linear transport equation in $c(x,t)$. 
+\\
+BEGIN COMMENT FROM HERE, INTERMEDIATE STEPS, ONLY FOR CLARIFICATION UNTIL SUBMISSION
+\\
+This is equivalent to
 \begin{equation}
-	\phi \frac{\partial c}{\partial t} + q \cdot \nabla c = (c_{so}-c)Q_{so}.
+	\phi \frac{\partial c}{\partial t} + c \nabla \cdot q  + q \cdot \nabla c = c_{so}Q_{so} + cQ_{si},
+	\label{eq:conteqlocaltemp}
+\end{equation}
+This is equivalent to
+\begin{equation}
+	\phi \frac{\partial c}{\partial t} + cQ  + q \cdot  \nabla c = c_{so}Q_{so} + cQ_{si}
+	\label{eq:conteqlocaltemp}
+\end{equation}
+This is equivalent to
+\begin{equation}
+	\phi \frac{\partial c}{\partial t} + cQ_{so} + c Q_{si}  + q \cdot  \nabla c = c_{so}Q_{so} + cQ_{si}
+	\label{eq:conteqlocaltemp}
+\end{equation}
+This is equivalent to
+\begin{equation}
+	\phi \frac{\partial c}{\partial t} + cQ_{so}  + q \cdot  \nabla c = c_{so}Q_{so}
+	\label{eq:conteqlocaltemp}
+\end{equation}
+This is equivalent to
+\begin{equation}
+	\phi \frac{\partial c}{\partial t} + q \cdot  \nabla c = c_{so}Q_{so} -  cQ_{so} 
+	\label{eq:conteqlocaltemp}
+\end{equation}
+This is equivalent to
+\begin{equation}
+	\phi \frac{\partial c}{\partial t} + q \cdot  \nabla c = (c_{so} -  c)Q_{so}
+	\label{eq:conteqlocaltemp}
+\end{equation}
+END COMMENT FROM HERE
+\\
+The input tracer concentration $c_{so}$ is assumed known at all time points as well as the source and sink terms $Q_{so}$ and $Q_{si}$. Inserting (\ref{eq:syntcontsimp2}), applying $Q = Q_{si} + Q_{so}$ and dividing by the non-zero porostiy $\phi$ leads to
+\begin{equation}
+	\phi \frac{\partial c}{\partial t} + q\cdot\nabla c = (c_{so}-c)Q_{so}.
 	\label{eq:conteqlocal2}
 \end{equation}
 %Given the source/sink field $Q(x)$ we state the continuity equation for the tracer molecules
@@ -198,12 +245,13 @@ a quasi-linear transport equation in $c(x,t)$. The input tracer concentration $c
 %\end{equation}
 %Using a Cartesian grid, the normal component $q_n$ will be aligned with the main coordinate directions. Equations (\ref{eq:flowmodel}) and (\ref{eq:syntconttracer2}) together constitute the synthetic model for flow and indicator dilution. 
 We refer to (\ref{eq:conteq2}) and (\ref{eq:conteqlocal2}) as the \textit{simulated flow model (SF model)}. Equation (\ref{eq:conteq2}) is implemented under the assumption of (\ref{eq:syntcontsimp2}), which the obtained flux $q$ is fulfilling.
-Equation (\ref{eq:conteq2}) is used for numerical simulations and (\ref{eq:conteqlocal2}) is used for an analytical solution. In this respect, note that it can be written in the standard form of a quasi-linear transport equation as
-\begin{equation}
-	v \cdot D c = f(x,c)
-	\label{eq:conteqlocal3}
-\end{equation}
-for $v = (q,\phi)$, the spatio-temporal gradient $D = (\nabla,\partial/\partial t)$ and the right hand side $f = (c_{so}-c)Q_{so}$.
+Equation (\ref{eq:conteq2}) is used for numerical simulations and (\ref{eq:conteqlocal2}) is used for analytical considerations.
+%In this respect, note that it can be written in the standard form of a quasi-linear transport equation as
+%\begin{equation}
+%	v \cdot D c = f(x,c)
+%	\label{eq:conteqlocal3}
+%\end{equation}
+%for $v = (q,\phi)$, the spatio-temporal gradient $D = (\nabla,\partial/\partial t)$ and the right hand side $f = (c_{so}-c)Q_{so}$.
 
 \subsection{Conversion of flux into perfusion}
 The SFM uniquely determines the flux field $q(x)$. However, it is not obvious how to transform a flux field into a scalar perfusion field $P(x)$, a widely used parameter in the classical field of compartment modelling. There are at least two obvious differences between $q$ and $P$. First, the flux is a vector field and the perfusion is a scalar field. Second, the flux relates to a surface area and the perfusion relates to a volume. Thus, these to quantities are strictly, mathematically different but still conceptually related. In the following we describe a method for converting flux into perfusion.
@@ -337,6 +385,78 @@ C(t) = I(t) * c_a(t)
 provided $c_a(t)$ is zero for $t < 0$. 
 
 Applying the forward model in (\ref{eq:Cconv1}) for a known perfusion $P$ leads to a simulated flow model based on convolution, in accordance with the classical theory. We refer to this model as the \textit{simulated convolution model (SC model)}. We have now defined two competing models for indicator dilution, the SF model and the SC model. This was done in order to be able to discover any discrepancies from the true perfusion field and relate them to shortcomings in the model itself or to instability of the numerical deconvolution. 
+
+\section{Relating the simulated flow (SF) model with the classical model for perfusion}
+Consider the solute transport equation (\ref{eq:conteqlocal}), and rewrite it as
+\begin{equation}
+	\frac{\partial c}{\partial t} + \frac{q}{\phi} \cdot \nabla c = \frac{(c_{so}-c)Q_{so}}{\phi }.
+	\label{eq:conteqlocal3}
+\end{equation}
+Following the method of characteristics and converting from Eulerican coordinates $(x(t),t)$ to Lagrangian coordinates $(x_0,t)$, where $x_0$ is fixed and $t$ is the parameterizatiton parameter, leads to the system of ODEs [Cite Evans]
+\begin{subequations}
+\begin{alignat}{2}
+	\dot{c}(x_0,t) + G(x_0)c(x_0,t) &= F(x_0,t), & \qquad c(x_0,t_0) &= c_0(x_0) \label{eq:ODEC}\\
+	\dot{x}(x_o) &= \frac{q(x_0)}{\phi(x_0)},&  x(x_0,t_0) &= x_0 \label{eq:ODEx}\\
+\end{alignat}
+\end{subequations}
+for $G(x_0) := Q_{so}(x_0)/\phi(x_0)$ and the inhomogeneous term $F(x_0,t) := c_{so}(x_0,t)Q_{so}(x_0)/\phi(x_0)$ .The differentiation $\dot{c}$ is with respect to the time parameterisation $t$. Let the source term be non-zero within the ball $B_\epsilon$, zero elsewhere, and let $\partial B_\epsilon$ be the surface of $B_\epsilon$, corresponding to $x_0 = \{x : x_0 \in \partial B_\epsilon  \}$. All streamlines must connect with $\partial B_\epsilon$, and hence if we know the solution on $\partial B_\epsilon$ we know the solution everywhere on the streamlines. The obtained ODE has the general solution
+\begin{equation}
+c(x_0,t) = e^{-R(t)}\Big (\int_{t_0}^t e^{R(s)} F(x_0,s)ds + A_0\Big )
+\end{equation}
+for $R(x_0,t) := t G(x_0)$. Applying initial conditions $c(x_0,t_0) = 0$ for $t_0 = 0$ results in $A_0 = 0$.
+\\
+BEGIN COMMENT HERE, ONLY FOR OUR UNDERSTANDING
+\\
+\begin{equation}
+c(x_0,t) = e^{-R(t)}\Big (\int_{0}^t e^{R(s)} F(x_0,s)ds\Big )
+\end{equation}
+ This is again equivalent with
+\begin{equation}
+c(x_0,t) = \int_{0}^t e^{-(R(t) - R(s))} F(x_0,s)ds
+\end{equation}
+and inserting the expression for $F$ leads to
+\begin{equation}
+c(x_0,t) = \frac{Q_{so}(x_0)}{\phi(x_0)} \int_{0}^t e^{-(R(t) - R(s))}c_{so}(x_0,s) ds
+\end{equation}
+\\
+END BEGIN COMMENT HERE
+\\
+Backpropagating $C = c \phi$ and inserting the expression for $F$ results in
+\begin{equation}
+C(x_0,t) = Q_{so}(x_0) \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds
+\label{eq:Cpdeclassic}
+\end{equation}
+for the mean transit time $T := \phi(x_0) / Q_{so}(x_0)$.
+A comparison with (\ref{eq:Cconv}) shows that these expressions are equal provided $P \rightarrow Q_{so}$ and $c_{so} \rightarrow c_{a}$. Thus, we have shown that the classical model is equivalent to a field model for tracer transport for specific requirements of the perfusion $P$ and the arterial input concentration $c_a$. (i) The first observation is that the computed perfusion $P$ is the actual flow at the inlet of the entire domain $\Omega$, and not the inlet of a further spatial sub-division. (ii) The second observation is the fact that the arterial input concentration $c_a$ is identical to the concentration at the source of $\Omega$. This is unproblematic since it is in agreement with the understanding of $c_a$. However, the first observation regarding the perfusion implies that the computed perfusion along the streamlines will be constant for various $t$ due to stationarity, and hence, computing the voxel wise perfusion for all voxels lying on the streamlines will over-estimate the perfusion with a factor varying with the streamline length. From this argument, we can predict that applying the classical model voxel wise will over-estimate the total perfusion within an arbitrary domain $\Omega$.
+
+Integrating over $\Omega$ on both sides of (\ref{eq:Cpdeclassic}), and defining the average concentration $\overline{C}(t):= \frac{1}{|\Omega|}\int_{\Omega}C(x_0,t)dx$, 
+\begin{equation}
+\overline{C}(t) = \frac{1}{|\Omega|}\int_{\Omega} Q_{so}(x_0)  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
+\label{eq:Cpdeclassicroi}
+\end{equation}
+Since $Q_{so}(x_0)$ is only nonzero across $B_\epsilon$ we can write
+\begin{equation}
+\overline{C}(t) = \frac{1}{|\Omega|}\int_{B_\epsilon} Q_{so}(x_0)  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
+\label{eq:Cpdeclassicroitemp}
+\end{equation}
+For a constant source flow $\tilde{Q}_{so}$ within $B_\epsilon$, $\tilde{Q}_{so} = Q(x_0), x_0 \in B_\epsilon$, this is equivalent to
+\begin{equation}
+\overline{C}(t) = \frac{\tilde{Q}_{so}}{|\Omega|}\int_{B_\epsilon}  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
+\label{eq:Cpdeclassicroitemp}
+\end{equation}
+Further, for a content arterial input concentration $\tilde{c}_{so}(t)$ across $B_\epsilon$, $\tilde{c}_{so}(t) := c(x_0,t), x_0 \in B_\epsilon$ we can write
+\begin{equation}
+\overline{C}(t) = \frac{\tilde{Q}_{so} |B_\epsilon|}{|\Omega|}  \int_{0}^t e^{-(t - s)/T}\overline{c}_{so}(s) ds
+\label{eq:Cpdeclassicroitemp}
+\end{equation}
+This is recognized as the total perfusion $P = \overline{Q}_{so}|B_\epsilon|/|\Omega|$, which is the total source flow divided by the total distributing domain $|\Omega|$. Hence, we can state that the averaging PDE model is consistent with
+\begin{equation}
+\overline{C}(t) = P \int_{0}^t e^{-(t - s)/T}\overline{c}_{so}(s) ds,
+\label{eq:Cpdeclassicroitemp}
+\end{equation}
+This expression is identical to the classical model in (\ref{eq:Cconv}) for $\Omega$ as the averaging domain and by taking $c_{so}(t) = c_a(t)$.
+
+Thus, we have in this section formally proven that the classical model for perfusion is correct when applying $\Omega$ as the averaging domain. On the other hand, applying the same model voxel wise will lead to an over-estimation of the perfusion, with a scaling factor growing along with the streamline length.
 
 \section{Numerical implementation}
 
