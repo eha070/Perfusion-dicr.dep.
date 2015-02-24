@@ -1,0 +1,361 @@
+%% load necessary packages
+\documentclass[paper=a4, fontsize=12pt,parskip=half,draft,headings=small]{scrartcl}
+\usepackage{check-short}
+
+%new commands
+\newcommand{\qi}{q_{\mathrm{in}}}
+\newcommand{\Qso}{Q_{\mathrm{so}}}
+\newcommand{\tQso}{\tilde{Q}_{\mathrm{so}}}
+\newcommand{\Qsi}{Q_{\mathrm{si}}}
+\newcommand{\tQsi}{\tilde{Q}_{\mathrm{si}}}
+\newcommand{\q}{\vec{q}}
+\newcommand{\xso}{x_\mathrm{so}}
+\newcommand{\xsi}{x_\mathrm{si}}
+\newcommand{\ce}{c^\epsilon}
+
+
+
+%% set author information etc
+\title{Some title}
+\author{Constantin Heck}
+\date{\today}
+
+
+%--------------------------------------------------------------------------------------------
+% Here begins the document
+%--------------------------------------------------------------------------------------------
+
+\begin{document}
+	% \maketitle
+
+	
+	\section{Analytical solutions of transport equations}
+	\subsection{Notation}
+		Let $\Omega \subseteq \R^n$ be open and connected, let $T \in \R^+$ and let $\Omega_T:= \Omega\times (0,T)$.
+		Furthermore we assume that $\Gamma \subseteq \overline{\Omega_T}$ is a $n$-dimensional manifold.
+		We will later also need an unit normal vector to $\Gamma$ at $(x,t)$, which we will denote by $\nu(x,t)$.
+		For existence of $\nu(x,t)$ see Remark \ref{rem:OUN}.
+		Furthermore, we define for two open and connected sets $V \subseteq \R^n$, $W \subseteq \R^m$ and a number $k \in \N$ the following functions-spaces :
+		\begin{align*}
+			C^0(V,W)&:= \left\{ u: V \to W \vert \ \text{$u$ is continuous }\right\},\\
+			C^k(V,W)&:= \left\{ u: V \to W \vert \ \text{$u$ is $k$-times differentiable }\right\}.
+		\end{align*}		
+		During the remarks, we will also occasionally need the following small balls:
+		\[
+			B_\epsilon(y):=\{ x \in \R^n: \ \Vert x-y\Vert<\epsilon \}.
+		\]
+		as well as the characteristic function of a set $M\subseteq \R^n$
+		\[
+			\chi_M(x):=
+			\begin{cases}
+				1  \quad &x \in M,\\
+				0 & x \notin M.
+			\end{cases}
+		\]
+		\begin{remark}\label{rem:OUN}
+			A sufficient criterium that $\nu(x,t)$ is well defined is that ,,$\Gamma$ is $C^1$'' in $(x,t)$. 
+			The condition ,,$\Gamma$ is $C^1$'' roughly means that $\Gamma$ can locally be written as the graph of a $C^1$ function $\Psi:\R^n \to \R$ (for details see Appendix C.1 in \cite{Evans98}).
+		\end{remark}
+		
+	\subsection{Problem Statement}
+			For $\Omega \subseteq \R^2$ let $\Omega_T$ and $\Gamma$ be as above (regularity on $\Gamma$ will be imposed later).
+			We will try to find a solution $c: \Omega_T \to \R$ for the following boundary-value problem:
+			\begin{subequations}
+				\label{eq:mainProblem}
+				\begin{alignat}{2}
+					c_t(x,t) + \nabla \cdot \left(c(x,t)\q(x) \right) &= f(x,t), &\qquad  &(x,t) \in \Omega_T, \label{eq:mainProblema} \\
+					c(x,t) &= c_0(x,t), && (x,t) \in \Gamma \label{eq:mainProblemb}
+				\end{alignat}
+			\end{subequations}
+			where $\q \in C^1(\Omega,\R^2)$, $f \in C^0(\Omega_T,\R^+_0)$ and $c_0 \in C^0(\Gamma,\R)$.
+			
+	\subsection{Selected Results}
+		\begin{lemma}
+			Equation \eqref{eq:mainProblema} is equivalent to the (fully) linear, inhomogeneous transport equation
+			\begin{equation}\label{eq:transport}
+				c_t + \q \cdot \nabla c + g c = f.
+			\end{equation}
+			where $(x,t)$ is dropped in the notation and $g = \nabla \cdot \q$.
+		\end{lemma}
+		\begin{proof}
+			Direct calculation.
+		\end{proof}
+	
+		\begin{lemma}
+			Assume that $\Gamma$ is $C^1$ and that $\nu(x,t) \cdot \q(x) \neq 0$ on $\Gamma$ (i.e. $\Gamma$ is noncharacteristic, this meaning of this will be explained in the proof). Then there is a unique solution of \eqref{eq:mainProblem} in a neighborhood of $\Gamma$.
+		\end{lemma}
+		
+		\begin{proof}
+			We follow Chapter 3 of \cite{Evans98} and apply the so-called \emph{method of characteristics}:
+			We assume that we start at an arbitrary point $(x_0,t_0) \in \Gamma$ and then ,,follow the flow''.
+			We parametrized the streamline emerging at $(x_0,t_0)$ by $x = x(s)$ as well as $t = t(s)$ where $x(0)=x_0$ as well as $t(0)=t_0$ (here $s \in [0,\infty)$).
+			If we define $C(s):= c(x(s),t(s))$, $F(s):=f(x(s),t(s))$ and $G(s):=g(x(s),y(s))$ this yields:
+			\[
+				\frac{d}{ds} C = \dot{t} c_t + \dot{x} \cdot \nabla c.
+			\]
+			Comparing this with \eqref{eq:transport} yields the following system of ODEs:
+			\begin{subequations}
+			\begin{alignat}{2}
+				\dot{C}(s) + G(s)C(s) &= F(s), & \qquad  C(0) &= c_0(x_0,t_0) \label{eq:ODEC}\\
+				\dot{x}(s) &= \q(x(s)),&  x(0) &= x_0 \label{eq:ODEx}\\
+				\dot{t}(s) &= 1, & \qquad  t(0) &= t_0 \label{eq:ODEt}
+			\end{alignat}
+			\end{subequations}
+			Since we assumed that $\q$ is Lipschitz-continuous, \eqref{eq:ODEx} and \eqref{eq:ODEt} have a unique solution due to the Picard-Lindelöf theorem.
+			Having found solutions $x(s)$, $t(s)$ to these equations, we can solve \eqref{eq:ODEC} in the same way.
+			
+			In order to simplify notation, let us now combine the space and time variables and write $y_0:=(x_0,t_0)$.
+			The domain $\Omega_T$ hence becomes a cylindrical subset of $\R^{n+1}$.
+			Up to now, we found a way to construct a solution for any given point $y_0 \in \Gamma$.
+			Unfortunately it is still not clear, if the set of all these solution yields a well-defined solution to the problem. 
+			For example, characteristic curves may run inside of $\Gamma$ and cause contradicting function values, or there might be points close to $\Gamma$, which are not hit by characteristic curves at all.
+			This is, where the property of $\Gamma$ to be \emph{non-characteristic}, comes into play (i.e. $\nu(x,t) \cdot \q(x) \neq 0$).
+			A more accessible formulation of this is: $\Gamma$ does not follow the flow field.
+			Let us denote by $X(s,y_0):=y(s)$ the characteristic curve starting at $y_0 \in \Gamma$, i.e. $X(0,y_0) = y_0$. 
+			Keep in mind that from now on $X$ is a function of $s$ as well as of $y_0$, i.e. $X:[0,\infty)\times\Gamma \to \R^{n+1}$.
+			We will now show that if $\Gamma$ is non-characteristic at $y_0$, the function $X(s,y_0)$ is one-to-one in a neighborhood of $y_0$. 
+			It will then follow that indeed all points are hit by characteristic curves exactly one time and the solution will be well-defined in a neighborhood of $\Gamma$.
+			To see this, we make use of the inverse-function theorem.
+			Due to \eqref{eq:ODEx}, \eqref{eq:ODEt} as well as the construction of $\Omega$, the Jacobian of $X$ at $(0,y_0)$ is given as follows:
+			\begin{align*}
+				JX\vert_{(0,y_0)} 
+				&= \left( 
+				   \begin{array}{l l}
+				   		\tfrac{\partial X}{\partial s}(0,y_0) &  \tfrac{\partial X}{\partial y_0}(0,y_0)
+				   \end{array}
+				   \right) \\[2\jot]
+				&= \left(
+				\begin{array}{l l}
+						\q(x_0) & \left(\tfrac{\partial X}{\partial y_0}(0,y_0)\right)_1 \\
+						      1      & \left(\tfrac{\partial X}{\partial y_0}(0,y_0)\right)_{n+1}
+				  \end{array}
+				  \right)
+				  \in \R^{(n+1) \times (n+1)}.
+			\end{align*}
+			Now observe that since $\Gamma$ is $C^1$, the columns of $\frac{\partial X}{\partial y_0}(0,y_0)$ form a basis of the $n$-dimensional tangential plane to $\Gamma$ at $y_0$.
+			Since we assumed that $\q(x_0) \cdot \nu(x_0,t_0) \neq 0$ (i.e. $\q(x_0)$ does not lie in the tangential plane), the matrix $JX\vert_{(0,y_0)}$ has full rank and we can apply the inverse-function theorem.
+			Hence the is a local one-to-one mapping of characteristic curves and points, i.e. the constructed solution is well-defined.
+		\end{proof}
+		
+		
+		\section{Remarks concerning out setting}
+		
+		\begin{remark}\label{rem:Equation}
+			In out setting we will consider the following problem:
+			Let $\Omega:=(0,1)^2$ and $\mu <<1$.
+			Assume that there is a source around point $\xso:=(\mu,1-\mu)^\top \in \Omega$, namely in the area $I:=B_{\mu}(\xso)$.
+			Furthermore assume that there is also a sink around point $\xsi:=(1-\mu,\mu)^\top \in \Omega$, namely in the area $O:=B_{\mu}(\xsi)$.
+			We will denote the source by $\Qso(x):=\qi\cdot\chi_I(x)$ and the sink by $\Qsi(x):=\qi\cdot\chi_O(x)$ for some $\qi \in \R^+$.
+			Following \cite{BergenMIC15}, will now try to describe the flow in $\Omega_T:=\Omega \times (0,T)$ in the following way:
+			\begin{alignat*}{2}
+				c_t(x,t) + \nabla \cdot \left(c(x,t)\q(x) \right) &= c_a(t)\Qso(x) - c(x,t)\Qsi(x), &\qquad  &(x,t) \in \Omega_T, \\
+				c(x,t) &= c_0(x,t), && (x,t) \in \Gamma,
+			\end{alignat*}
+			where $c_a(t)$ denotes the arterial input function.
+			This of course leaves the question where to put the $2D$ starting manifold $\Gamma \subseteq \overline{\Omega_T}$ and which boundary values $c_0(x,t)$ to prescribe on it.
+			Since contrast-agent is brought into the system continuously within the area $O$, we define $\Gamma:= \partial B_\epsilon(\xso) \times [0,T)$ for $\epsilon < \mu$.
+			Since the contrast-agent is created by the source at $I$, we assume that $c_0(x,t) = 0$ on $\Gamma$.
+			In order to analyze the contrast-agent flow, we will let $\epsilon \to 0$.
+			Unfortunately we run into problems for each nonzero $\epsilon$, since there will be contrast-agent created within $B_\epsilon(\xso)$ which cannot exit the system.
+			We will hence exclude $B_\epsilon(\xso)$ from our analysis. This brings us to the final problem formulation:
+
+			Let $\Omega^\epsilon:=\Omega \setminus \overline{B_\epsilon(\xso)}$ and let $\Omega^\epsilon_T$ be as above.
+			Let furthermore $\Gamma_\epsilon:= \partial B_\epsilon(\xso) \times [0,T)$.
+			We will study the following class of problems:
+			\begin{subequations}
+				\label{eq:ourProblem}
+				\begin{alignat}{2}
+					\ce_t + \q \cdot \nabla \ce + c\Qso &= c_a\Qso, &\qquad  &(x,t) \in \Omega_T^\epsilon, \label{eq:ourProblema} \\
+					\ce &= 0, && (x,t) \in \Gamma_\epsilon \label{eq:ourProblemb}
+				\end{alignat}
+			\end{subequations}
+			\CHalert{I am wondering: Where in \eqref{eq:ourProblem} is the influence of the sink coming into play?}
+			Here the following situation is assumed
+			\[
+			
+			\]
+			
+			
+			Here it is furthermore assumed, that $\q(x) = -\frac{K}{\mu}\nabla p(x)$ where $p$ is the solution of the following (elliptic) boundary value problem:
+			\begin{equation}\label{eq:Darcy}
+				\left\vert
+					\begin{alignedat}{2}
+						\nabla \cdot  \left(-\frac{K}{\mu} \nabla p(x) \right) &= \Qso(x,t) + \Qsi(x,t), & \qquad &x\in \Omega, \\
+						p_\nu(x) &= 0, && x \in \partial \Omega\setminus\{x_0\},\\
+						p(x_0)     &= 0, &&
+					\end{alignedat}
+				\right\vert
+			\end{equation}
+			for some constants $K,\mu \in \R^+$ and $x_0 \in \partial \Omega$.
+			The condition $p(x_0)=0$ is necessary to make the elliptic problem well-posed.
+			For a detailed explanation see \cite{BergenMIC15}.
+		\end{remark}
+		
+		% \begin{remark}\label{rem:Gamma}
+		% 	During the construction of $\q$ in \eqref{eq:Darcy}, Neumann boundary conditions are imposed on the pressure $p$.
+		% 	For constant permeability $K$ this means that $\q$ lies tangential to $\partial \Omega$.
+		% 	Assume first that $\Gamma \subseteq (\partial \Omega \times [0,T])$.
+		% 	This can be interpreted as pumping in contrast agent from the boundary of $\Omega$.
+		% 	This would be a contradiction to the assumption that $\Gamma$ is non-characteristic, since by construction $\q$ lies tangential to $\partial\Omega$.
+		% 	The flow would carry the tracer along the boundary, it would hence not be possible to prescribe boundary values on these locations.
+		% 	Hence it needs to hold for the $n$-manifold $\Gamma$ that $\Gamma \subseteq \Omega \times [0,T]$.
+		% 	Keep in mind that $\Gamma$ is the place, where the contrast-agent is brought into the system.
+		% 	Since contrast-agent is brought into the system constantly at the same (spatial) locations it seems justifiable to assume $\Gamma = \mu \times [0,T)$ for $\mu:=\partial B_\epsilon(x_I)$ and $x_I:=(2\epsilon,1-2\epsilon)^\top$.
+		% \end{remark}
+		%
+		% \begin{remark}\label{rem:Q}
+		% 	Let us assume that $\Omega:= (0,1)^2$, $x_I:=(2\epsilon,1-2\epsilon)^\top$, $x_O:=(1-2\epsilon,2\epsilon)^\top$ and
+		% 	\[
+		% 		Q_d(x) := \qi\cdot(\delta_{x_I}(x) - \delta_{x_O}(x))
+		% 	\]
+		% 	for some $\qi \in \R^+$.
+		% 	In this case, there is only one arbitrarily small source and one arbitrarily small sink.
+		% 	Since the streamlines are solutions to ODE \eqref{eq:ODEx} with different initial conditions, different streamlines cannot intersect (if they do, they are equal).
+		% 	\emph{Hence there would be only one streamline which is different from zero}.
+		% 	In order to understand the results of the simulation, let us assume more the following, hopefully more appropriate setting:
+		% 	We assume that the contrast-agent is brought into the system by some small vessel at position $x_I$ and is leaving at an outlet at position $x_O$.
+		% 	Hence the sourcefield would be given by:
+		% 	\[
+		% 		Q_v(x) := \qi\cdot\left( \chi_{I}(x)-\chi_{O}(x) \right).
+		% 	\]
+		%
+		% 	Here $I:= B_\epsilon(x_I)$, $O:= B_\epsilon(x_O)$ and $\chi_{M}(x)$ denotes the indicator-function for a set $M\subseteq\R^2$.
+		% 	Due to the construction, the flow-field will now spread the contrast-agent symmetrically around $I$ (I don't have a proof for the last claim, but it seems likely).
+		% 	This is exactly what we are observing in the simulation: The contrast-agent is spread symmetrically in all directions.
+		% \end{remark}
+		%
+		% \begin{remark}
+		% 	The (well-posed) boundary value problem we are actually interested in hence becomes:
+		% 	\begin{subequations}
+		% 		\label{eq:ourProblem}
+		% 		\begin{alignat*}{2}
+		% 			c_t + \q\cdot \nabla c + \Qso c &= \Qso, &\qquad  &(x,t) \in \Omega_T, \\
+		% 			c &= c_a(t), && (x,t) \in \mu \times [0,T).
+		% 		\end{alignat*}
+		% 	\end{subequations}
+		% 	where $\Omega = (0,1)^2$, $c_a(t)$ is an AIF, $\Qso$ is one of the $\Qso$s described in Remark \ref{rem:Q} and $\mu:=\partial B_\epsilon(x_I)$ as in Remark \ref{rem:Gamma}.
+		% 	\CHalert{I am wondering: In this formulation no sink is appearing. Where has the sink gone? Is it possible that sources and sinks are already ,,hidden'' in the flow field $\q$? If so, should we neglect the inhomogeneity and just stick with $c_t + \q\cdot \nabla c + (\Qso + \Qsi) c = 0$?}
+		% \end{remark}
+		
+		\begin{remark}\label{rem:solC}
+			We will now solve \eqref{eq:ourProblem} using the method of characteristics.
+			Substituting $x = x(s)$, $t=t(s)$ and denoting $C(s):=\ce(x(s),t(s))$, $\tQso(s):=\Qso(x(s))$, $\tQsi(s):=\Qsi(x(s))$ and $C_a(s):=c_a(t(s))$  yields the following system of ODEs:
+			\begin{subequations}
+				\label{eq:ourODE}
+				\begin{alignat}{2}
+					C'(s) + \tQso(s)C(s) &= C_a(s)\tQso(s), & \quad C(0) &= 0 \label{eq:ourODEC} \\
+					x'(s) &= \q(s), &x(0) &= x_0 \label{eq:ourODEx}\\
+					t'(s) &= 1,     &t(0) &= t_0, \label{eq:ourODEt}
+				\end{alignat}
+			\end{subequations}
+			where $x_0 \in \partial B_\epsilon(\xso)$.
+
+			In order to solve \eqref{eq:ourODEC}, we use the method of \emph{varying the constant}. First, we solve the homogenous ODE: 
+			\[
+				\dot{C}(s) = -\tQso(s)C(s) \quad \implies \quad \quad C(s) = e^{-\int_{0}^s\tQso(u)\diff u} k, \qquad k\in\R
+			\]
+			In order to simplify notation a bit, we define $R(s):=\int_{0}^s\tQso(u) \diff u$.
+			We now assume that $k = k(s)$. A comparison of coefficients and use of the initial condition $C(0)=0$ yields:
+			\[
+				\dot{k}(s) e^{-R(s)} = C_a(s)\tQso(s) \quad \implies \quad k(s) = \int_{0}^s e^{R(v)}C_a(v)\tQso(v) \diff v.
+			\]
+			This yields the following solution of \eqref{eq:ourODEC} originating at point $(x_0,t_0) \in \Omega$:
+			\[
+				C(s) = \int_{0}^{s} e^{-(R(s)-R(v))}C_a(v)\tQso(v)\diff v			
+			\]
+			Also solving \eqref{eq:ourODEt} yields $t = s + t_0$ with $s \ge 0$ and hence $t \ge t_0$. 
+			Plugging this into the above equation yields:
+			% \[
+			% 	C(t-t_0) = \int_{0}^{t-t_0} e^{-(R(t-t_0)-R(v-t_0))}C_a(v+t_0)\tQso(v-t_0)\diff v
+			% \]
+			% where $t\ge t_0$, $C(s)=c(x(s),s)$, $R(v)=\int_{0}^v\Qso(x(u)) \diff u$ and $\tQso(v)=\Qso(x(v))$.
+			% An equivalent formulation is:
+			\begin{equation}
+				\label{eq:Sol}
+				C(t) = \int_{t_0}^{t} e^{-(R(t-t_0)-R(v-t_0))}c_a(v)\tQso(v-t_0)\diff v
+			\end{equation}
+			where as above $R(v)=\int_{0}^v\Qso(x(u)) \diff u$, $\tQso(v)=\Qso(x(v))$ and $C(t) = c(x(t-t_0),t)$.
+			This is a (semi-)Lagrangian formulation of the flow. 
+			Going back to the Eulerian approach, we observe that since $\q$ is independent of $t$ we can fix the position by assuming that $t-t_0=k$ for constant $k\in\R^+$. 
+			For each starting timepoint $t_0$ the concentration at the location $x_k:=x(k)$ is hence given by \eqref{eq:Sol} in the following way:
+			\[
+				c_{t_0}(x_k) = \int_{t_0}^{t_0+k} e^{-(R(k)-R(v-t_0))}c_a(v)\tQso(v-t_0)\diff v
+			\]
+			Since the flow first arrives at location $x_k$ at timepoint $k$, this yields \CHalert{I'm not sure if it is allowed to change from Lagrangian $t_0$ to Eulerian $t$}:
+			\[
+				c(x_k,t) =
+				\begin{cases}
+					0 & t<k\\
+					\int_{t}^{t+k} e^{-(R(k)-R(v-t))}c_a(v)\tQso(v-t)\diff v & t \ge k
+				\end{cases} 
+			\]
+			Assuming that $\Qso(x) = \qi \delta_{\xso}$ and hence $\tQso(s) = 1$ for $s=0$ and $0$ elsewhere yields:
+			\[
+				c(x_k,t) =
+				\begin{cases}
+					0 & t<k\\
+					\qi e^{-\qi} c_a(t) & t \ge k
+				\end{cases} 			
+			\]
+		\end{remark}
+		
+		\textit{Comments Erlend}: This looks beautiful. I think we can understand the solution with the characteristics as a change from Eulerian $(x,t)$ to Lagrangian coordinates $(x_0,t)$. The coordinates $x$ are the "standard" coordinates and the coordinates $x_0$ are fixed, corresponding to initial starting points in $\Gamma$. The variable $t$ can be considered as the parameterisation, like $s$, since $t' = 1$ it means that $t  = s + s_0$ and we can choose $s_0 = 0$. I write the equation above slightly different ( I also change to small $c$ since that is what we solve for, as well as adding the porosity $\phi$ which has fallen out from the equations):
+		$$
+		c'(x_0,t) + \frac{Q_{so}(x_0)}{\phi}c(x_0,t) = c_a(t)\frac{Q_{so}(x_0)}{\phi}
+		$$
+		The term $q$ also gets scaled by the porosity, I think, but that doesn't change anything here. Its just a scaling of the streamline vector.
+		As before, derivative means with respect to the parametrisation $s$. Here, all variables are in Lagrangian coordinates. The source term $Q_{so}$ has no time variation and has therefore no time variable. The arterial input concentration $c_a(s)$ only exists in the source and has no spatial coordinate. With these assumptions the solution becomes, according to above,
+		$$
+		c(x_0,t) = \frac{1}{\phi}\int_0^{t}e^{-(R(t) - R(s))}c_a(s)Q_{so}(x_0)ds
+		$$
+		where $R(t) = \frac{1}{\phi}\int_0^t Q_{so}(x_0)du = \frac{tQ_{so}}{\phi}$ since $Q_{so}$ is independent of time in our case \CHalert{This would be valid only if $Q_{so}(x(s))$ is constant in $\Omega$. I was under the impression that $Q_{so}(x(s)) = 1$ for $s=0$ and $Q_{so}(x(s))=0$ for $s>0$. In this case $R(t)$ would become independent of $t$ and hence $R(t) = \frac{Q_{so}}{\phi}$}. This again can be rephrased as
+		$$
+		c(x_0,t) = \frac{Q_{so}(x_0)}{\phi}\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)ds
+		$$
+		\CHalert{This would also only be valid if $Q_{so}(x)$ would be constant in $\Omega$.}
+		for $T = \phi/Q_{so}$. Ideally we would be able to project this solution back to Eulerian coordinates (as they do in Evans) but this is hard since we don't have an explicit expression for $q$ and $Q_{so}$. So, lets stay within Lagrangian coordinates. Multipllying with $\phi$ now gives the solution in terms of big $C$,
+		$$
+		C(x_0,t) = Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)ds
+		$$
+		Note that the term $C(x_0,t)$ means the concentration at the point $x(t)$, reached at time $t$ by the particles starting at $x_0$.
+		This is exactly the classical model! And I think it tells us the following: In the classical model we compute the source flow $Q_{so}$, and not the flow that enters the voxel, what people think. Thus we can expect the classical model to be correct for computing the entire inflow of $Q_{so}$, which equals the entire flow. And that is exactly our claim, the classical model does not compute the inflow into that voxel but rather the inflow at the inlet (in the source entering the domain)! Because of this it is wrong to sum up all the flows from $\Omega$, since we are now in Lagrangian coordinates and the integration domain is over the domain of the source term, $\Gamma$.
+Embedding the above inside an integral gives
+		$$
+		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|}\int_\Omega Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
+		$$
+		The source term is only nonzero in the source so this is equal to
+		$$
+		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|}\int_\Gamma Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
+		$$
+which again becomes while assuming $Q_{so}$ is constant over $\Gamma$
+		$$
+		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|} |\Gamma| Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
+		$$
+		and again
+		$$
+		 \overline{C}(x_0,t)dx = P\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
+		$$
+		where $P = |\Gamma|Q_{so}/|\Omega|$, becoming the total flow divided by the volume (ml/s/ml) which is perfusion. Thus, the classical model can estimate the \textit{total} perfusion $P$.
+		
+		
+	\begin{thebibliography}{9}
+		\bibitem{Evans98}
+		L. C. Evans;
+		\emph{Partial Differential Equations},
+		American Mathematical Society,
+		Providence, Rhode Island,
+		1998.
+		
+		\bibitem{BergenMIC15}
+		Heck, Hodneland, Hanson, Lundervold, Modersitzki, Malyshev;
+		\emph{A one-compartment field model for perfusion},
+		work in progress,
+		2015.
+	\end{thebibliography}
+	
+	\begin{flushright}
+		\signatureAl{7cm}{Erlend Hodneland, Erik Hanson\\University of Bergen\\Norway}
+		\signature{28ex}
+	\end{flushright}
+
+\end{document}

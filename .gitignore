@@ -1,0 +1,15 @@
+#latex-ignores
+
+*.aux
+*.log
+*.lb
+*.synctex.gz
+
+#matlab-ignores
+*.m~
+
+#MAC-Ignores
+.DS_Store
+
+#constantin saves his commit-messages in this file
+commit_msg

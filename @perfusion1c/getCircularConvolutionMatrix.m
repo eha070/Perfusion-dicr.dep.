@@ -3,7 +3,11 @@
 % Modified by Erlend Hodneland
 %
 
-function A = getCircularConvolutionMatrix(AIFHat,deltaT)
+function A = getCircularConvolutionMatrix(AIF,deltaT)
+
+
+    k = numel(AIF);
+    AIFHat = [AIF(:);zeros(k,1)];
     
     %setup main variables
     n = numel(AIFHat);

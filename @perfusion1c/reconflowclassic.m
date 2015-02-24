@@ -33,13 +33,19 @@ aifval = aifval(:);
 
 if isequal(prm.reconflowdeconvmethod,'circSVD')
     
-    aifvalhat   = [aifval;zeros(ntime,1)]; %zero-padded AIF
-
     %get linear convolution matrix
-    A = perfusion1c.getCircularConvolutionMatrix(aifvalhat,dt);
+    A = perfusion1c.getCircularConvolutionMatrix(aif,dt);
 
     % do the SVD
     [U,S,V] = svd(A);
+elseif isequal(prm.reconflowdeconvmethod,'linearSVD')
+    
+    %get linear convolution matrix
+    A = perfusion1c.getLinearConvolutionMatrix(aifval,dt);
+
+    % do the SVD
+    [U,S,V] = svd(A);
+    
     
 end;
 
@@ -67,8 +73,11 @@ for i = 1 : nvox
         I = lsqlin(A,C,[],[]);
         perfvec(i) = max(I);
     elseif isequal(prm.reconflowdeconvmethod,'circSVD')        
-        [F,Irec,Crec] = perfusion1c.circularDeconvolution(C,aifval,timeline,prm.reconflowIO,U,S,V);
+        [F,~,~] = perfusion1c.circularDeconvolution(C,timeline,prm.reconflowIO,U,S,V);
         perfvec(i) = F;
+    elseif isequal(prm.reconflowdeconvmethod,'linearSVD')        
+        [F,~,~] = perfusion1c.linearDeconvolution(C,timeline,prm.reconflowIO,U,S,V);
+        perfvec(i) = F;        
     end;
     
 %     if i/500 == round(i/500)
