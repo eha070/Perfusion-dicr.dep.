@@ -2,7 +2,7 @@ function [] = createindicatorpde(prmin)
 
 
 % settings
-[prm,Fmat] = perfusion1c.settings;
+[prm,Fmat] = settings;
 prm = perfusion1c.mergestruct(prm,prmin);
 
 % basename
