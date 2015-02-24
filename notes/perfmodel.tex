@@ -14,8 +14,8 @@
 \usepackage{amsmath}%
 \usepackage{amsfonts}%
 \usepackage{amssymb}%
-%\usepackage{mwe}%
-% \usepackage{graphicx}
+%\usepackage{mwe}
+%\usepackage{graphicx}
 %\usepackage{graucx}
 \usepackage{epsfig} 
 %\usepackage{mwe}    % loads »blindtext« and »graphicx«
@@ -502,7 +502,7 @@ for each voxel.  Denote by $n = n_xn_yn_z$ the total number of voxels within $\O
 Note that the flux is discretized on a staggered grid, corresponding to the voxel faces, whereas the pressure, porosity and permeability are all discretized on a cell-centered grid, as shown in Fig. \ref{fig:grid}. Thus, the obtained flux field from applying (\ref{eq:syntdarcysimp}) is descretized on a staggered grid, along with the transmissibilities.
 \begin{figure}[H]
 	\centering
-		% \includegraphics[width=0.7\textwidth]{figs/flowgrid.pdf}
+		\includegraphics[width=0.7\textwidth]{figs/flowgrid.pdf}
 	\caption{Grid for discretisation of the flow model in (\ref{eq:syntdarcysimp}) and (\ref{eq:flowmodel}). The circles represent cell centers where the pressure, porosity and permeability are defined. The "$\times$" and the "*" are staggered grid representations for discretisation of the flux in the vertical and horizontal direction, respectively.}
 	\label{fig:grid}
 \end{figure}
