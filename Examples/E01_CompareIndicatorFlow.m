@@ -20,7 +20,7 @@ showCurve   = 1;
 
 
 %% load data
-prm = perfusion1c.settings;
+prm = settings;
 basename = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T','stepred');
 
 %load PDE indicatorflow, CmatPDE
@@ -42,7 +42,7 @@ CmatConv = Cmat; clearvars Cmat;
 
 
 %load CBF,CBV
-prm = perfusion1c.settings;
+prm = settings;
 basenameFlow = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
 fname = ['synt-createflowTPFA-' basenameFlow '.mat'];
 msg   = ['Loading ' fname];

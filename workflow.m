@@ -33,7 +33,7 @@ end;
 % reduce time steps
 
 % parameters
-[prm,temp] = perfusion1c.settings;
+[prm,temp] = settings;
 
 clear prmin;
 aiftype = {'parker','gamma'};

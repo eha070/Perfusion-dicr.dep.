@@ -15,7 +15,7 @@
 \usepackage{amsfonts}%
 \usepackage{amssymb}%
 %\usepackage{mwe}
-%\usepackage{graphicx}
+\usepackage[pdftex]{graphicx}
 %\usepackage{graucx}
 \usepackage{epsfig} 
 %\usepackage{mwe}    % loads »blindtext« and »graphicx«
@@ -25,6 +25,7 @@
 %\usepackage{subcaption}
 %\usepackage{subfigure} 
 \usepackage{url}
+\usepackage{epstopdf}
 %\captionsetup[subfig]{margin=2mm,format=hang}
 %\usepackage{subcaption}
 \usepackage{float}
@@ -66,6 +67,8 @@
 \newcommand{\xso}{x_\mathrm{so}}
 \newcommand{\xsi}{x_\mathrm{si}}
 \newcommand{\ce}{c^\epsilon}
+\newcommand{\tphi}{\tilde{\phi}}
+\newcommand{\CHalert}[1]{\textcolor{red}{CH: #1}}
 
 
 \begin{document}
@@ -392,18 +395,41 @@ Consider the solute transport equation (\ref{eq:conteqlocal}), and rewrite it as
 	\frac{\partial c}{\partial t} + \frac{q}{\phi} \cdot \nabla c = \frac{(c_{so}-c)Q_{so}}{\phi }.
 	\label{eq:conteqlocal3}
 \end{equation}
-Following the method of characteristics and converting from Eulerican coordinates $(x(t),t)$ to Lagrangian coordinates $(x_0,t)$, where $x_0$ is fixed and $t$ is the parameterizatiton parameter, leads to the system of ODEs [Cite Evans]
+We follow the method of characteristics and first convert from Eulerican coordinates $(x,t)$ to Lagrangian coordinates $(x_0,t_0)$, the beginning of a streamline. Here $(x_0,t_0)$ is fixed the parameterizatiton parameter for the streamline emerging at $(x_0,t_0)$ will be denoted by $s$. 
+Substituting $x = x(s)$, $t=t(s)$ and denoting $c(s):=c(x(s),t(s))$, $\Qso(s):=Q_{so}(x(s))$, $\phi(s):=\phi(x(s))$ and $c_a(s):=c_a(t(s))$  yields the following system of ODEs [cite Evans]:
 \begin{subequations}
-\begin{alignat}{2}
-	\dot{c}(x_0,t) + G(x_0)c(x_0,t) &= F(x_0,t), & \qquad c(x_0,t_0) &= c_0(x_0) \label{eq:ODEC}\\
-	\dot{x}(x_o) &= \frac{q(x_0)}{\phi(x_0)},&  x(x_0,t_0) &= x_0 \label{eq:ODEx}\\
-\end{alignat}
+	\label{eq:ourODE}
+	\begin{alignat}{2}
+		c'(s) + \frac{\Qso(s)}{\phi(s)}C(s) &= \frac{c_a(s)\Qso(s)}{\phi(s)}, & \quad c(0) &= 0 \label{eq:ourODEC} \\
+		x'(s) &= \frac{q(s)}{\phi(s)}, &x(0) &= x_0 \label{eq:ourODEx}\\
+		t'(s) &= 1,     &t(0) &= t_0, \label{eq:ourODEt}
+	\end{alignat}
 \end{subequations}
-for $G(x_0) := Q_{so}(x_0)/\phi(x_0)$ and the inhomogeneous term $F(x_0,t) := c_{so}(x_0,t)Q_{so}(x_0)/\phi(x_0)$ .The differentiation $\dot{c}$ is with respect to the time parameterisation $t$. Let the source term be non-zero within the ball $B_\epsilon$, zero elsewhere, and let $\partial B_\epsilon$ be the surface of $B_\epsilon$, corresponding to $x_0 = \{x : x_0 \in \partial B_\epsilon  \}$. All streamlines must connect with $\partial B_\epsilon$, and hence if we know the solution on $\partial B_\epsilon$ we know the solution everywhere on the streamlines. The obtained ODE has the general solution
-\begin{equation}
-c(x_0,t) = e^{-R(t)}\Big (\int_{t_0}^t e^{R(s)} F(x_0,s)ds + A_0\Big )
-\end{equation}
-for $R(x_0,t) := t G(x_0)$. Applying initial conditions $c(x_0,t_0) = 0$ for $t_0 = 0$ results in $A_0 = 0$.
+Here $x_0$ denotes the starting-point (in space) of the streamline and $t_0$ denotes the starting-timepoint of the streamline. $c(s)$ hence can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and $(x(s),t(s))$ is the wavefront at artificial timepoint $s$. \CHalert{For a visualization see Fig. \ref{fig:Streamlines}}
+\begin{figure}[h!tb]
+	\begin{tabular}{c p{3cm}}
+		\includegraphics[width=10cm]{./figs/vectorField.eps} &\vspace{-5cm}\parbox{3cm}{Flow field $q(x)$}\\
+		\includegraphics[width=10cm]{./figs/singleStreamline.eps} &\vspace{-5cm}\parbox{3cm}{A single streamline emerging at point $x_0 = (0.1,0.9)$} \\
+		\includegraphics[width=10cm]{./figs/multipleStreamlines.eps} &\vspace{-5cm}\parbox{3cm}{Multiple Streamlines emerging at point $x_0=(0.1,0.3)$ at different timepoints.}
+	\end{tabular}
+	\caption{Flow-Field and Streamlines}
+	\label{fig:Streamlines}
+\end{figure}
+
+
+
+Let the source term be non-zero within the ball $B_\epsilon$, zero elsewhere, and let $\partial B_\epsilon$ be the surface of $B_\epsilon$, corresponding to $x_0 = \{x : x_0 \in \partial B_\epsilon  \}$. All streamlines must connect with $\partial B_\epsilon$, and hence if we know the solution on $\partial B_\epsilon$ we know the solution everywhere on the streamlines. The obtained ODEs have the general solutions
+% \begin{equation}
+% c(x_0,t) = e^{-R(t)}\Big (\int_{t_0}^t e^{R(s)} F(x_0,s)ds + A_0\Big )
+% \end{equation}
+% for $R(s) := t G(x_0)$. Applying initial conditions $c(x_0,t_0) = 0$ for $t_0 = 0$ results in $A_0 = 0$.
+% for $R(x_0,t) := t G(x_0)$. Applying initial conditions $c(x_0,t_0) = 0$ for $t_0 = 0$ results in $A_0 = 0$.
+\[
+	c(s) = \int_{0}^{s} e^{-(R(s)-R(v))}C_a(v)\frac{\Qso(v)}{\phi(v)} dv			
+\]
+for $R(v)=\int_{0}^v\Qso(x(u))/\phi(x(u)) d u$.
+\CHalert{We can interpret $R(v)$ as the amount of contrast agent which is ,,accumulated'' while the particle moves through the source field.
+Since in our setting $\Qso(x)=\qi$ for $x \in B_\epsilon$ and $\Qso(x)=0$ for $x \notin B_\epsilon$,  we find that $R(v)$ is constant if $v$ is bigger then some (streamline-dependent) threshold and hence.}
 \\
 BEGIN COMMENT HERE, ONLY FOR OUR UNDERSTANDING
 \\
@@ -602,7 +628,7 @@ for the source domain $\Omega_{so}$ and sink domain $\Omega_{si}$.
         \caption{Synthetic flow model with a source in the upper left corner and a sink in the lower right corner. (a) Pressure field from solving the linear system in (\ref{eq:TPFAlin}), (b-c) flux multiplied by voxel face area $q_1h_yh_z,q_2 h_xh_z$ $[mm^3/s]$ in vertical and horizontal direction with positive directions downward and right, respectively. (c) Voxelwise estimated perfusion $[ml/min/100ml]$ according to (\ref{eq:flux2perf}).}
         \label{fig:flowsyntresults}
 \end{figure}
-
+                                   
 The voxelwise streamline length was computed from the flux field $q$ as described in section \ref{sec:streamline}. The streamline length for the flux field in Fig. \ref{fig:flowsyntresults} is shown in Fig. \ref{fig:streamlinelength}.
 \begin{figure}[H]
 	\centering
@@ -687,7 +713,7 @@ where $\overline{C}_{SF}(x_i)$ is the voxelwise average value of $C_{SF}$ across
 
 \section{Restoring the porosity and flow field using the classical model}
 
-For restoration of the perfusion flow field we apply a voxelwise deconvolution of (\ref{eq:Cconv2}). For deconvolution we used the regularized Levenberg-Marquardt least squares method (here referred to as method 'least-squares deconvolution') to solve the linear system $AR = C$, corresponding to a Tikhonov regularization with $\epsilon = 10^{-4}$. Additionally, we applied a circular SVD deconvolution which is considered the state-of-the-art method for deconvolution within perfusion applications (here referred to as the method 'circular SVD'). The results for reconstructed voxelwise perfusion and porosity are presented as percentage error 
+For restoration of the perfusion flow field we apply a voxelwise deconvolution of (\ref{eq:Cconv2}). For deconvolution we used the regularized Levenberg-Marquardt least squares method (here referred to as method 'least-squares deconvolution') to solve the linear system $AR = C$, corresponding to a Tikhonov regularization with $\epsilon = 10^{-4}$. Additionally, we applied a circular SVD deconvolution which is considered the state-of-the-art method for deconvolution within perfusion applications (here referred to as the method 'circular SVD'). The results for reconstructed voxelwise perfusion and porosity are presented as percentage error
 $$
 \Delta P(\%) = \frac{P_{rec}-P}{P}100\%, ~~ \Delta \phi(\%) = \frac{\phi_{rec}-\phi}{\phi}100\% 
 $$
