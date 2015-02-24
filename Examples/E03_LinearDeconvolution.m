@@ -15,8 +15,8 @@ clc;
 close all;
 
 %setup which flow-calculation to use
-indicatorcalc = 'conv';
-% indicatorcalc = 'PDE';
+% indicatorcalc = 'conv';
+indicatorcalc = 'PDE';
 
 
 
@@ -33,8 +33,8 @@ showSingleCurve    = 0;
 
 
 %setup area where to run the deconvolution
-idxi  = (1:128);
-idxj  = (1:128);
+idxi  = (1:64);
+idxj  = (1:64);
 
 
 %setup oscillation index OI
@@ -52,7 +52,7 @@ step = 1;
 %% load data
 
 %settings
-prm               = perfusion1c.settings;
+prm               = settings;
 basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
 basenameFlow      = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
 
@@ -214,8 +214,8 @@ end
 if showMultipleCurves
 
     %setup curves to display
-    idxiD = (1:20:128);
-    idxjD = (1:20:128);    
+    idxiD = (1:10:64);
+    idxjD = (1:10:64);    
     numi   = numel(idxiD)*numel(idxjD);
 
 
@@ -254,7 +254,7 @@ end
 if showSingleCurve
     
     %position of single curve
-    pos = [95,28];
+    pos = [32,10];
 
     s = @(v) squeeze(v(:));
 
