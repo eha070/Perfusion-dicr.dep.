@@ -21,10 +21,11 @@ showCurve   = 1;
 
 %% load data
 prm = settings;
-basename = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T','stepred');
+basename   = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T','stepred');
+foldername = './results/';
 
 %load PDE indicatorflow, CmatPDE
-fname = ['synt-createindicatorpde-' basename '.mat'];
+fname = [foldername,'synt-createindicatorpde-' basename '.mat'];
 msg      = ['Loading ' fname];
 disp(msg);
 load(fname);
@@ -33,7 +34,7 @@ timeline = prm.timeline;
 
 
 %load convolution indicatorflow CmatConv
-fname = ['syntconv-createindicatorconv-' basename '.mat'];
+fname = [foldername,'syntconv-createindicatorconv-' basename '.mat'];
 msg   = ['Loading ' fname];
 disp(msg);
 load(fname,'Cmat');
@@ -44,7 +45,7 @@ CmatConv = Cmat; clearvars Cmat;
 %load CBF,CBV
 prm = settings;
 basenameFlow = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
-fname = ['synt-createflowTPFA-' basenameFlow '.mat'];
+fname = [foldername,'synt-createflowTPFA-' basenameFlow '.mat'];
 msg   = ['Loading ' fname];
 disp(msg);
 load(fname,'phimat','perfmat','qmat');

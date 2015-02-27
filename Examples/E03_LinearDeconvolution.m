@@ -55,16 +55,16 @@ step = 1;
 prm               = settings;
 basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
 basenameFlow      = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
-
+foldername        = './results/';
 
 
 %setup paths
 pathloadFlow = ['synt-createflowTPFA-' basenameFlow '.mat'];
 switch indicatorcalc
     case 'PDE'
-        pathload = ['synt-createindicatorpde-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
+        pathload = [foldername,'synt-createindicatorpde-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
     case 'conv'
-        pathload = ['syntconv-createindicatorconv-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
+        pathload = [foldername,'syntconv-createindicatorconv-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
     otherwise
         error('Method set for indicatorcalc unknown')
 end
