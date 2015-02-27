@@ -68,7 +68,9 @@
 \newcommand{\xsi}{x_\mathrm{si}}
 \newcommand{\ce}{c^\epsilon}
 \newcommand{\tphi}{\tilde{\phi}}
+\newcommand{\R}{\mathbb{R}}
 \newcommand{\CHalert}[1]{\textcolor{red}{CH: #1}}
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
 
 
 \begin{document}
@@ -398,14 +400,14 @@ We consider the solute transport equation (\ref{eq:conteqlocal}):
 We follow the method of characteristics and first convert from Eulerican coordinates $(x,t)$ to Lagrangian coordinates $(x_0,t_0)$, the beginning of a streamline. Here $(x_0,t_0)$ is fixed the parameterizatiton parameter for the streamline emerging at $(x_0,t_0)$ will be denoted by $s$. 
 Substituting $x = x(s)$, $t=t(s)$ and denoting $c(s):=c(x(s),t(s))$, $\Qso(s):=Q_{so}(x(s))$, $\phi(s):=\phi(x(s))$ and $c_a(s):=c_a(t(s))$  yields the following system of ODEs [cite Evans]:
 \begin{subequations}
-	\label{eq:ourODE}
+	\label{eq:ODEs}
 	\begin{alignat}{2}
-		c'(s) + \frac{\Qso(s)}{\phi(s)}C(s) &= \frac{c_a(s)\Qso(s)}{\phi(s)}, & \quad c(0) &= 0 \label{eq:ourODEC} \\
-		x'(s) &= \frac{q(s)}{\phi(s)}, &x(0) &= x_0 \label{eq:ourODEx}\\
-		t'(s) &= 1,     &t(0) &= t_0, \label{eq:ourODEt}
+		c'(s) + \frac{\Qso(s)}{\phi(s)}C(s) &= \frac{c_a(s)\Qso(s)}{\phi(s)}, & \quad c(0) &= 0 \label{eq:ODEC} \\
+		x'(s) &= \frac{q(s)}{\phi(s)}, &x(0) &= x_0 \label{eq:ODEx}\\
+		t'(s) &= \phi(s),     &t(0) &= t_0, \label{eq:ODEt}
 	\end{alignat}
 \end{subequations}
-Here $x_0$ denotes the starting-point (in space) of the streamline and $t_0$ denotes the starting-timepoint of the streamline. $c(s)$ hence can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and $(x(s),t(s))$ is the wavefront at artificial timepoint $s$. \CHalert{For a visualization see Fig. \ref{fig:Streamlines}}
+Here $x_0$ denotes the starting-point (in space) of the streamline and $t_0$ denotes the starting-timepoint of the streamline. $c(s)$ hence can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and $(x(s),t(s))$ is the wavefront at artificial timepoint $s$. For a visualization see Fig. \ref{fig:Streamlines}.
 \begin{figure}[h!tb]
 	\begin{tabular}{c p{3cm}}
 		\includegraphics[width=10cm]{./figs/vectorField.eps} &\vspace{-5cm}\parbox{3cm}{Flow field $q(x)$}\\
@@ -415,23 +417,50 @@ Here $x_0$ denotes the starting-point (in space) of the streamline and $t_0$ den
 	\caption{Flow-Field and Streamlines}
 	\label{fig:Streamlines}
 \end{figure}
+Let the source term be non-zero within the ball $B_\epsilon$ and zero elsewhere. Since contrast-agent is only created in the source, we need to study the problem on streamlines passing through this ball.
+In order to do this, we place a small ball with radius $\delta$ with $\delta << \epsilon$ in the middle of the source. 
+We can now study the solution along streamlines starting at $\partial B_\delta$, the boundary of $B_\delta$ (cf. Fig. \ref{fig:SourceSink}). 
+Letting $\delta \to 0$, we see that the streamlines connecting to $\partial B_\delta$ fill whole $\Omega$.
+\begin{figure}[h!tb]
+		\includegraphics[width=15cm]{./figs/SourceSink.eps}
+		\caption{Streamlines passing through the source. Source- and sink areas are shown in red. Streamlines are supposed to begin on $\partial B_\delta$ (black)}
+		\label{fig:SourceSink}		
+\end{figure}
+Hence we conclude that if we know the solution on $\partial B_\delta$ we know the solution everywhere in $\Omega$. 
 
-
-
-Let the source term be non-zero within the ball $B_\epsilon$, zero elsewhere, and let $\partial B_\epsilon$ be the surface of $B_\epsilon$, corresponding to $x_0 = \{x : x_0 \in \partial B_\epsilon  \}$. All streamlines must connect with $\partial B_\epsilon$, and hence if we know the solution on $\partial B_\epsilon$ we know the solution everywhere on the streamlines. The obtained ODEs have the general solutions
-% \begin{equation}
-% c(x_0,t) = e^{-R(t)}\Big (\int_{t_0}^t e^{R(s)} F(x_0,s)ds + A_0\Big )
-% \end{equation}
-% for $R(s) := t G(x_0)$. Applying initial conditions $c(x_0,t_0) = 0$ for $t_0 = 0$ results in $A_0 = 0$.
-% for $R(x_0,t) := t G(x_0)$. Applying initial conditions $c(x_0,t_0) = 0$ for $t_0 = 0$ results in $A_0 = 0$.
+ODE \eqref{eq:ODEC}, which governs the behavior along the streamline, has the general solution
+\begin{equation}\label{eq:Sol}
+	c(s) = \int_{0}^{s} e^{-(R(s)-R(v))}c_a(v)\frac{\Qso(v)}{\phi(v)} \diff v.
+\end{equation}
+Here $R(v)=\int_{0}^v\Qso(x(u))/\phi(x(u)) d u$.
+We can interpret $R(v)$ as the amount of contrast agent which is ,,accumulated'' while the particle moves through the source field.
+Since in our setting $\Qso(x)=\qi$ for $x \in B_\epsilon$ and $\Qso(x)=0$ for $x \notin B_\epsilon$,  we find that $R(v)$ is constant if $v$ is bigger then some (streamline-dependent) threshold.
+We will now try to simplify \eqref{eq:Sol}. First, let us assume that $\phi(x) = \phi$ for some $\phi \in \R$, i.e. $\phi$ is a constant within $\Omega$. In this case we can solve \eqref{eq:ODEt} directly and obtain:
 \[
-	c(s) = \int_{0}^{s} e^{-(R(s)-R(v))}C_a(v)\frac{\Qso(v)}{\phi(v)} dv			
+	t(s) = \phi s + t_0 \quad \Leftrightarrow \quad s = (t - t_0)/\phi
 \]
-for $R(v)=\int_{0}^v\Qso(x(u))/\phi(x(u)) d u$.
-\CHalert{We can interpret $R(v)$ as the amount of contrast agent which is ,,accumulated'' while the particle moves through the source field.
-Since in our setting $\Qso(x)=\qi$ for $x \in B_\epsilon$ and $\Qso(x)=0$ for $x \notin B_\epsilon$,  we find that $R(v)$ is constant if $v$ is bigger then some (streamline-dependent) threshold and hence.}
-\\
-BEGIN COMMENT HERE, ONLY FOR OUR UNDERSTANDING
+where $t_0$ is the starting-timepoint of the particles we want to track. 
+In order to go back to an Eulerian formulation, we can hence eliminate the parametrization variables $s$ and switch to a parametrization by regular time instead.
+Substituting $v = (w-t_0)/\phi$ and setting $t_0 + s\phi = t$ in \eqref{eq:Sol} yields:
+\begin{equation}
+	\label{eq:Solt}
+	c(t) = \frac{1}{\phi}\int_{t_0}^t e^{-\left(R(\frac{t-t_0}{\phi})-R(\frac{w-t_0}{\phi}\right)}c_a\big(\frac{w-t_0}{\phi}\big)\Qso\big(\frac{v-t_0}{\phi}\big) \frac{\diff w}{\phi}
+\end{equation}
+This equation can be interpreted as follows: 
+For a given starting-point $x_0$ and starting time $t_0$, Eq. \eqref{eq:Solt} gives the concentration at timepoint $t$ and location $x((t-t_0)/\phi)$. 
+Further assuming that $t$ is big enough that $x(t) \notin B_\epsilon$, we obtain $R(\frac{t-t_0}{\phi}) = \qi \cdot l$ for $l = (t_{max}-t_0)/\phi$ and $t_{max}$ is the timepoint at which $x(t)$ leaves the source-area $B_\epsilon$.
+\CHalert{I am still working on the following section:}
+This yields the following expression for $c(t)$
+\[
+	c(t) = 
+\]
+We will now try to go back to an Eulerian Formulation: One can see that for constant $k:=(t-t_0)/\phi$ we have also a constant location $x_k:=x(k)$.
+This gives the following concentration at location $x_k$ in dependency of the starting-time $t_0$:
+\[
+	c(x_k,t_0 + k \phi) = \frac{1}{\phi}\int_{t_0}^{t_0 + k\phi} e^{-\left(R(t)-R(\frac{w-t_0}{\phi}\right)}c_a\big(\frac{w-t_0}{\phi}\big)\Qso\big(\frac{v-t_0}{\phi}\big) \frac{\diff w}{\phi}	
+\]
+Since no tracer will arrive before timepoint $0+\phi k$ at $x_k$, we get the following closed expression for 
+\CHalert{BEGIN COMMENT HERE, ONLY FOR OUR UNDERSTANDING}
 \\
 \begin{equation}
 c(x_0,t) = e^{-R(t)}\Big (\int_{0}^t e^{R(s)} F(x_0,s)ds\Big )
