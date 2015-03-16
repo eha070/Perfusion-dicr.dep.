@@ -233,7 +233,7 @@ if showMultipleCurves
     Irec = Irec';
 
 
-    REF = (CBFest(idxi,idxj)-CBF(idxi,idxj))./CBF(idxi,idxj);
+    REF = (CBFest(idxiD,idxjD)-CBF(idxiD,idxjD))./CBF(idxiD,idxjD);
     REF = mean(REF(:));
 
 

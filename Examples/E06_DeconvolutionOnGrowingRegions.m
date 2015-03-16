@@ -32,7 +32,7 @@ trueFlow = 'perfusion';
 showFlowMaps       = 1;
 showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
 showSingleCurve    = 0;
-showPartition      = 1;
+showPartition      = 0;
 
 
 %setup size of blocks to run the deconvolution on
@@ -40,9 +40,9 @@ blockSize = [5,5];
 
 
 %setup oscillation index OI
-OI = .5; %determined experimentally for 'conv'.
+OI = .001; %determined experimentally for 'conv'.
 % OI = .01; %determined experimentally for 'PDE'
-OI = 1; %determined experimentally for 'conv'.
+% OI = 1; %determined experimentally for 'conv'.
 
 
 %prepare downsampling of data (shorter runtime for SVD)
@@ -147,6 +147,7 @@ numBlock = prod(blockSize);
 CBFest = zeros(m);
 Iest   = zeros([m,klow]);
 Cest   = zeros([m,klow]);
+Cblock = zeros([m,klow]);
 
 %get deconvolution matrix
 deltaT  = timelinelow(2)-timelinelow(1);
@@ -190,11 +191,18 @@ for i = 1:nBlocksi
         
         Crec = reshape(Crec,1,1,[]);
         Crec = repmat(Crec,cBlockSize(1),cBlockSize(2),1);
+        
+        %prepare Cbloc
+        Cij = reshape(Cij,1,1,[]);
+        Cij = repmat(Cij,cBlockSize(1),cBlockSize(2),1);
+
+        
 
         %store results
-        CBFest(idxi,idxj) = F;
-        Iest(idxi,idxj,:) = Irec;
-        Cest(idxi,idxj,:) = Crec;
+        CBFest(idxi,idxj)   = F;
+        Iest(idxi,idxj,:)   = Irec;
+        Cest(idxi,idxj,:)   = Crec;
+        Cblock(idxi,idxj,:) = Cij;
 
         %fill the waitbar
         perc = (nBlocksj*(i-1) + j)/nBlocks;
@@ -260,13 +268,13 @@ end
 if showMultipleCurves
 
     %setup curves to display
-    idxiD = (1:blockSize(1):64);
-    idxjD = (1:blockSize(2):64);    
+    idxiD = (1:10:64);
+    idxjD = (1:10:64);    
     numi   = numel(idxiD)*numel(idxjD);
 
 
     %reshape everything
-    Ctr = Clow(idxiD,idxjD,:);
+    Ctr = Cblock(idxiD,idxjD,:);
     Ctr = reshape(Ctr,numi,[]);
     Ctr = Ctr';
 
@@ -279,7 +287,7 @@ if showMultipleCurves
     Irec = Irec';
 
 
-    REF = (CBFest(idxi,idxj)-CBF(idxi,idxj))./CBF(idxi,idxj);
+    REF = (CBFest(idxiD,idxjD)-CBF(idxiD,idxjD))./CBF(idxiD,idxjD);
     REF = mean(REF(:));
 
 
