@@ -14,6 +14,7 @@ classdef perfusion1c
       aifval = createaif(aiftype,timeline);
       reducetimesteps(pathload,stepred);
       createindicatorconv(prmin);
+      createindicatorconvav(prmin);
       [qmat,perfmat,perfmatn,phimat] = reconflow(prmin);
       [phimat] = porosity(Cmat,aifval,timeline);
       [qmat,perfmat,perfmatn] = reconflowclassic(Cmat,timeline,roi,aifval,prm);
@@ -35,7 +36,8 @@ classdef perfusion1c
       cell2tex(A,filename,n);
       [u] = transim(varargin);
       basename = struct2nameIndicator(prm,varargin);
-      qcc = convertFlowStagToCC(qmat)
+      qcc = convertFlowStagToCC(qmat);
+      F = maximumSlope(C,timeline,aif);
    end 
       
 end

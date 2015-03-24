@@ -31,7 +31,7 @@ trueFlow = 'perfusion';
 %which results to show?
 showFlowMaps       = 1;
 showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
-showSingleCurve    = 0;
+showSingleCurve    = 1;
 showPartition      = 0;
 
 
@@ -40,14 +40,14 @@ blockSize = [5,5];
 
 
 %setup oscillation index OI
-OI = .001; %determined experimentally for 'conv'.
-% OI = .01; %determined experimentally for 'PDE'
-% OI = 1; %determined experimentally for 'conv'.
+% OI = .001;
+OI = .01;
 
 
 %prepare downsampling of data (shorter runtime for SVD)
 %It will hold: Clow = Clow(:,:,1,1:step:k);
 step = 1;
+
 
 
 
@@ -307,21 +307,45 @@ end
 
 if showSingleCurve
     
+    %setup squeeze function
+    s = @(v) squeeze(v(:));    
+    
     %position of single curve
-    pos = [32,10];
+    pos = [52,52];
+    pos = randi(m(1),2,1);
+    
+    %get the stuff
+    corig = s(Cblock(pos(1),pos(2),:));
+    cest  = s(Cest(pos(1),pos(2),:));
+    iest  = s(s(Iest(pos(1),pos(2),:)));
+    
+    %double-check
+    tau   = timelinelow(2)-timelinelow(1);
+    ctest = conv(AIFlow,iest);
+    ctest = tau*ctest(1:k);
 
-    s = @(v) squeeze(v(:));
 
     figure(3);clf;
     set(3,'name','Comparison on single voxel');
 
-    subplot(1,2,1);
-    plot(timelinelow,s(Clow(pos(1),pos(2),:)),timelinelow,s(Cest(pos(1),pos(2),:)),'LineWidth',3);
-    title('Ctrue (blue) and reconstructed C (red) at position pos')
+    subplot(1,3,1);
+    colormap gray(512);
+    imagesc(squeeze(Cblock(:,:,20)))
+    axis image;
+    hold on;
+    plot(pos(1),pos(2),'xb')
+    hold off;
+    title(sprintf('Ctrue (blue) and reconstructed C (red) at position pos=%i,%i',pos(1),pos(2)))    
     
-    subplot(1,2,2);
-    plot(s(Iest(pos(1),pos(2),:)),'LineWidth',3);
+    subplot(1,3,2);
+    plot(timelinelow,corig,timelinelow,ctest,'LineWidth',3);
+    title(sprintf('Ctrue (blue) and reconstructed C (red) at position pos=%i,%i',pos(1),pos(2)))
+    
+    subplot(1,3,3);
+    plot(iest,'LineWidth',3);
     title('estimated I at position pos')
+    
+
 end
 
 

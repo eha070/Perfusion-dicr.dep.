@@ -17,12 +17,12 @@ close all;
 
 
 %setup which flow-calculation to use
-% indicatorcalc = 'conv';
-indicatorcalc = 'PDE';
+indicatorcalc = 'conv';
+% indicatorcalc = 'PDE';
 
 
 %setup oscillation index OI
-OI = .001; %for PDE;
+OI = .0005; %for PDE;
 % OI = 10; %for CONV;
 
 
@@ -118,6 +118,9 @@ fprintf('...done. Elapsed time: %1.3fs\n',toc);
 %do the deconvolution
 [CBFrec,Irec,Crec] = perfusion1c.linearDeconvolution(Cav,timelinelow,OI,U,S,V);
 
+%do the maximum slope technique
+CBFrecMS = perfusion1c.maximumSlope(Cav,timelinelow,AIFlow);
+
 
 
 %% show results
@@ -127,8 +130,12 @@ figure(1);clf;
 subplot(1,2,1);
 plot(timelinelow,Cav,timelinelow,Crec,'lineWidth',3);
 legend('true C','recovered C');
+ti = sprintf('Maximum-Slope: CBF=%1.4f',CBFrecMS*100*60);
+title(ti);
 
 subplot(1,2,2);
 plot(timelinelow,Irec,'lineWidth',3);
 ti = sprintf('Impuls-Response Function: CBF=%1.4f',CBFrec*100*60);
 title(ti);
+
+

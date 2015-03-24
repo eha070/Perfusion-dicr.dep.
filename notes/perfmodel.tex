@@ -450,7 +450,7 @@ This equation can be interpreted as follows:
 For a given starting-point $x_0$ and starting time $t_0$, Eq. \eqref{eq:Solt} gives the concentration at timepoint $t$ and location $x((t-t_0)/\phi)$. 
 Further assuming that $t$ is big enough that $x(t) \notin B_\epsilon$, we obtain $R(\frac{t-t_0}{\phi}) = \qi \cdot l$ for $l = (t_{max}-t_0)/\phi$ and $t_{max}$ is the timepoint at which $x(t)$ leaves the source-area $B_\epsilon$.
 \CHalert{I am still working on the following section:}
-This yields the following expression for $c(t)$
+This yields the following expression for $c(t)$:
 \[
 	c(t) = 
 \]
@@ -740,7 +740,15 @@ where $\overline{C}_{SF}(x_i)$ is the voxelwise average value of $C_{SF}$ across
 \end{figure}
 
 
-\section{Restoring the porosity and flow field using the classical model}
+\section{Restoring the porosity and flow field using deconvolution models}
+
+We tested the classical model \eqref{eq:Cconv1} to restore the flow fields of the two simulations SF and SC. 
+The deconvolution was performed using the block circulant approach described in [?] as well as the maximum slope technique [?].
+Errors 
+Results are displayed in Fig. \ref{fig:}
+
+
+
 
 For restoration of the perfusion flow field we apply a voxelwise deconvolution of (\ref{eq:Cconv2}). For deconvolution we used the regularized Levenberg-Marquardt least squares method (here referred to as method 'least-squares deconvolution') to solve the linear system $AR = C$, corresponding to a Tikhonov regularization with $\epsilon = 10^{-4}$. Additionally, we applied a circular SVD deconvolution which is considered the state-of-the-art method for deconvolution within perfusion applications (here referred to as the method 'circular SVD'). The results for reconstructed voxelwise perfusion and porosity are presented as percentage error
 $$

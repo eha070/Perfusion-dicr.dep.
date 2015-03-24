@@ -14,9 +14,9 @@ clc;
 close all;
 
 
-dynamicFlow = 0;
+dynamicFlow = 1;
 showMaps    = 1;
-showCurve   = 1;
+showCurve   = 0;
 
 
 %% load data
@@ -34,7 +34,7 @@ timeline = prm.timeline;
 
 
 %load convolution indicatorflow CmatConv
-fname = [foldername,'syntconv-createindicatorconv-' basename '.mat'];
+fname = [foldername,'syntconv-createindicatorconvav-' basename '.mat'];
 msg   = ['Loading ' fname];
 disp(msg);
 load(fname,'Cmat');
@@ -69,7 +69,7 @@ clearvars phimat perfmat qmat;
 %get main variables
 k    = numel(aifval);
 
-
+%% dynamic flow
 
 if dynamicFlow
 

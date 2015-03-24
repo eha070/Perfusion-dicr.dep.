@@ -1,7 +1,7 @@
 % ------------------------------------------------------------------------- 
-%                    E02_CircularDeconvolutionConvolution
+%                    E03_MaximumSlope
 % 
-% Circular deconvolution on one of the synthetic flow models.
+% Maximum Slope Method on one of the synthetic flow models.
 % 
 % 
 %                                          (c)Constantin Heck, 19-Nov-2014 
@@ -19,17 +19,15 @@ indicatorcalc = 'conv';
 
 
 %setup the flow to compare the results to
-trueFlow = 'perfusion';
-% trueFlow = 'averaging'; %do NOT use this for indicatorcalc='conv'
+% trueFlow = 'perfusion';
+trueFlow = 'averaging'; %do NOT use this for indicatorcalc='conv'
 
 
 
 %which results to show?
-showFlowMaps       = 1;
-showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
-showSingleCurve    = 1;
-writeImage         = 1;
-saveData           = 1;
+showFlowMaps = 1;
+writeImage   = 0;
+saveData     = 0;
 
 
 %setup area where to run the deconvolution
@@ -61,9 +59,9 @@ foldername        = './results/';
 pathloadFlow = [foldername,'synt-createflowTPFA-' basenameFlow '.mat'];
 switch indicatorcalc
     case 'pde'
-        pathload = [foldername,'synt-createindicatorpde-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
+        pathload = [foldername,'synt-createindicatorpde-' basenameindicator '-red-' num2str(prm.stepred) '.mat'];
     case 'conv'
-        pathload = [foldername,'syntconv-createindicatorconv-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
+        pathload = [foldername,'syntconv-createindicatorconv-' basenameindicator '-red-' num2str(prm.stepred) '.mat'];
     otherwise
         error('Method set for indicatorcalc unknown')
 end
@@ -110,47 +108,9 @@ mklow   = [m,klow];
 
 %% setup area where to run the deconvolution
 
-%downsmaple the data
-numi        = numel(idxi)*numel(idxj);
-
-
-%initialize variables to store results
-CBFest = zeros(m);
-Iest   = zeros([m,2*klow]);
-Cest   = zeros([m,2*klow]);
-
-%get deconvolution matrix
-deltaT  = timelineLow(2)-timelineLow(1);
-A       = perfusion1c.getCircularConvolutionMatrix(AIFlow,deltaT);
-fprintf('Starting SVD...');
-tic; [U,S,V] = svd(A);
-fprintf('...done. Elapsed time: %1.3fs\n',toc);
-
-
-%do the job voxelwise
-h = waitbar(0);
-for i = idxi;
-    for j = idxj;
-                    
-       
-        %do the deconvolution
-        Cij = squeeze(Clow(i,j,:));
-        [F,Irec,Crec] = perfusion1c.circularDeconvolution(Cij,timelineLow,OI,U,S,V);
+CBFest = perfusion1c.maximumSlope(Cmat,timelineLow,AIFlow);
+CBFest = reshape(CBFest,m);
         
-        %store results
-        CBFest(i,j) = F;
-        Iest(i,j,:) = Irec;
-        Cest(i,j,:) = Crec;
-        
-        %fill the waitbar
-        perc = (numel(idxj)*(i-min(idxi)) + j-min(idxj)+1 )/numi;
-        waitbar(perc,h,sprintf('Calculating...%2.2f%%...',perc*100));
-
-        
-    end
-end
-
-close(h);
 
 %% show results
 
@@ -197,71 +157,9 @@ if showFlowMaps
 end
 
 
-%% show some curves
-
-
-if showMultipleCurves
-
-    %setup curves to display
-    idxiD = (1:10:64);
-    idxjD = (1:10:64);    
-    numi   = numel(idxiD)*numel(idxjD);
 
 
 
-
-    Ctr = Clow(idxiD,idxjD,:);
-    Ctr = reshape(Ctr,numi,[]);
-    Ctr = Ctr';
-
-    Crec = Cest(idxiD,idxjD,:);
-    Crec = reshape(Crec,numi,[]);
-    Crec = Crec';
-
-    Irec = Iest(idxiD,idxjD,:);
-    Irec = reshape(Irec,numi,[]);
-    Irec = Irec';
-
-
-    REF = (CBFest(idxiD,idxjD)-CBF(idxiD,idxjD))./CBF(idxiD,idxjD);
-    REF = mean(REF(:));
-
-
-    figure(2);clf;
-
-    subplot(1,2,1);
-    plot(timelineHigh,Irec,'-r','lineWidth',3);
-    title(sprintf('Reconstructed I, Average RE in Flow=%1.4f',REF))
-
-    subplot(1,2,2);
-    plot(timelineLow,Ctr,'-b',timelineHigh,Crec,'-r','lineWidth',3);
-    title(sprintf('True C'))
-    
-end
-
-
-
-
-%% results for a single voxel
-
-if showSingleCurve
-    
-    %position of single curve
-    pos = [32,32];
-
-    s = @(v) squeeze(v(:));
-
-    figure(3);clf;
-    set(3,'name','Comparison on single voxel');
-
-    subplot(1,2,1);
-    plot(timelineLow,s(Clow(pos(1),pos(2),:)),timelineHigh,s(Cest(pos(1),pos(2),:)),'LineWidth',3);
-    title('Ctrue (blue) and reconstructed C (red) at position pos')
-    
-    subplot(1,2,2);
-    plot(timelineHigh,s(Iest(pos(1),pos(2),:)),'LineWidth',3);
-    title('estimated I at position pos')
-end
 
 
 
@@ -294,10 +192,9 @@ if writeImage
     fbase = ['createindicator',indicatorcalc,'-',basenameindicator];
 
     %save image    
-    fpicname = ['./figs/','recCirc-',fbase,'-RE-Flow.eps'];
+    fpicname = ['./figs/','recMS-',fbase,'-RE-Flow.eps'];
     eval(['export_fig ',fpicname,' -transparent']);
-   
-    
+        
 end
 
 
@@ -311,7 +208,7 @@ if saveData
     fbase = ['createindicator',indicatorcalc,'-',basenameindicator];
     
     %save files
-    fmatname = ['./results/','recCirc-',fbase,'.mat'];
+    fmatname = ['./results/','recMS-',fbase,'.mat'];
     
     fprintf('Saving Results...');
     tic;
