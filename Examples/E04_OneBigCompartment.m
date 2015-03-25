@@ -1,7 +1,7 @@
 % ------------------------------------------------------------------------- 
-%                    E03_LinearDeconvolution
+%                    E04_OneBigCompartment
 % 
-% Cirvular deconvolution on the synthetic flow model, set up with
+% Circular deconvolution on the synthetic flow model, set up with
 % exponential residue functions
 % 
 % 
@@ -17,8 +17,8 @@ close all;
 
 
 %setup which flow-calculation to use
-indicatorcalc = 'conv';
-% indicatorcalc = 'PDE';
+% indicatorcalc = 'conv';
+indicatorcalc = 'PDE';
 
 
 %setup oscillation index OI
@@ -96,9 +96,6 @@ mklow   = [m,klow];
 Cav = reshape(Clow,n,k);
 Cav = mean(Cav,1)';
 
-%add some noise
-% Cav = Cav(:) + 1e-8*randn(k,1);
-
 
 
 
@@ -139,3 +136,42 @@ ti = sprintf('Impuls-Response Function: CBF=%1.4f',CBFrec*100*60);
 title(ti);
 
 
+
+%% median error
+CBFtr = mean(CBF(:));
+
+RECirc = (CBFrec-CBFtr)./CBFtr*100;
+REMS   = (CBFrecMS-CBFtr)./CBFtr*100;
+
+fprintf('RE in Circ: \t RE=%1.2f%% \n',RECirc);
+fprintf('RE in MS: \t RE=%1.2f%% \n',REMS);
+
+
+%% 
+saveImage = 1;
+
+if saveImage
+    
+    figure(1);clf;
+    plot(timelinelow,Irec,'lineWidth',3);
+    xlabel('Time (s)')
+%     ylabel('Concentration (mmol/mm^3)')
+    legend('I')
+    set(gca,'FontSize',15)
+    
+    export_fig ./figs/Irec.eps -transparent
+    
+
+    figure(1);clf;
+    plot(timelinelow,Cav,timelinelow,Crec,'lineWidth',3);
+    xlabel('Time (s)')
+    ylabel('Concentration (mmol/mm^3)')
+    legend('C','Model Approximation of C')
+    set(gca,'FontSize',15)
+
+    export_fig ./figs/C-and-Crec.eps -transparent
+     
+end
+    
+    
+    

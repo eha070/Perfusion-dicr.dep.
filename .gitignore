@@ -13,3 +13,6 @@
 
 #constantin saves his commit-messages in this file
 commit_msg
+
+#ignore converted-to.pdf files
+*converted-to.pdf

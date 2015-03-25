@@ -34,7 +34,7 @@ timeline = prm.timeline;
 
 
 %load convolution indicatorflow CmatConv
-fname = [foldername,'syntconv-createindicatorconvav-' basename '.mat'];
+fname = [foldername,'syntconv-createindicatorconv-' basename '.mat'];
 msg   = ['Loading ' fname];
 disp(msg);
 load(fname,'Cmat');
