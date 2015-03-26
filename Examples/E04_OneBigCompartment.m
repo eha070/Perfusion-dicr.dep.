@@ -17,13 +17,13 @@ close all;
 
 
 %setup which flow-calculation to use
-% indicatorcalc = 'conv';
-indicatorcalc = 'PDE';
+indicatorcalc = 'conv';
+% indicatorcalc = 'PDE';
 
 
 %setup oscillation index OI
-OI = .0005; %for PDE;
-% OI = 10; %for CONV;
+% OI = .0005; %for PDE;
+OI = .001; %for CONV;
 
 
 %prepare downsampling of data (shorter runtime for SVD)
@@ -148,7 +148,7 @@ fprintf('RE in MS: \t RE=%1.2f%% \n',REMS);
 
 
 %% 
-saveImage = 1;
+saveImage = 0;
 
 if saveImage
     

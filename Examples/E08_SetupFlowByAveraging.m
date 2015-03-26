@@ -6,13 +6,13 @@ close all;
 prm = settings;
 
 %create indicatorconv
-perfusion1c.createindicatorconvav(prm);
+perfusion1c.createindicatorconv(prm);
 
 %reduce timesteps
 aiftype = {'gamma'};
 stepred = [25,100,500];
 basenameindicator = perfusion1c.providenameindicator(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T);
-pathload = ['results/syntconv-createindicatorconvav' '-' basenameindicator '.mat'];                
+pathload = ['results/syntconv-createindicatorconv' '-' basenameindicator '.mat'];                
 
 for j = 1:numel(stepred);
     perfusion1c.reducetimesteps(pathload,stepred(j));        

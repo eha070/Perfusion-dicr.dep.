@@ -48,12 +48,12 @@ if numel(dim3) < 3
 end;
 dim = [dim3,ntime];
 
-% find time to peak map
-[tilde,delay] = max(E.Cmat,[],4);
-[tilde,delayaif] = max(E.aifval);
-% account for the delay in the true concentration map field as wel
-delay = delay - delayaif;
-% delay = zeros(dim3);
+% % find time to peak map
+% [tilde,delay] = max(E.Cmat,[],4);
+% [tilde,delayaif] = max(E.aifval);
+% % account for the delay in the true concentration map field as wel
+% delay = delay - delayaif;
+delay = zeros(dim3);
 
 clear E;
 
