@@ -17,8 +17,8 @@ close all;
 
 
 %setup which flow-calculation to use
-% indicatorcalc = 'conv';
-indicatorcalc = 'PDE';
+indicatorcalc = 'conv';
+% indicatorcalc = 'PDE';
 
 
 
@@ -37,7 +37,7 @@ showPartition      = 0;
 
 
 %setup size of blocks to run the deconvolution on
-blockSize = 1*[1,1];
+blockSize = 10*[1,1];
 
 
 %setup oscillation index OI
@@ -374,7 +374,7 @@ if writeImage
     if ~exist(fname,'file')
         save(fname,'CBF','CBFCirc');
     else
-        save(fname,'CBFCirc','-append');
+        save(fname,'CBFCirc','CBF','-append');
     end
     
 

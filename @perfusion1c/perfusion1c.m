@@ -38,6 +38,8 @@ classdef perfusion1c
       basename = struct2nameIndicator(prm,varargin);
       qcc = convertFlowStagToCC(qmat);
       F = maximumSlope(C,timeline,aif);
+      CBV = cbvEstimation(C,timeline,aif);
+
    end 
       
 end

@@ -11,7 +11,7 @@
 
 
 
-clc;
+clc; 
 close all;
 
 
@@ -262,7 +262,7 @@ if writeImage
     if ~exist(fname,'file')
         save(fname,'CBF','CBFMS');
     else
-        save(fname,'CBFMS','-append');
+        save(fname,'CBFMS','CBF','-append');
     end
     
 

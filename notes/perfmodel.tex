@@ -78,6 +78,8 @@
 \newcommand{\CHalert}[1]{\textcolor{red}{CH: #1}}
 \newcommand*\diff{\mathop{}\!\mathrm{d}}
 
+\DeclareSIQualifier{\hundret}{100}
+
 
 \begin{document}
 
@@ -746,9 +748,37 @@ where $\overline{C}_{SF}(x_i)$ is the voxelwise average value of $C_{SF}$ across
 \end{figure}
 
 
-\section{Restoring the porosity and flow field using deconvolution models}
+\subsection{The maximum-slope model}
+The maximum-slope model is the simplest model to recover perfusion.
+We follow [?] in its the derivation.
+Given a tissue-curve $C(t)$ and an arterial input function $c_a(t)$ as well as a venous output function $c_v(t)$, it is assumed that for any given timepoint the following relationship holds is fulfilled:
+\[
+	C(t+\Delta t) - C(t) \approx P \cdot \Delta t \big(c_a(t) - c_v(t + \Delta t)\big).
+\]
+Here $\Delta t(c_a(t) - c_v(t + \Delta t))$ is the total amount contrast-agent introduces in time $\Delta t$ and $C(t+\Delta t) - C(t)$ is the amount of contrast agent which has been measured to pass through the system.
+The Maximum-Slope model assumes that these two values are proportional with proportionality constant $P$, the perfusion. Rearranging and letting $\Delta t \to 0$ yields:
+\[
+	P = \frac{C'(t)}{c_a(t) - c_v(t)}.
+\]
+We now assume that we are in an early uptake-phase, where no contrast agent is leaving the system yet. 
+Hence it holds approximately
+\[
+	P = \frac{C'(t)}{c_a(t)} \iff Pc_a(t) = C'(t).
+\]
+Differentiating this equation with respect to $t$ yields:
+\[
+	P c_a'(t) = C''(t).
+\]
+Since this equation is fulfilled for every timepoint $t$, it is fulfilled especially for timepoint $t_{\mathrm max}:=\mathrm{argmax}_{t}c_a(t)$. 
+Since at this point it holds that $c_a'(t_{\mathrm max}) = 0$ and hence also $C''(t_{\mathrm max})=0$, we derive
+\begin{equation}\label{eq:MS}
+	P = \frac{\max_{t}C'(t)}{\max_{t}c_a(t)}.
+\end{equation}
 
-We tested the the convolution based classical model \eqref{eq:Cconv1} as well as maximum-slope model (MS, [eq:?]) for their capability to recover the perfusion values.
+
+\section{Restoring the porosity and flow field using different models}
+
+We tested the the convolution based classical model \eqref{eq:Cconv1} as well as maximum-slope model (MS, \eqref{eq:MS}) for their capability to recover the perfusion values.
 The deconvolution was performed using the block circulant SVD (bSVD) approach described in [?], which comes with a time-invariance with respect to arrival times.
 The success of the restoration was measured in terms of the relative error of the recovered perfusion with respect to the true perfusion
 \[
@@ -765,19 +795,24 @@ These recovered gaussian-like functions seem to be describing dispersion effects
 
 
 \begin{table}[H]
-	\caption{Results of the restoration with median relative errors}
+	\caption{Results of the perfusion restoration with median relative errors in percent.}
 	\centering
-		\begin{tabular}{c c c c c c }
-			 &Model & \multicolumn{4}{c}{Block Size}\\
-			 & & (1,1) & (5,5) & (10,10) & entire domain \\
+		\begin{tabular}{l c c c c c }
+			& Model & \multicolumn{4}{c}{Block Size}\\
+			 					 			& 		& (1,1) 		& (5,5) 		& (10,10) 		& entire domain \\
 			\toprule
-			\multirow{2}{*}{SFD} & MS & $170.09\%$ & $165.03\%$ & $158.57\%$ & $2.65\%$ \\
-			 & bSVD & $859.06\%$ & $768.58\%$ & $664.84\%$ & $-1.25\%$ \\
-			 \multirow{2}{*}{SCD} & MS & $-23.20\%$ & $-24.26\%$ & $-25.75\%$ & $54.78\%$ \\
-			 & bSVD & $2.43\%$ & $-4.27\%$ & $-8.80\%$ & $-63.92\%$ \\
+			\multirow{2}{*}{SFD: Perfusion} & MS 	& $170.09$ 	& $165.03$ 	& $158.57$ 		& $2.65$ \\
+			 					 	   		& bSVD  & $859.06$ 	& $768.58$ 	& $664.84$ 		& $-1.25$ \\
+			\multirow{2}{*}{SCD: Perfusion} & MS 	& $-23.20$ 	& $-24.26$ 	& $-25.75$ 		& $37.96$ \\
+			 					 			& bSVD  & $2.43$ 		& $-4.27$ 	& $-8.80$ 	& $20.72$ \\
+			\midrule											
+			SFD: CBV & & $4.37\cdot10^{-5}$      & $4.37\cdot10^{-5}$		& $4.37\cdot10^{-5}$		& $4.37\cdot10^{-5}$ \\											
+			SCD: CBV & & $1.94\cdot10^{-2}$      & $1.93\cdot10^{-2}$		& $2.12\cdot10^{-2}$		& $1.13$ 			
 		\end{tabular}
 	\label{tab:resultsSim}
 \end{table}
+
+
 
 \newcommand{\inc}[1]{\includegraphics[width = .3\textwidth]{./figs/#1}}
 \newcommand{\rbox}[2]{\rotatebox{90}{\hspace{#1}\mbox{\large #2}}}
@@ -810,7 +845,7 @@ These recovered gaussian-like functions seem to be describing dispersion effects
 	\caption{Deconvolution results}
 	\centering
 		\begin{tabular}{c c c}
-			 \rbox{5ex}{Entire Domain}& \inc{C-and-Crec.eps} & \inc{Irec.eps} \\
+			 \rbox{0ex}{Entire Domain, SFD} & \inc{C-and-Crec.eps} & \inc{Irec.eps} \\
 			 \rbox{2ex}{Inside the capillary bed, SFD}& \inc{C-and-Capprox-cap.eps} & \inc{IR-cap.eps} \\			 
 			 \rbox{2ex}{Inside the capillary bed, SCD}& \inc{C-and-Crec-conv.eps} & \inc{Irec-conv.eps}			 
 		\end{tabular}

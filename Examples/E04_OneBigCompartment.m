@@ -17,13 +17,13 @@ close all;
 
 
 %setup which flow-calculation to use
+% indicatorcalc = 'conv';
 indicatorcalc = 'conv';
-% indicatorcalc = 'PDE';
 
 
 %setup oscillation index OI
-% OI = .0005; %for PDE;
-OI = .001; %for CONV;
+OI = .0005; %for PDE;
+% OI = .001; %for CONV;
 
 
 %prepare downsampling of data (shorter runtime for SVD)
@@ -70,6 +70,7 @@ msg = ['Loading ' pathloadFlow];
 disp(msg);
 E = load(pathloadFlow);
 CBF = E.perfmat;
+CBV = E.phimat;
 
 %clear memory
 clearvars E D;
@@ -118,6 +119,8 @@ fprintf('...done. Elapsed time: %1.3fs\n',toc);
 %do the maximum slope technique
 CBFrecMS = perfusion1c.maximumSlope(Cav,timelinelow,AIFlow);
 
+%get CBV
+CBVrec = perfusion1c.cbvEstimation(Cav,timelinelow,AIFlow);
 
 
 %% show results
@@ -137,39 +140,44 @@ title(ti);
 
 
 
-%% median error
-CBFtr = mean(CBF(:));
 
-RECirc = (CBFrec-CBFtr)./CBFtr*100;
-REMS   = (CBFrecMS-CBFtr)./CBFtr*100;
+
+%% median errors
+CBFtr = mean(CBF(:));
+CBVtr = mean(CBV(:));
+
+RECirc = abs(CBFrec-CBFtr)./CBFtr*100;
+REMS   = abs(CBFrecMS-CBFtr)./CBFtr*100;
+RECBV  = abs(CBVrec-CBVtr)./CBVtr*100;
 
 fprintf('RE in Circ: \t RE=%1.2f%% \n',RECirc);
 fprintf('RE in MS: \t RE=%1.2f%% \n',REMS);
+fprintf('RE in CBV: \t RE=%1.2e%% \n',RECBV);
 
 
 %% 
-saveImage = 0;
+saveImage = 1;
 
 if saveImage
     
-    figure(1);clf;
+    figure(2);clf;
     plot(timelinelow,Irec,'lineWidth',3);
     xlabel('Time (s)')
 %     ylabel('Concentration (mmol/mm^3)')
     legend('I')
     set(gca,'FontSize',15)
     
-    export_fig ./figs/Irec.eps -transparent
+    export_fig ./figs/Irec-conv.eps -transparent
     
 
-    figure(1);clf;
+    figure(3);clf;
     plot(timelinelow,Cav,timelinelow,Crec,'lineWidth',3);
     xlabel('Time (s)')
     ylabel('Concentration (mmol/mm^3)')
     legend('C','Model Approximation of C')
     set(gca,'FontSize',15)
 
-    export_fig ./figs/C-and-Crec.eps -transparent
+    export_fig ./figs/C-and-Crec-conv.eps -transparent
      
 end
     
