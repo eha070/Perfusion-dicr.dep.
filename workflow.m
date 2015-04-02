@@ -6,19 +6,19 @@ perfusion1c.createflowTPFA;
 
 % create the timelapse of indicator
 clear prmin;
-aiftype = {'parker','gamma'};
-% aiftype = {'gamma'};
+% aiftype = {'parker','gamma'};
+aiftype = {'gamma'};
 for i = 1 : numel(aiftype)
     prmin.aiftype = aiftype{i};
     perfusion1c.createindicatorpde(prmin);
 end;
 
 %%
-
+%{
 % Create the convolution flow
 clear prmin;
-aiftype = {'parker','gamma'};
-% aiftype = {'gamma'};
+% aiftype = {'parker','gamma'};
+aiftype = {'gamma'};
 for i = 1 : numel(aiftype)
     prmin.aiftype = aiftype{i};
 
@@ -26,7 +26,7 @@ for i = 1 : numel(aiftype)
     perfusion1c.createindicatorconv(prmin);
 
 end;
-
+%}
 
 %%
 
@@ -36,8 +36,8 @@ end;
 [prm,temp] = settings;
 
 clear prmin;
-aiftype = {'parker','gamma'};
-% aiftype = {'gamma'};
+% aiftype = {'parker','gamma'};
+aiftype = {'gamma'};
 stepred = [25,100,500];
 for i = 1 : numel(aiftype)
     for j = 1 : numel(stepred)
@@ -46,11 +46,12 @@ for i = 1 : numel(aiftype)
         basenameindicator = perfusion1c.providenameindicator(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T);
         pathload = ['results/synt-createindicatorpde' '-' basenameindicator '.mat'];                
         perfusion1c.reducetimesteps(pathload,stepred(j));
-                
+        
+        %{
         basenameindicator = perfusion1c.providenameindicator(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T);
         pathload = ['results/syntconv-createindicatorconv' '-' basenameindicator '.mat'];                
         perfusion1c.reducetimesteps(pathload,stepred(j));
-       
+        %}
         
     end;
 end;

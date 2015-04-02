@@ -1,20 +1,22 @@
 % ------------------------------------------------------------------------- 
-%                    E02_CircularDeconvolutionConvolution
+%                    E03_LinearDeconvolution
 % 
-% Circular deconvolution on one of the synthetic flow models.
+% Linear deconvolution on one of the synthetic flow models.
+% 
 % 
 % 
 %                                          (c)Constantin Heck, 19-Nov-2014 
 %                                                http://mic.uni-luebeck.de
 % ------------------------------------------------------------------------- 
 
+
 clear;
 clc;
 close all;
 
 %setup which flow-calculation to use
-indicatorcalc = 'conv';
-% indicatorcalc = 'pde';
+% indicatorcalc = 'conv';
+indicatorcalc = 'PDE';
 
 
 
@@ -27,9 +29,7 @@ trueFlow = 'perfusion';
 %which results to show?
 showFlowMaps       = 1;
 showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
-showSingleCurve    = 1;
-writeImage         = 1;
-saveData           = 1;
+showSingleCurve    = 0;
 
 
 %setup area where to run the deconvolution
@@ -38,8 +38,9 @@ idxj  = (1:64);
 
 
 %setup oscillation index OI
-OI = .01; %probably needs to be tuned
-
+OI = .5; %determined experimentally for 'conv'.
+% OI = .001; %determined experimentally for 'PDE'
+% OI = .01; %determined experimentally for 'PDE'
 
 
 %prepare downsampling of data (shorter runtime for SVD)
@@ -48,19 +49,21 @@ step = 1;
 
 
 
+
 %% load data
 
 %settings
 prm               = settings;
+prm.stepred       = 25;
 basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
 basenameFlow      = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
 foldername        = './results/';
 
 
 %setup paths
-pathloadFlow = [foldername,'synt-createflowTPFA-' basenameFlow '.mat'];
+pathloadFlow = ['synt-createflowTPFA-' basenameFlow '.mat'];
 switch indicatorcalc
-    case 'pde'
+    case 'PDE'
         pathload = [foldername,'synt-createindicatorpde-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
     case 'conv'
         pathload = [foldername,'syntconv-createindicatorconv-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
@@ -84,7 +87,21 @@ timeline = D.prm.timeline;
 msg = ['Loading ' pathloadFlow];
 disp(msg);
 E = load(pathloadFlow);
-CBF = E.perfmat;
+
+switch trueFlow
+    case 'perfusion'
+        CBF = E.perfmat; 
+        CBF(1,1) = 2*CBF(1,1);
+        CBF(end,end) = 2*CBF(end,end);
+        
+    case 'averaging'
+        qcc = perfusion1c.convertFlowStagToCC(E.qmat);
+        CBF = .5*(qcc{1} + qcc{2});
+
+    otherwise
+        error('Value of trueFlow not right');
+end
+
 
 %clear memory
 clearvars E D;
@@ -98,11 +115,10 @@ k       = size(Cmat,3); %number of timepoints
 mk      = [m,k]; %...
 
 %do the downsampling
-idxsamp      = (1:step:k);
-Clow         = squeeze(Cmat(:,:,idxsamp));
-timelineLow  = timeline(idxsamp);
-timelineHigh = linspace(timeline(1),timeline(end),2*k);
-AIFlow       = AIF(idxsamp);
+idxsamp     = (1:step:k);
+Clow        = squeeze(Cmat(:,:,idxsamp));
+timelinelow = timeline(idxsamp);
+AIFlow      = AIF(idxsamp);
 
 klow    = numel(idxsamp);
 mklow   = [m,klow];
@@ -116,16 +132,15 @@ numi        = numel(idxi)*numel(idxj);
 
 %initialize variables to store results
 CBFest = zeros(m);
-Iest   = zeros([m,2*klow]);
-Cest   = zeros([m,2*klow]);
+Iest   = zeros([m,klow]);
+Cest   = zeros([m,klow]);
 
 %get deconvolution matrix
-deltaT  = timelineLow(2)-timelineLow(1);
-A       = perfusion1c.getCircularConvolutionMatrix(AIFlow,deltaT);
+deltaT  = timelinelow(2)-timelinelow(1);
+A       = perfusion1c.getLinearConvolutionMatrix(AIFlow,deltaT);
 fprintf('Starting SVD...');
 tic; [U,S,V] = svd(A);
 fprintf('...done. Elapsed time: %1.3fs\n',toc);
-
 
 %do the job voxelwise
 h = waitbar(0);
@@ -135,7 +150,7 @@ for i = idxi;
        
         %do the deconvolution
         Cij = squeeze(Clow(i,j,:));
-        [F,Irec,Crec] = perfusion1c.circularDeconvolution(Cij,timelineLow,OI,U,S,V);
+        [F,Irec,Crec] = perfusion1c.linearDeconvolution(Cij,timelinelow,OI,U,S,V);
         
         %store results
         CBFest(i,j) = F;
@@ -152,24 +167,10 @@ end
 
 close(h);
 
-
-
-%% setup integration vector
-
-%get vector for integration
-e  = timeline(2:end)-timeline(1:end-1);
-Av = spdiags(1/2*ones(k,2),[0,1],k-1,k);
-e  = e'*Av; e=e(:);
-
-
-
-
-
-
 %% show results
 
-
 if showFlowMaps
+    
     %setup "segmented" Flow CBFseg
     seg = zeros(m);
     seg(idxi,idxj) = 1;
@@ -181,7 +182,7 @@ if showFlowMaps
     cmax = max(tmp);
 
     %setup 
-    REMap = abs(CBFest-CBFseg)./CBFseg;
+    REMap = abs((CBFest./10)-CBFseg)./CBFseg;
 
     %show flow
     figure(1);clf;
@@ -191,39 +192,38 @@ if showFlowMaps
 
     subplot(1,3,1);
     imagesc(CBFseg*100*60);
-    caxis([cmin,cmax]);
+%     caxis([cmin,cmax]);
     axis image;
     title('True flow (ml/min/100ml)')
 
     subplot(1,3,2);
-    imagesc(CBFest*100*60);
-    caxis([cmin,cmax]);
+    imagesc(CBFest*100*60*9.6497);
+%     caxis([cmin,cmax]);
     axis image;
     title('Estimated flow (ml/min/100ml)')
 
     %show division
-    subplot(1,3,3);
-    imagesc(REMap);
-    caxis([0,1]);
+%     subplot(1,3,3);
+    figure(2); colormap jet(512);
+    imagesc(REMap*100);
+    caxis([0,100]);
     axis image;
-    title('Relative Error in Flows |Fest-Ftrue|/Ftrue')
+    title('Relative Error in Perfusion in percent: abs(Pest*0.1-Ptrue)/Ptrue*100%')
+    colorbar
 
 end
 
-
 %% show some curves
-
 
 if showMultipleCurves
 
     %setup curves to display
-    idxiD = (1:10:64);
-    idxjD = (1:10:64);    
+    idxiD = (30:35);
+    idxjD = (30:35);    
     numi   = numel(idxiD)*numel(idxjD);
 
 
-
-
+    %reshape everything
     Ctr = Clow(idxiD,idxjD,:);
     Ctr = reshape(Ctr,numi,[]);
     Ctr = Ctr';
@@ -244,24 +244,21 @@ if showMultipleCurves
     figure(2);clf;
 
     subplot(1,2,1);
-    plot(timelineHigh,Irec,'-r','lineWidth',3);
+    plot(timelinelow,Irec);
     title(sprintf('Reconstructed I, Average RE in Flow=%1.4f',REF))
 
     subplot(1,2,2);
-    plot(timelineLow,Ctr,'-b',timelineHigh,Crec,'-r','lineWidth',3);
-    title(sprintf('True C'))
-    
+    plot(timelinelow,Ctr,'-b',timelinelow,Crec,'-r');
+    title(sprintf('True C in blue, reconstructed C in red'))
+
 end
-
-
-
 
 %% results for a single voxel
 
 if showSingleCurve
     
     %position of single curve
-    pos = [32,32];
+    pos = [32,10];
 
     s = @(v) squeeze(v(:));
 
@@ -269,67 +266,10 @@ if showSingleCurve
     set(3,'name','Comparison on single voxel');
 
     subplot(1,2,1);
-    plot(timelineLow,s(Clow(pos(1),pos(2),:)),timelineHigh,s(Cest(pos(1),pos(2),:)),'LineWidth',3);
+    plot(timelinelow,s(Clow(pos(1),pos(2),:)),timelinelow,s(Cest(pos(1),pos(2),:)),'LineWidth',3);
     title('Ctrue (blue) and reconstructed C (red) at position pos')
     
     subplot(1,2,2);
-    plot(timelineHigh,s(Iest(pos(1),pos(2),:)),'LineWidth',3);
+    plot(s(Iest(pos(1),pos(2),:)),'LineWidth',3);
     title('estimated I at position pos')
-end
-
-
-
-%% results for a single voxel
-
-if writeImage
-
-    %setup scaling
-    tmp  = 100*60*[CBF(:);reshape(CBFest(CBFest~=0),[],1)];
-
-    %setup Relative Error
-    REMap = 100*abs(CBFest-CBFseg)./CBFseg;
-    
-    %setup figure
-    figure(4);clf;
-    imagesc(REMap);
-    colormap jet(512);
-    axis image;
-    axis off;
-    caxis([0,100]);
-    colorbar;    
-    
-    
-    %output RE
-    medianRE = median(REMap(:));
-    fprintf('Median RE: \t \t %1.2f%% \n',medianRE);
-    
-    %setup base filename
-    basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
-    fbase = ['createindicator',indicatorcalc,'-',basenameindicator];
-
-    %save image    
-    fpicname = ['./figs/','recCirc-',fbase,'-RE-Flow.eps'];
-    eval(['export_fig ',fpicname,' -transparent']);
-   
-    
-end
-
-
-
-%% save the data
-
-if saveData
-    
-    %setup base filename
-    basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
-    fbase = ['createindicator',indicatorcalc,'-',basenameindicator];
-    
-    %save files
-    fmatname = ['./results/','recCirc-',fbase,'.mat'];
-    
-    fprintf('Saving Results...');
-    tic;
-    save(fmatname);
-    fprintf('...done. Elapsed time: %1.2fs \n',toc);
-    
 end

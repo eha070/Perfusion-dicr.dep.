@@ -17,8 +17,8 @@ close all;
 
 
 %setup which flow-calculation to use
-indicatorcalc = 'conv';
-% indicatorcalc = 'PDE';
+% indicatorcalc = 'conv';
+indicatorcalc = 'PDE';
 
 
 
@@ -32,12 +32,12 @@ trueFlow = 'perfusion';
 showFlowMaps       = 1;
 showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
 showSingleCurve    = 1;
-writeImage         = 1;
+writeData          = 1;
 showPartition      = 0;
 
 
 %setup size of blocks to run the deconvolution on
-blockSize = 10*[1,1];
+blockSize = 1*[1,1];
 
 
 %setup oscillation index OI
@@ -358,7 +358,7 @@ end
 
 %% write image to results
 
-if writeImage
+if writeData
     
     
     
