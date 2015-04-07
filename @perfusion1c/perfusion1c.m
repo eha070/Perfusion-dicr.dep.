@@ -5,7 +5,6 @@ classdef perfusion1c
       createflowTPFA;
       [prm,Qmat] = settings;
       [pmat,qmat] = syntTPFA(Kmat,Qmat,prm);
-      [pmat,qmat] = syntTPFALap(Kmat,Qmat,prm);
       [perfmat,perfmatn] = flux2perf(qmat,lenim,Qmat,h);
       basenameflow = providenameflow(phiopt,Kopt,dim);
       basenameindicator = providenameindicator(phiopt,Kopt,dim,aiftype,T);

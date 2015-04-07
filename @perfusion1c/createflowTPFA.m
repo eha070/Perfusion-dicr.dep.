@@ -120,7 +120,6 @@ end;
 % find the pressure field and flux
 % [pmat,Fmat] = perfusion1c.syntTPFAsimp(Kmat,Fmat,prm);
 [pmat,qmat] = perfusion1c.syntTPFA(Kmat,Fmat,prm);
-% [pmat,qmat] = perfusion1c.syntTPFALap(Kmat,Fmat,prm);
 % Fmat{1} = Fmat{1}/100;
 % Fmat{2} = Fmat{2}/100;
 
@@ -151,7 +150,7 @@ disp(msg);
 % Fmat{2}
 % pause
 
-makelenmat = 1;
+makelenmat = 0;
 if makelenmat == 1
     msg = ['Making and saving lenmat'];
     disp(msg);

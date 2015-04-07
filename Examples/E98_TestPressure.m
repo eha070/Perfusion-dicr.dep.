@@ -1,5 +1,5 @@
 % ------------------------------------------------------------------------- 
-%                               E98_TestErlendsPressure
+%                               E98_TestPressure
 % 
 % Checks, if p fulfills the relationship -K/mu \Delta p = Q
 % 

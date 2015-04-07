@@ -1,6 +1,4 @@
 %%
-
-% clear;
 % create the flow
 perfusion1c.createflowTPFA;
 
