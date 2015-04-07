@@ -11,7 +11,7 @@ dim = prm.dim;
 ndim = numel(dim);
 nvox = prod(dim);
 h = prm.h;
-voxelvol = prod(h);
+% voxelvol = prod(h);
 
 msg = ['This is ' mfilename ' using settings'];
 disp(msg);

@@ -10,11 +10,13 @@ dim = prm.dim;
 % value of K in the range of 1e-6
 if isequal(prm.Kopt,'flat')
     % K = 5e-6*ones(dim);
-    n = 50*ones(dim);
+    % n = 50*ones(dim);
     % r = 5*1e-3*ones(dim);
     % K = (1/24)*pi*n.*r.^4;
     % K = 5e-6*ones(dim);
-    K = 5e-6*ones(dim);
+    
+    % Units in m^2
+    K = 5e-6*ones(dim)*1e-6;
     Kmat(:,:,:,1) = K;
     Kmat(:,:,:,2) = K;
     Kmat(:,:,:,3) = K;
@@ -174,7 +176,7 @@ end;
 % test the inflow and the estimated perfusion values to see that they agree
 % with each other
 totperf = sum(perfmat(:))*prm.voxelvol;
-msg = ['Total (unnormalized) perfusion (ml/s): ' num2str(totperf)];
+msg = ['Total (unnormalized) perfusion (m^3/s): ' num2str(totperf)];
 disp(msg);
 msg = ['Mean (normalized) perfusion (ml/min/100ml): ' num2str(mean(perfmatn(:)))];
 disp(msg);
