@@ -266,7 +266,7 @@ Equation (\ref{eq:conteq2}) is used for numerical simulations and (\ref{eq:conte
 %\end{equation}
 %for $v = (q,\phi)$, the spatio-temporal gradient $D = (\nabla,\partial/\partial t)$ and the right hand side $f = (c_{so}-c)Q_{so}$.
 
-\subsection{Conversion of flux into perfusion}
+\subsection{Conversion of flux into perfusion}\label{subsec:FluxToPerfusion}
 The SFM uniquely determines the flux field $q(x)$. However, it is not obvious how to transform a flux field into a scalar perfusion field $P(x)$, a widely used parameter in the classical field of compartment modelling. There are at least two obvious differences between $q$ and $P$. First, the flux is a vector field and the perfusion is a scalar field. Second, the flux relates to a surface area and the perfusion relates to a volume. Thus, these to quantities are strictly, mathematically different but still conceptually related. In the following we describe a method for converting flux into perfusion.
 
 The classical understanding of perfusion is the amount of blood feeding a tissue volume per unit time. Thus, the perfusion $P$ has the units $mm^3/s/mm^3$. It is common to scale this quantity into the normalized perfusion $P_n(x)$ with units $ml/min/100ml$. 
@@ -751,11 +751,11 @@ where $\overline{C}_{SF}(x_i)$ is the voxelwise average value of $C_{SF}$ across
 \subsection{The maximum-slope model}
 The maximum-slope model is the simplest model to recover perfusion.
 We follow [?] in its the derivation.
-Given a tissue-curve $C(t)$ and an arterial input function $c_a(t)$ as well as a venous output function $c_v(t)$, it is assumed that for any given timepoint the following relationship holds is fulfilled:
+Given a tissue-curve $C(t)$, an arterial input function $c_a(t)$ as well as a venous output function $c_v(t)$, it is assumed that for any given timepoint the following relationship is fulfilled:
 \[
 	C(t+\Delta t) - C(t) \approx P \cdot \Delta t \big(c_a(t) - c_v(t + \Delta t)\big).
 \]
-Here $\Delta t(c_a(t) - c_v(t + \Delta t))$ is the total amount contrast-agent introduces in time $\Delta t$ and $C(t+\Delta t) - C(t)$ is the amount of contrast agent which has been measured to pass through the system.
+Here $\Delta t(c_a(t) - c_v(t + \Delta t))$ is the (approximate) total amount contrast-agent introduces in time $\Delta t$ and $C(t+\Delta t) - C(t)$ is the (approximate) amount of contrast agent which has been measured to pass through the system.
 The Maximum-Slope model assumes that these two values are proportional with proportionality constant $P$, the perfusion. Rearranging and letting $\Delta t \to 0$ yields:
 \[
 	P = \frac{C'(t)}{c_a(t) - c_v(t)}.
@@ -782,7 +782,7 @@ We tested the the convolution based classical model \eqref{eq:Cconv1} as well as
 The deconvolution was performed using the block circulant SVD (bSVD) approach described in [?], which comes with a time-invariance with respect to arrival times.
 The success of the restoration was measured in terms of the relative error of the recovered perfusion with respect to the true perfusion
 \[
-	RE := \frac{P_{\mathrm rec} - P_{\mathrm true}}{P_{\mathrm true}}\cdot 100\%.
+	RE := \frac{\vert P_{\mathrm rec} - P_{\mathrm true}\vert}{P_{\mathrm true}}\cdot 100\%.
 \]
 The input data was downsampled to a final time-resolution of $\SI{1}{\second}$.
 In order to simulate different spatial resolutions, the data was spatially averaged over different block-sizes ranging from $b_1 = (1,1)$ to $b_5=(64,64)$.
@@ -795,16 +795,16 @@ These recovered gaussian-like functions seem to be describing dispersion effects
 
 
 \begin{table}[H]
-	\caption{Results of the perfusion restoration with median relative errors in percent.}
+	\caption{Results of the perfusion restoration with median relative errors in percent. Relative error was computed block-wise as $\vert P_{\mathrm rec} - P_{\mathrm true}\vert / P_{\mathrm true}\cdot 100\%$. Displayed is the median RE over the entire domain.}
 	\centering
 		\begin{tabular}{l c c c c c }
 			& Model & \multicolumn{4}{c}{Block Size}\\
 			 					 			& 		& (1,1) 		& (5,5) 		& (10,10) 		& entire domain \\
 			\toprule
 			\multirow{2}{*}{SFD: Perfusion} & MS 	& $170.09$ 	& $165.03$ 	& $158.57$ 		& $2.65$ \\
-			 					 	   		& bSVD  & $859.06$ 	& $768.58$ 	& $664.84$ 		& $-1.25$ \\
-			\multirow{2}{*}{SCD: Perfusion} & MS 	& $-23.20$ 	& $-24.26$ 	& $-25.75$ 		& $37.96$ \\
-			 					 			& bSVD  & $2.43$ 		& $-4.27$ 	& $-8.80$ 	& $20.72$ \\
+			 					 	   		& bSVD  & $859.06$ 	& $768.58$ 	& $664.84$ 		& $1.25$ \\
+			\multirow{2}{*}{SCD: Perfusion} & MS 	& $-23.20$ 	& $24.26$ 	& $25.75$ 		& $37.96$ \\
+			 					 			& bSVD  & $2.43$ 		& $4.27$ 	& $8.80$ 	& $20.72$ \\
 			\midrule											
 			SFD: CBV & & $4.37\cdot10^{-5}$      & $4.37\cdot10^{-5}$		& $4.37\cdot10^{-5}$		& $4.37\cdot10^{-5}$ \\											
 			SCD: CBV & & $1.94\cdot10^{-2}$      & $1.93\cdot10^{-2}$		& $2.12\cdot10^{-2}$		& $1.13$ 			
@@ -817,24 +817,24 @@ These recovered gaussian-like functions seem to be describing dispersion effects
 \newcommand{\inc}[1]{\includegraphics[width = .3\textwidth]{./figs/#1}}
 \newcommand{\rbox}[2]{\rotatebox{90}{\hspace{#1}\mbox{\large #2}}}
 \begin{figure}[H]
-	\caption{Results of the restoration for the PDE Model (SFD)}
+	\caption{Results of the restoration of perfusion for the PDE Model (SFD) for different levels of discretization, displayed in the columns. All results are given in $\mathrm{ml/min/100ml}$. First Row: Ground-Truth Perfusion (cp. Sec. \ref{subsec:FluxToPerfusion}). Second Row: Perfusion as estimated by bSVD. Third Row: Perfusion as estimated by the Maximum-Slope model.}
 	\centering
 		\begin{tabular}{c c c c}
-			 \rbox{5ex}{True perfusion} & \inc{recTrue-pde-1.eps} & \inc{recTrue-pde-5.eps} & \inc{recTrue-pde-10.eps}\\
+			 \rbox{5ex}{True perfusion} & \inc{recTrue-1.eps} & \inc{recTrue-5.eps} & \inc{recTrue-10.eps}\\
 			 \rbox{13ex}{bSVD} & \inc{recCirc-pde-1.eps} & \inc{recCirc-pde-5.eps} & \inc{recCirc-pde-10.eps}\\
-			 \rbox{13ex}{MS} & \inc{recMS-pde-1.eps} & \inc{recMS-pde-5.eps} & \inc{recMS-pde-10.eps}\\			 			 			
+			 \rbox{13ex}{MS} & \inc{recMS-pde-1.eps} & \inc{recMS-pde-5.eps} & \inc{recMS-pde-10.eps}\\			 			 			  Block-Size & (1,1) & (5,5) & (10,10)
 		\end{tabular}
 	\label{fig:resultsSFD}
 \end{figure}
 
 
 \begin{figure}[H]
-	\caption{Results of the restoration for the Convolution Model (SCD)}
+	\caption{Results of the restoration of perfusion for the Convolution Model (SCD) for different levels of discretization, displayed in the columns. All results are given in $\mathrm{ml/min/100ml}$. First Row: Ground-Truth Perfusion (cp. Sec. \ref{subsec:FluxToPerfusion}). Second Row: Perfusion as estimated by bSVD. Third Row: Perfusion as estimated by the Maximum-Slope model.}
 	\centering
 		\begin{tabular}{c c c c}
-			 \rbox{5ex}{True perfusion} & \inc{recTrue-conv-1.eps} & \inc{recTrue-conv-5.eps} & \inc{recTrue-conv-10.eps}\\
+			 \rbox{5ex}{True perfusion} & \inc{recTrue-1.eps} & \inc{recTrue-5.eps} & \inc{recTrue-10.eps}\\
 			 \rbox{13ex}{bSVD} & \inc{recCirc-conv-1.eps} & \inc{recCirc-conv-5.eps} & \inc{recCirc-conv-10.eps}\\
-			 \rbox{13ex}{MS} & \inc{recMS-conv-1.eps} & \inc{recMS-conv-5.eps} & \inc{recMS-conv-10.eps}\\			 			 			
+			 \rbox{13ex}{MS} & \inc{recMS-conv-1.eps} & \inc{recMS-conv-5.eps} & \inc{recMS-conv-10.eps}\\			 			 			  Block-Size & (1,1) & (5,5) & (10,10)			
 		\end{tabular}
 	\label{fig:resultsSCD}
 \end{figure}
@@ -842,7 +842,7 @@ These recovered gaussian-like functions seem to be describing dispersion effects
 
 
 \begin{figure}[H]
-	\caption{Deconvolution results}
+	\caption{Results for the deconvolution model. First row: Results of bSVD applied to SFD with block-size (64,64) (i.e. entire domain) (Model-Fit and Impuls-Response Function). Second row: Results of bSVD applied to a single voxel of the SFD in the inside of the domain. Third row: Second row: Results of bSVD applied to a single voxel of the SCD in the inside of the domain.}
 	\centering
 		\begin{tabular}{c c c}
 			 \rbox{0ex}{Entire Domain, SFD} & \inc{C-and-Crec.eps} & \inc{Irec.eps} \\
