@@ -22,11 +22,11 @@ pathload = ['results/synt-createflowTPFA-' basenameflow '.mat'];
 D = load(pathload);
 
 %get pressure
-u     = D.pmat;
+u = D.pmat;
 
 %get physiological dimensions
-m     = size(u);
-h     = prm.h;
+m = size(u);
+h = prm.h;
 
 %setup permeabiltiy K and viscosity mu
 K  = 5e-6;
@@ -37,25 +37,25 @@ mu = prm.mu;
 %function handle for identity
 id = @(i) speye(m(i));
 
-%setup finite difference matrix for first derivative
-D           = @(i) spdiags(ones(m(1)+1,1)*[-1,1],[-1,0],m(1)+1,m(1))./h(i); 
+%setup finite difference matrix for laplacian in 1D
+Li = @(i) spdiags(ones(m(1)+1,1)*[1,-2,1],[-1,0,1],m(1),m(1)); 
+
 
 %get 1D-derivative-matrices with neumann boundary conditions
-D1          = D(1);
-D1(1,1)     = 0;
-D1(end,end) = 0;
+L1          = Li(1);
+L1(1,1)     = -1;
+L1(end,end) = -1;
+L1          = L1./h(1)^2;
 
-D2          = D(2);
-D2(1,1)     = 0;
-D2(end,end) = 0;
+L2          = Li(2);
+L2(1,1)     = -1;
+L2(end,end) = -1;
+L2          = L2./h(2)^2;
+
+%kronecker to get the full Laplacian
+LAP = kron(id(2),L1) + kron(L2,id(1));
 
 
-%get discrete gradient
-Di   = kron(id(2),D1);
-Dj   = kron(D2,id(1));
-GRAD = [Di;Dj];
-DIV  = GRAD';
-LAP  = DIV*GRAD;
 
 %% calculate -K/mu*\Delta u and visualize results
 f = -K/mu*(LAP*u(:));
