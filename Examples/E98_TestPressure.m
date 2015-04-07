@@ -19,6 +19,8 @@ clc
 [prm,Fmat]   = settings;
 basenameflow = perfusion1c.providenameflow(prm.phiopt,prm.Kopt,prm.dim);
 pathload = ['results/synt-createflowTPFA-' basenameflow '.mat'];
+msg = ['Loading ' pathload];
+disp(msg);
 D = load(pathload);
 
 %get pressure
@@ -29,8 +31,11 @@ m     = size(u);
 h     = prm.physdim(1:2)./m;
 
 %setup permeabiltiy K and viscosity mu
-K  = 5e-6;
-mu = 5e-6; %i don't find mu in the code, the paper says its 5e-6
+K = D.Kmat(1,1,1,1);
+mu = prm.mu;
+
+%K  = 5e-6;
+%mu = 5e-6; %i don't find mu in the code, the paper says its 5e-6
 
 %% build laplacian
 
@@ -50,7 +55,6 @@ D2          = D(2)./h(2);
 D2(1,1)     = 0;
 D2(end,end) = 0;
 
-
 %get discrete gradient
 Di   = kron(id(2),D1);
 Dj   = kron(D2,id(1));
@@ -58,10 +62,12 @@ GRAD = [Di;Dj];
 DIV  = GRAD';
 LAP  = DIV*GRAD;
 
-%% calculate -K/mu*\Delta u and visualize results
-f = -K/mu*(LAP*u(:));
-f = reshape(f,m);
 
+%% calculate -K/mu*\Delta u and visualize results
+f = K/mu*(LAP*u(:));
+f = reshape(f,m);
+% Convert f (which we call Q in our paper) from m^3/s/m^3 to m^3/s which are the units of Fmat 
+f = f*prod(prm.h);
 
 figure(1); clf;
 subplot(1,3,1);
