@@ -127,17 +127,17 @@ Porous media flow, indicator, brain DCE-MRI
 
 \subsection{A synthetic one-compartment single-phase flow model}
 
-A synthetic one-compartment (1C) model of the plasma flow within a porous organ can be developed from the principle of mass balance and Darcys law. Denote the porosity $\phi = \phi(x,t)$ with units $ mm^3/mm^3$ as the relative quantity describing the fluid volume within a control volume $\Omega_i$ divided by the total volume of $\Omega_i$. Within the classical theory of compartment modelling for human organs the porosity is better known as the cerebral blood volume (CBV).  The fluid density has units $(mg/mm^3)$ and is denoted by $\rho = \rho(x,t)$. We apply the geomechanical understanding of flux as a surface flux $q = q(x,t)$ with units $(mm^3/s/mm^2)$. The surface flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample. The continuity equation reflecting conservation of mass within the fluid states
+A synthetic one-compartment (1C) model of the plasma flow within a porous organ can be developed from the principle of mass balance and Darcys law. Denote the porosity $\phi = \phi(x,t)$ with units $ m^3/m^3$ as the relative quantity describing the fluid volume within a control volume $\Omega_i$ divided by the total volume of $\Omega_i$. Within the classical theory of compartment modelling for human organs the porosity is better known as the cerebral blood volume (CBV).  The fluid density has units $(kg/m^3)$ and is denoted by $\rho = \rho(x,t)$. We apply the geomechanical understanding of flux as a surface flux $q = q(x,t)$ with units $(m^3/s/m^2)$. The surface flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample. The continuity equation reflecting conservation of mass within the fluid states
 \begin{equation}
 \frac{\partial (\phi \rho)}{\partial t} + \nabla \cdot (\rho q) = \tilde{Q}
 \label{eq:syntcont}
 \end{equation}
-where $\tilde{Q} = \tilde{Q}(x,t)$ is a source or sink of fluid mass with units $mg/s/mm^3$. For the current task we want to model the perfusion of blood in the brain and we consider it a stationary process. This assumption is only partly true due to factors like external stress which can influence the flow pattern. However, it is still a reasonable and common approximation. By these simplifications the porosity, fluid density and flux are only functions of space, $\phi = \phi(x), \rho = \rho(x), q = q(x)$. Furthermore we assume that the fluid density $\rho$ is constant in space, which is satisfied within all practical means for water within the human body.  The continuity equation (\ref{eq:syntcont}) then becomes
+where $\tilde{Q} = \tilde{Q}(x,t)$ is a source or sink of fluid mass with units $kg/s/m^3$. For the current task we want to model the perfusion of blood in the brain and we consider it a stationary process. This assumption is only partly true due to factors like external stress which can influence the flow pattern. However, it is still a reasonable and common approximation. By these simplifications the porosity, fluid density and flux are only functions of space, $\phi = \phi(x), \rho = \rho(x), q = q(x)$. Furthermore we assume that the fluid density $\rho$ is constant in space, which is satisfied within all practical means for water within the human body.  The continuity equation (\ref{eq:syntcont}) then becomes
 \begin{equation}
 \nabla \cdot q = \frac{\tilde{Q}}{\rho}.
 \label{eq:syntcontsimp}
 \end{equation}
-In order to scale away the density $\rho$ we define another source term $Q$ with units $mm^3/s/mm^3$ having the relation $\tilde{Q} = Q\rho$, thus transforming (\ref{eq:syntcontsimp}) into
+In order to scale away the density $\rho$ we define another source term $Q$ with units $m^3/s/m^3$ having the relation $\tilde{Q} = Q\rho$, thus transforming (\ref{eq:syntcontsimp}) into
 \begin{equation}
 \nabla \cdot q = Q.
 \label{eq:syntcontsimp2}
@@ -149,20 +149,20 @@ Low velocity fluid flow in porous media is described by Darcys law
 q = -\frac{K}{\mu}\Big ( \nabla p + \rho g  \nabla z\Big )
 \label{eq:syntdarcy}
 \end{equation}
-where $g$ is the gravitational acceleration, $z$ is the spatial position along the gravitational field and $\mu = \mu(x)$ is the viscosity of the fluid with units $kPa \cdot s$.
+where $g$ is the gravitational acceleration, $K$ is the permeability tensor in units $m^2$, $z$ is the spatial position along the gravitational field and $\mu = \mu(x)$ is the viscosity of the fluid with units $Pa \cdot s$.
 For the current project the flow is taking place perpendicular to the gravitational field and the gravitational term can thereby be discarded, such that a simplified version of Darcys law becomes
 \begin{equation}
 q = -\frac{K}{\mu} \nabla p.
 \label{eq:syntdarcysimp}
 \end{equation}
-Moreover, assuming a hermitian and positive definite permeability tensor $K$, and combining (\ref{eq:syntcontsimp2}) and (\ref{eq:syntdarcysimp}) results in an elliptical equation
+Moreover, assuming a hermitian and positive definite permeability tensor $K$, and combining (\ref{eq:syntcontsimp2}) and (\ref{eq:syntdarcysimp}) results in the elliptical operator
 \begin{equation}
 \nabla \cdot \Big ( -\frac{K}{\mu} \nabla p\Big ) = Q
 \label{eq:flowmodel}
 \end{equation}
 for the scalar pressure field $p$.
 Denote the boundary of $\Omega$ as $\partial \Omega$, with an outward normal vector $n(x)$. We impose Neuman boundary conditions of no pressure gradient across the boundary, thus $\nabla p \cdot n = 0$ on $\partial \Omega$. This conditions is equivalent to no flow across the boundary. Equation (\ref{eq:flowmodel}) in combination with Neuman boundary conditions $\nabla p \cdot n = 0$ on $\partial \Omega$ is the flow model we apply to create the synthetic brain template.
-The flux field can be computed according to (\ref{eq:syntdarcy}) from the obtained pressure map. An example of pressure and flux fields is shown in Fig. \ref{fig:flowsyntresults} (b) and (c).
+The flux field can be computed according to (\ref{eq:syntdarcy}) from the obtained pressure map. An example of pressure and flux fields is shown in Fig. \ref{fig:flowsyntresults} (a) - (c).
 
 
 \subsection{The forward problem for indicator dilution}
@@ -170,26 +170,26 @@ The flux field can be computed according to (\ref{eq:syntdarcy}) from the obtain
 In this section we add a tracer to the flow entering via the source, where the aim is to describe how the tracer is carried along within the flow. The concentration map resulting from the simulation is later used as a model for observed concentrations as they could appear from a MR scan. We will apply this concentration for the inverse problem of determining the perfusion and porosity. By comparing the inversely reconstructed perfusion with the known perfusion we can validate the classical models for CBV and CBF. 
 
 
-Denote the space and time depending tracer concentration with respect to the fluid space as $c(x,t)$, with units $mMol/mm^3$. Also, denote the tracer concentration with respect to a control volume as $C(x,t)$, also with units $mMol/mm^3$. Thus, for $c(x,t)$ the normalizing volume refers to the fluid volume and for $C(x,t)$ the normalization refers to the control volume. The units $mMol/mm^3$ are applied instead of the classical units $mMol/L$ in order to be compatible with $Q(x)$ having units $mm^3/s/mm^3$. 
+Denote the space and time depending tracer concentration with respect to the fluid space as $c(x,t)$, with units $Mol/m^3$. Also, denote the tracer concentration with respect to a control volume as $C(x,t)$, also with units $Mol/m^3$. Thus, for $c(x,t)$ the normalizing volume refers to the fluid volume and for $C(x,t)$ the normalization refers to the control volume. The units $Mol/m^3$ are applied instead of the classical units $mMol/L$ in order to be compatible with $Q(x)$ having units $m^3/s/m^3$. 
 
-The porosity is from definition $\phi_i=v_i/V_i$ for a plasma volume $v_i$ within a control region $\Omega_i$ with a total volume of $V_i$. Letting $|\Omega_i| \rightarrow 0$ leads to the continuos porosity field $\phi$. Denote the number of tracer molecules within a control roi as $n_i$. From the definition of $c$ and $C$, we obtain the relation $n_i = cv_i = CV_i$. Combining this with $\phi_i = v_i/V_i$ leads to $C_i = c_i\phi_i$, approaching the continuous formulation $C = c\phi$ as $|\Omega_i|\rightarrow 0$. 
+The porosity is from definition $\phi_i=v_i/V_i$ for a plasma volume $v_i$ within a control region $\Omega_i$ having a total volume of $V_i$. Letting $|\Omega_i| \rightarrow 0$ leads to the continuos porosity field $\phi$. Denote the number of tracer molecules within a control roi as $n_i$. From the definition of $c$ and $C$, we obtain the relation $n_i = cv_i = CV_i$. Combining this with $\phi_i = v_i/V_i$ leads to $C_i = c_i\phi_i$, approaching the continuous formulation $C = c\phi$ as $|\Omega_i|\rightarrow 0$. 
 
 The rate of change of tracer molecules within a geometric control volume $\Omega_i$ can he phrased as
 \begin{equation}
 	\frac{\partial }{\partial t}\int_{\Omega_i}Cdx = \int_{\Omega_i}\frac{\partial }{\partial t}(\phi c)dx.
 	\label{eq:dmdt}
 \end{equation}
-By discarding any dissipative diffusion process, the change in tracer mass occurs only from advective flow and source/sink terms as
+By discarding any dissipative diffusion process, the change in tracer mass within $\Omega_i$ occurs only from advective flow and source/sink terms as
 \begin{equation}
 	-\int_{ \Gamma_i}c(q \cdot \nu)ds + \int_{\Omega_i}c_{so}Q_{so}dx + \int_{\Omega_i}cQ_{si}dx
 	\label{eq:surfflux}
 \end{equation}
-where $Q_{so}(x)\geq 0$ $[mm^3/s/mm^3]$ is a source term and $Q_{si}(x)\leq 0$ $[mm^3/s/mm^3]$ is a sink term which both are zero everywhere except from in the respective source/sink locations. Note that $\int_\Omega Q_{so}dx = -\int_\Omega Q_{si}dx$, in line with incompressible flow. The point wise relation between $Q$, $Q_{so}$ and $Q_{si}$ is $Q = Q_{so} + Q_{si}$. From mass balance considerations of the tracer, equations (\ref{eq:dmdt}) and (\ref{eq:surfflux}) must balance such that
+where $Q_{so}(x)\geq 0$ $[m^3/s/m^3]$ is the source term and $Q_{si}(x)\leq 0$ $[m^3/s/m^3]$ is the sink term which both are zero everywhere except from in the respective source/sink locations. Note that $\int_\Omega Q_{so}dx = -\int_\Omega Q_{si}dx$, in line with incompressible flow. The point wise relation between $Q$, $Q_{so}$ and $Q_{si}$ is $Q = Q_{so} + Q_{si}$. From preservation of the tracer mass, equations (\ref{eq:dmdt}) and (\ref{eq:surfflux}) must balance such that
 \begin{equation}
 	\int_{\Omega_i}\frac{\partial }{\partial t}(\phi c)dx + \int_{ \Gamma_i}c(q \cdot \nu)ds = \int_{\Omega_i}c_{so}Q_{so}dx + \int_{\Omega_i}cQ_{si}dx.
 	\label{eq:conteq}
 \end{equation}
-Assuming a stationary porosity $\phi$ this can be rewritten as 
+Assuming a stationary porosity $\phi$, this can be rewritten as 
 \begin{equation}
 	\int_{\Omega_i}\phi\frac{\partial c}{\partial t}dx + \int_{ \Gamma_i}c(q \cdot \nu)ds = \int_{\Omega_i}c_{so}Q_{so}dx + \int_{\Omega_i}cQ_{si}dx.
 	\label{eq:conteq2}
@@ -258,7 +258,7 @@ The input tracer concentration $c_{so}$ is assumed known at all time points as w
 %\end{equation}
 %Using a Cartesian grid, the normal component $q_n$ will be aligned with the main coordinate directions. Equations (\ref{eq:flowmodel}) and (\ref{eq:syntconttracer2}) together constitute the synthetic model for flow and indicator dilution. 
 We refer to (\ref{eq:conteq2}) and (\ref{eq:conteqlocal2}) as the \textit{simulated flow model (SF model)}. Equation (\ref{eq:conteq2}) is implemented under the assumption of (\ref{eq:syntcontsimp2}), which the obtained flux $q$ is fulfilling.
-Equation (\ref{eq:conteq2}) is used for numerical simulations and (\ref{eq:conteqlocal2}) is used for analytical considerations.
+Equation (\ref{eq:conteq2}) is used for numerical simulations and (\ref{eq:conteqlocal2}) is only used for analytical considerations.
 %In this respect, note that it can be written in the standard form of a quasi-linear transport equation as
 %\begin{equation}
 %	v \cdot D c = f(x,c)
@@ -269,8 +269,8 @@ Equation (\ref{eq:conteq2}) is used for numerical simulations and (\ref{eq:conte
 \subsection{Conversion of flux into perfusion}\label{subsec:FluxToPerfusion}
 The SFM uniquely determines the flux field $q(x)$. However, it is not obvious how to transform a flux field into a scalar perfusion field $P(x)$, a widely used parameter in the classical field of compartment modelling. There are at least two obvious differences between $q$ and $P$. First, the flux is a vector field and the perfusion is a scalar field. Second, the flux relates to a surface area and the perfusion relates to a volume. Thus, these to quantities are strictly, mathematically different but still conceptually related. In the following we describe a method for converting flux into perfusion.
 
-The classical understanding of perfusion is the amount of blood feeding a tissue volume per unit time. Thus, the perfusion $P$ has the units $mm^3/s/mm^3$. It is common to scale this quantity into the normalized perfusion $P_n(x)$ with units $ml/min/100ml$. 
-One approach for converting flux into perfusion could be to estimate the perfusion as the total inflow (or outflow) of fluid (e.g. arterial blood) into a control region per unit time, and then normalized with the control region volume. This is only a valid approach if every control region is separated from other control regions, and not feeding each other. Thus, this approach is valid for an entire organ being the control region. Such understanding is in line with the understanding of classical compartment models for perfusion where each voxel has its own source of feeding arterial blood, independent of the neighbour voxels. Clearly, this is a simplification since voxels will be fed by their neighbours. In our synthetic flow model SFM as well as in normal tissue this assumption is violated since the voxels are feeding their neighbour voxels with arterial blood. Simply summing the total inflow into a voxel and dividing by the voxel volume will strongly over-estimate the perfusion since we would divide by the wrong normalization volume. The problematic issue is that the incoming blood is feeding more voxels than the current voxel. This phenomenon is demonstrated in Fig. where the volume on the left has the true perfusion value of $P_1 = F_0/(2V)$ for an incoming flow $F_0$ $[ml/s]$ and distribution volume $2V$. However, for another discretization as shown in the middle, the perfusion within each of these sub-volumes becomes $P_2 = q_0/V = 2P_1$. Taking the average across both sub-volumes, it is clear that the perfusion is over-estimated with a factor of two. A discretisation dependent perfusion value is not desirable, and the perfusion estimate of $P_2$ is clearly wrong. 
+The classical understanding of perfusion is the amount of blood feeding a tissue volume per unit time. Thus, the perfusion $P$ has the units $m^3/s/m^3$. It is common to scale this quantity to normalized perfusion $P_n(x)$ with units $ml/min/100ml$. 
+One approach for converting flux into perfusion could be to estimate the perfusion as the total inflow (or outflow) of fluid (e.g. arterial blood) into a control region per unit time, and then normalizing with the control region volume. This is only a valid approach if every control region is separated from other control regions, and not feeding each other. Thus, this approach is valid for an entire organ being the control region. Such understanding is in line with the understanding of classical compartment models for perfusion where each voxel has its own source of feeding arterial blood, independent of the neighbour voxels. Clearly, this is a simplification since voxels will be fed by their neighbours. In our synthetic flow model SFM as well as in normal tissue this assumption is violated since the voxels are feeding their neighbour voxels with arterial blood. Simply summing the total inflow into a voxel and dividing by the voxel volume will strongly over-estimate the perfusion since we would divide by the wrong normalization volume. The problematic issue is that the incoming blood is feeding more voxels than the current voxel. This phenomenon is demonstrated in Fig. \ref{fig:perfusion-problem} where the volume on the left has the true perfusion value of $P_1 = F_0/(2V)$ for an incoming flow $F_0$ $[m^3/s]$ and distribution volume $2V$ $[m^3]$. However, for another discretization as shown in the middle, the perfusion within each of these sub-volumes becomes $P_2 = F_0/V = 2P_1$. Taking the average across both sub-volumes, it is clear that the perfusion is over-estimated with a factor of two. A discretization dependent perfusion value is not desirable, and the perfusion estimate of $P_2$ is clearly wrong. 
 
 
 \begin{figure}[H]
@@ -290,11 +290,11 @@ One approach for converting flux into perfusion could be to estimate the perfusi
 
 The reason for this discrepancy is that for $P_2$ the perfusion has been counted twice since we are dividing by the wrong distribution volume. Instead, we need to consider to the classical definition of perfusion. The concept of perfusion has a very precise meaning, as the amount of arterial blood per time unit delivered to a capillary bed in a biological tissue, and then scaled by the feeded tissue volume. Therefore, we must divide the incoming flow by the total distribution volume that is covered by the fluid streamlines. This formulation coincides with the classical understanding of perfusion, and the correct distribution volume will rather be the volume that the fluid particles within an infinitesimal cross-sectional area around the streamlines are covering. Assuming laminar flow, the streamlines are not crossing each other and we can with this formulation correctly estimate the true distribution volume that is fed by a given arterial blood flow.
 
-Formally, the direction of the streamline vector field is identical to the flux vector field mediating the flow. Pick an area $S$ around a streamline, where $S$ is formed as a disc with area $A = \pi r^2$ and infinitesimal area $dA = 2\pi r dr$. The flow in $mm^3/s$ passing the cross-sectional area $S$ becomes
+Formally, the direction of the streamline vector field is identical to the flux vector field mediating the flow. Pick an area $S$ around a streamline, where $S$ is formed as a disc with area $A = \pi r^2$ and infinitesimal area $dA = 2\pi r dr$. The flow in $m^3/s$ passing the cross-sectional area $S$ becomes
 \begin{equation}
 	F_S = \int_S(q \cdot n)dA = \int_0^R(q \cdot n)2\pi r dr
 \end{equation}
-for a unit vector $n$ pointing along with the flow, and $R$ is the radius of $S$. Since the flux is carrying the flow, $n = q/|q|$ and the flow $F_S$ across $S$ becomes
+for a unit vector $n$ pointing along with the flow, and where $R$ is the radius of $S$. Since the flux is carrying the flow, $n = q/|q|$ and the flow $F_S$ across $S$ becomes
 \begin{equation}
 	F_S = 2\pi\int_0^R |q| r dr.
 \end{equation}
@@ -315,11 +315,11 @@ Using L'Hopitals rule we reach a locally well defined perfusion measure
 P(x) = \frac{|q(x)|}{|\mathbb{C}|(x)|}
 \label{eq:flux2perf}
 \end{equation}
-where $||\mathbb{C}(x)| = \int_0^Ldl$ is the length of the streamline passing through the point $x$. Thus, we have reached an explicit formula for converting flux into perfusion. This is later used for evaluation of the classical model for perfusion. With the model in (\ref{eq:flux2perf}) we realize that every point along a streamline will have the same value of perfusion. This is reasonable since these voxels are fed by the same flow. 
+where $||\mathbb{C}(x)| = \int_0^Ldl$ is the length of the streamline passing through the point $x$. This is an explicit formula for converting flux into perfusion and is later used for evaluation of the classical model for perfusion. With the model in (\ref{eq:flux2perf}) we realize that every point along a streamline will have the same value of perfusion. This is reasonable since these voxels are fed by the same flow. 
 
 
 \subsection{Estimating the porosity}
-The principle of mass balance of fluid and tracer particles is described by the Eq.  (\ref{eq:syntcontsimp2}) and (\ref{eq:syntconttracer}). For locations where the source/sink is zero $Q(x) = 0$ and (\ref{eq:syntconttracer}) becomes
+The principle of mass balance of fluid and tracer particles is described by Eq.  (\ref{eq:syntcontsimp2}) and (\ref{eq:conteqlocal}}). For locations where the source and sink is zero, $Q_{so}(x) = 0$ and $Q_{si}(x) = 0$, and (\ref{eq:conteqlocal}}) becomes
 \begin{equation}
 \phi\frac{\partial c}{\partial t}  = - q \cdot \nabla c.
 \label{eq:1cmodel}
@@ -334,12 +334,12 @@ Inserting $t_0 = - \infty$ to $t_1 = \infty$ and boundary conditions $c(x,-\inft
 q \cdot \nabla  \int_{-\infty}^{\infty} c(x,t)dt = 0
 \label{eq:streamlinezero}
 \end{equation}
-since $q$ is independent of time. Equation (\ref{eq:streamlinezero}) entails that $\int_{-\infty}^{\infty} c(x,t)dt$ is constant along the streamlines of the fluid flow.
+since $q$ is independent of time. Equation (\ref{eq:streamlinezero}) states that $\int_{-\infty}^{\infty} c(x,t)dt$ is constant along the streamlines of the fluid flow.
 Thus, we can choose any voxel in the downstream from the arterial input such that
 \begin{equation}
 \int_{-\infty}^{\infty} c(a,t)dt = \int_{-\infty}^{\infty} c(x,t)dt
 \end{equation}
-where $c(a,t)$ is the tracer concentration of the arterial input, and assuming the region of interest (ROI) for the arterial input is a infinitesimal wide point in space for the spatial position $x = a$. Using $C = \phi c$ and assuming the porosity of the arterial inlet is known (and typical close to one), here denoted by $\phi_a$, we have an analytical expression for the porosity at any position $x$,
+where $c(a,t)$ is the tracer concentration of the arterial input, and assuming the region of interest (ROI) for the arterial input is a infinitesimal small point in space for the spatial position $x = a$. Using $C = \phi c$ and assuming the porosity of the arterial inlet is known (and typically close to one), here denoted by $\phi_a$, we have an analytical expression for the porosity at any position $x$,
 \begin{equation}
 \phi(x) = \phi_a \frac{ \int_{-\infty}^{\infty} C(x,t)dt }{ \int_{-\infty}^{\infty} C(a,t)dt}.
 \label{eq:phi}
@@ -399,8 +399,8 @@ provided $c_a(t)$ is zero for $t < 0$.
 
 Applying the forward model in (\ref{eq:Cconv1}) for a known perfusion $P$ leads to a simulated flow model based on convolution, in accordance with the classical theory. We refer to this model as the \textit{simulated convolution model (SC model)}. We have now defined two competing models for indicator dilution, the SF model and the SC model. This was done in order to be able to discover any discrepancies from the true perfusion field and relate them to shortcomings in the model itself or to instability of the numerical deconvolution. 
 
-\section{Relating the simulated flow (SF) model with the classical model for perfusion}
-We consider the solute transport equation (\ref{eq:conteqlocal}):
+\subsection{Relating the simulated flow (SF) model with the classical model for perfusion}
+Consider the solute transport equation (\ref{eq:conteqlocal}), and rewrite it as
 \begin{equation}
 	\frac{\partial c}{\partial t} + \frac{q}{\phi} \cdot \nabla c = \frac{(c_{so}-c)Q_{so}}{\phi }.
 	\label{eq:conteqlocal3}
@@ -534,7 +534,7 @@ This can in terms of the divergence theorem be rewritten as
 \int_{\partial \Omega_i}   -(\lambda \nabla p) \cdot \nu ds = \int_{\Omega_i}Qdx = F_i.
 \label{eq:TPFAint}
 \end{equation}
-for the conductivities $\lambda = K/\mu$. The integrated source term is per definition named as $F_i$ and has units of absolute flow, $mm^3/s$. Let $\gamma_{ij}= \partial \Omega_i \cap \partial \Omega_j$ be the adjacent face between voxel $i$ and voxel $j$. Only the component of the pressure gradient perpendicular to $\gamma_{ij}$ will drive the flow between voxel $i$ and $j$. The component of $\nabla p$ pointing along the normal vector of $\gamma_{ij}$ can therefore be replaced in terms of the cell centred pressure values $p_i$ and $p_j$
+for the conductivities $\lambda = K/\mu$. The integrated source term is per definition named as $F_i$ and has units of absolute flow, $m^3/s$. Let $\gamma_{ij}= \partial \Omega_i \cap \partial \Omega_j$ be the adjacent face between voxel $i$ and voxel $j$. Only the component of the pressure gradient perpendicular to $\gamma_{ij}$ will drive the flow between voxel $i$ and $j$. The component of $\nabla p$ pointing along the normal vector of $\gamma_{ij}$ can therefore be replaced in terms of the cell centred pressure values $p_i$ and $p_j$
 \begin{equation}
 \delta p_{ij} = \frac{2(p_j - p_i)}{\Delta x_i + \Delta x_j}
 \end{equation}
@@ -580,17 +580,17 @@ Let $c_i$ be the center voxel tracer concentration and $c_j$ the neighbour voxel
 	\phi_i V_i \frac{c_i^{t+1} - c_i^t}{\Delta t}  = - \sum_{j = 1}^{nf}c^t_{E_{j}}q_{\gamma_{ij}}|\gamma_{ij}| + c^t_{so,i}F_{so,i} + c^t_iF_{si,i}
 	\label{eq:discsyntflowtracer}
 \end{equation}
-where the understanding of $q_{\gamma_{ij}}$ is the normal flux across face $\gamma_{ij}$, $c_{\gamma_{ij}}^t$ is the tracer concentration at face $\gamma_{ij}$ and $c_{so,i}^t$ is the tracer concentration of the source fluid entering the system (the AIF). The terms $F_{so,i} = \int_{\Omega_i}Q_{so}dx$ and $F_{si,i} = \int_{\Omega_i}Q_{si}dx$. However, the tracer concentrations are not discretized at the faces but rather at the cell centres, and we must apply an upwinding Godunov scheme for a proper representation. Let
+where the understanding of $q_{\gamma_{ij}}$ is the normal flux across face $\gamma_{ij}$, $c_{\gamma_{ij}}^t$ is the tracer concentration at face $\gamma_{ij}$ and $c_{so,i}^t$ is the tracer concentration of the source fluid entering the system (the AIF). The terms $F_{so,i} = Q_{so,i}V_i$ and $F_{si,i} = Q_{si,i}V_i$. However, the tracer concentrations are not discretized at the faces but rather at the cell centres, and we must apply an upwinding Godunov scheme for a proper representation. Let
 \begin{equation*}
 c^t_{E_j} = \left\{
 \begin{array}{rl}
-c^t_i & \text{if } q_{\gamma_{ij}} < 0, \text{   outward flux}\\
-c^t_j & \text{if } q_{\gamma_{ij}} > 0, \text{   inward flux.}
+c^t_i & \text{if } q_{\gamma_{ij}} > 0, \text{   outward flux}\\
+c^t_j & \text{if } q_{\gamma_{ij}} < 0, \text{   inward flux.}
 \end{array} \right.
 \end{equation*}
 From (\ref{eq:discsyntflowtracer}), this leads to the explicit forward scheme
 \begin{equation}
-c_i^{t+1} = c_i^t + \frac{\Delta t}{\phi_i V}\Big [(c_{so,i}^tQ_{so,i} - c_i^t Q_{si,i})V_i-\sum_{j = 1}^{nf}c_{E_j}^tq_{\gamma_{ij}}|\gamma_{ij}|\Big ]
+c_i^{t+1} = c_i^t + \frac{\Delta t}{\phi_i V_i}\Big [(c_{so,i}^tF_{so,i} + c_i^t F_{si,i})-\sum_{j = 1}^{nf}c_{E_j}^tq_{\gamma_{ij}}|\gamma_{ij}|\Big ]
 \label{eq:forwdiscr}
 \end{equation}
 for each voxel $i$.

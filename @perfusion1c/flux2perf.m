@@ -1,6 +1,6 @@
 function [P,Pnorm] = flux2perf(X,lenim,Fmat,h)
 % Convert flux values to perfusion values. Assuming the input X is the flux 
-% with units mm^3/s/mm^2
+% with units m^3/s/m^2
 %
 
 % transfer flux to cell centered
@@ -16,15 +16,16 @@ absq = sqrt(X1.^2 + X2.^2 + X3.^2);
 % fix the source/sinc later
 absq(ne(Fmat,0)) = 0;
 
-% perfusion in units mm^3/s/mm^3
+% perfusion in units m^3/s/m^3
 P = absq./lenim;
 
 % fix the source and sink values
 ind = Fmat > 0;
 len = lenim(ind);
 % NB this area is an assumption of source along upper row, not valid
-% elsewhere!!
-val = abs(Fmat(ind))/(h(2)*h(3));
+% elsewhere!! What???
+% We divide by the area to transfer Fmat (m^3/s) to flux (m^3/s/m^2)
+val = abs(Fmat(ind))/(h(1)*h(3) + h(2)*h(3));
 val = val./len;
 P(ind) = val;
 
@@ -32,7 +33,7 @@ ind = Fmat < 0;
 len = lenim(ind);
 % NB this area is an assumption of sink along lower row, not valid
 % elsewhere!!
-val = abs(Fmat(ind))/(h(2)*h(3));
+val = abs(Fmat(ind))/(h(1)*h(3) + h(2)*h(3));
 val = val./len;
 P(ind) = val;
 
@@ -40,11 +41,11 @@ P(ind) = val;
 % voxelvol = prod(h);
 % totper = sum(P(:))*voxelvol
 
-% Convert to mm^3_f/min/mm^3_v
+% Convert to m^3_f/min/m^3_v
 Pnorm = P;
 Pnorm = Pnorm*60;
 
-% convert to mm^3_f/min/100mm^3_v
+% convert to m^3_f/min/100m^3_v
 Pnorm = Pnorm*100;
 
 return;

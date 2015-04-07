@@ -33,28 +33,23 @@ voxelvol = prod(h);
 %     0,0,1];
 % source/sink term
 % sstermini = Fmat./phimat;
-sstermini = Fmat;
+Fmatini = Fmat;
 % sstermini = sstermini/voxelvol;
-
 
 time = 0;
 for i = 2 : ntime    
     time = time + dt(i);
    
     cmath = cmat(:,:,:,i-1);
-    ssterm = sstermini;
+    Fmat = Fmatini;
     
     for j = 1 : size(cso,1)
-        ssterm(cso(j,1),cso(j,2),cso(j,3)) = ssterm(cso(j,1),cso(j,2),cso(j,3))*aifval(i-1);
+        Fmat(cso(j,1),cso(j,2),cso(j,3)) = Fmat(cso(j,1),cso(j,2),cso(j,3))*aifval(i-1);
     end;
     
     for j = 1 : size(csi,1)
-        ssterm(csi(j,1),csi(j,2),csi(j,3)) = ssterm(csi(j,1),csi(j,2),csi(j,3))*cmath(csi(j,1),csi(j,2),csi(j,3));
+        Fmat(csi(j,1),csi(j,2),csi(j,3)) = Fmat(csi(j,1),csi(j,2),csi(j,3))*cmath(csi(j,1),csi(j,2),csi(j,3));
     end;
-    
-%     if round(i/100) == i/100
-%         [time aifval(i-1)]    
-%     end;
     
 
     % sum of in and out fluxes
@@ -66,6 +61,10 @@ for i = 2 : ntime
 
     % the face area
     % dA = h(2)*h(3);
+    
+    % NB the flux flowmat is already multiplied by the voxel area so
+    % therefore we set dA = 1 always
+%     dA = h(2)*h(3);
     dA = 1;
 
     % flow from top
@@ -85,8 +84,8 @@ for i = 2 : ntime
     %
 
     % the face area
-    % dA = h(1)*h(3);
-    dA = 1;
+%     dA = h(1)*h(3);
+    dA = 1; %CONSTANTIN
     
     % flow from left
     a = flowmat{2}(:,1:end-1,:);
@@ -105,8 +104,8 @@ for i = 2 : ntime
     cj = cmath;
     
     % the face area
-    % dA = h(2)*h(3);
-    dA = 1;
+%     dA = h(2)*h(3);
+    dA = 1; %CONSTANTIN
     
     % flow towards top
     a = flowmat{1}(1:end-1,:,:);
@@ -122,9 +121,11 @@ for i = 2 : ntime
     %
 
     % the face area
-    % dA = h(1)*h(3);
-    dA = 1;
-    
+%     dA = h(2)*h(3);
+    dA = 1; %CONSTANTIN
+
+
+
     % flow towards left
     a = flowmat{2}(:,1:end-1,:);
     ind = a < 0;
@@ -135,7 +136,7 @@ for i = 2 : ntime
     sumflux(ind) = sumflux(ind) - abs(a(ind)).*cj(ind)*dA;
 
     % sum of fluxes
-    fluxterm = ssterm + sumflux;
+    fluxterm = Fmat + sumflux;
 
     % adding up
     del = dt(i)*fluxterm./(phimat*voxelvol);
