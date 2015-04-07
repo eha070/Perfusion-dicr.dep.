@@ -64,7 +64,6 @@ for i = 2 : ntime
     
     % NB the flux flowmat is already multiplied by the voxel area so
     % therefore we set dA = 1 always
-%     dA = h(2)*h(3);
     dA = 1;
 
     % flow from top
@@ -84,8 +83,8 @@ for i = 2 : ntime
     %
 
     % the face area
-%     dA = h(1)*h(3);
-    dA = 1; %CONSTANTIN
+    % dA = h(1)*h(3);
+    dA = 1;
     
     % flow from left
     a = flowmat{2}(:,1:end-1,:);
@@ -104,8 +103,8 @@ for i = 2 : ntime
     cj = cmath;
     
     % the face area
-%     dA = h(2)*h(3);
-    dA = 1; %CONSTANTIN
+    % dA = h(2)*h(3);
+    dA = 1;
     
     % flow towards top
     a = flowmat{1}(1:end-1,:,:);
@@ -121,11 +120,9 @@ for i = 2 : ntime
     %
 
     % the face area
-%     dA = h(2)*h(3);
-    dA = 1; %CONSTANTIN
-
-
-
+    % dA = h(1)*h(3);
+    dA = 1;
+    
     % flow towards left
     a = flowmat{2}(:,1:end-1,:);
     ind = a < 0;
