@@ -1,4 +1,4 @@
-function [] = createindicatorconv(prmin)
+function [] = createindicatorconvav(prmin)
 % This function uses estimated flow from synthetic model to generate a
 % syntetic concentration map, to see if we can restore that one by
 % deconvolution
@@ -19,7 +19,10 @@ msg = ['Loading ' pathload];
 disp(msg);
 D = load(pathload);
 
-perfmat = D.perfmat;
+qcc     = perfusion1c.convertFlowStagToCC(D.qmat);
+perfmat = .5*(qcc{1} + qcc{2});
+perfmat(1,1) = 2*perfmat(1,1);
+perfmat(end,end) = 2*perfmat(end,end);
 phimat = D.phimat;
 
 % Reduced data: aif curve, timeline and the concentration map to find TTP
@@ -48,17 +51,26 @@ if numel(dim3) < 3
 end;
 dim = [dim3,ntime];
 
+% find time to peak map
+[tilde,delay] = max(E.Cmat,[],4);
+
+% delay using aif
+[tilde,delayaif] = max(E.aifval);
+delay = delay - delayaif;
+
+
+
+% %delay = 0
+% delay = zeros(dim3);
+ 
 % % find time to peak map
-% [tilde,delay] = max(E.Cmat,[],4);
-% [tilde,delayaif] = max(E.aifval);
-% % account for the delay in the true concentration map field as wel
-% delay = delay - delayaif;
-delay = zeros(dim3);
+% [tilde,delay2] = max(E.Cmat,[],4);
+% 
+% % move to zero (one, since matlab starts counting at 1) delay
+% delay2 = delay2 - min(delay2(:)) + 1;
+
 
 clear E;
-
-% move to zero (one, since matlab starts counting at 1) delay
-% delay = delay - min(delay(:)) + 1;
 
 aifmat = zeros(dim);
 for i = 1 : dim(1)

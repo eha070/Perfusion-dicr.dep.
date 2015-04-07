@@ -1,6 +1,5 @@
 function [F,Irec,Crec] = circularDeconvolution(C,timeline,OI,U,S,V) 
 %function [F,Irec,Crec] = circularDeconvolution(C,timeline,OI,U,S,V) 
-% NEW VERSION!
 % 
 % Circular Deconvolution according to [1].
 % The convolution is modeled like in the function linearDeconvolution as:

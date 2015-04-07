@@ -39,6 +39,12 @@
 \usepackage{comment}
 \usepackage{lipsum,amsmath,multicol}
 
+% added by constantin
+\usepackage{siunitx}%
+\usepackage{booktabs}%
+% \usepackage{multicol}%
+\usepackage{multirow}
+
 % for subfig
 \usepackage{subfig}
 %\usepackage[caption = false]{subfig}
@@ -71,6 +77,8 @@
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\CHalert}[1]{\textcolor{red}{CH: #1}}
 \newcommand*\diff{\mathop{}\!\mathrm{d}}
+
+\DeclareSIQualifier{\hundret}{100}
 
 
 \begin{document}
@@ -408,7 +416,7 @@ Substituting $x = x(s)$, $t=t(s)$ and denoting $c(s):=c(x(s),t(s))$, $\Qso(s):=Q
 	\end{alignat}
 \end{subequations}
 Here $x_0$ denotes the starting-point (in space) of the streamline and $t_0$ denotes the starting-timepoint of the streamline. $c(s)$ hence can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and $(x(s),t(s))$ is the wavefront at artificial timepoint $s$. For a visualization see Fig. \ref{fig:Streamlines}.
-\begin{figure}[h!tb]
+\begin{figure}[H]
 	\begin{tabular}{c p{3cm}}
 		\includegraphics[width=10cm]{./figs/vectorField.eps} &\vspace{-5cm}\parbox{3cm}{Flow field $q(x)$}\\
 		\includegraphics[width=10cm]{./figs/singleStreamline.eps} &\vspace{-5cm}\parbox{3cm}{A single streamline emerging at point $x_0 = (0.1,0.9)$} \\
@@ -421,7 +429,7 @@ Let the source term be non-zero within the ball $B_\epsilon$ and zero elsewhere.
 In order to do this, we place a small ball with radius $\delta$ with $\delta << \epsilon$ in the middle of the source. 
 We can now study the solution along streamlines starting at $\partial B_\delta$, the boundary of $B_\delta$ (cf. Fig. \ref{fig:SourceSink}). 
 Letting $\delta \to 0$, we see that the streamlines connecting to $\partial B_\delta$ fill whole $\Omega$.
-\begin{figure}[h!tb]
+\begin{figure}[H]
 		\includegraphics[width=15cm]{./figs/SourceSink.eps}
 		\caption{Streamlines passing through the source. Source- and sink areas are shown in red. Streamlines are supposed to begin on $\partial B_\delta$ (black)}
 		\label{fig:SourceSink}		
@@ -435,47 +443,47 @@ ODE \eqref{eq:ODEC}, which governs the behavior along the streamline, has the ge
 Here $R(v)=\int_{0}^v\Qso(x(u))/\phi(x(u)) d u$.
 We can interpret $R(v)$ as the amount of contrast agent which is ,,accumulated'' while the particle moves through the source field.
 Since in our setting $\Qso(x)=\qi$ for $x \in B_\epsilon$ and $\Qso(x)=0$ for $x \notin B_\epsilon$,  we find that $R(v)$ is constant if $v$ is bigger then some (streamline-dependent) threshold.
-We will now try to simplify \eqref{eq:Sol}. First, let us assume that $\phi(x) = \phi$ for some $\phi \in \R$, i.e. $\phi$ is a constant within $\Omega$. In this case we can solve \eqref{eq:ODEt} directly and obtain:
-\[
-	t(s) = \phi s + t_0 \quad \Leftrightarrow \quad s = (t - t_0)/\phi
-\]
-where $t_0$ is the starting-timepoint of the particles we want to track. 
-In order to go back to an Eulerian formulation, we can hence eliminate the parametrization variables $s$ and switch to a parametrization by regular time instead.
-Substituting $v = (w-t_0)/\phi$ and setting $t_0 + s\phi = t$ in \eqref{eq:Sol} yields:
-\begin{equation}
-	\label{eq:Solt}
-	c(t) = \frac{1}{\phi}\int_{t_0}^t e^{-\left(R(\frac{t-t_0}{\phi})-R(\frac{w-t_0}{\phi}\right)}c_a\big(\frac{w-t_0}{\phi}\big)\Qso\big(\frac{v-t_0}{\phi}\big) \frac{\diff w}{\phi}
-\end{equation}
-This equation can be interpreted as follows: 
-For a given starting-point $x_0$ and starting time $t_0$, Eq. \eqref{eq:Solt} gives the concentration at timepoint $t$ and location $x((t-t_0)/\phi)$. 
-Further assuming that $t$ is big enough that $x(t) \notin B_\epsilon$, we obtain $R(\frac{t-t_0}{\phi}) = \qi \cdot l$ for $l = (t_{max}-t_0)/\phi$ and $t_{max}$ is the timepoint at which $x(t)$ leaves the source-area $B_\epsilon$.
-\CHalert{I am still working on the following section:}
-This yields the following expression for $c(t)$
-\[
-	c(t) = 
-\]
-We will now try to go back to an Eulerian Formulation: One can see that for constant $k:=(t-t_0)/\phi$ we have also a constant location $x_k:=x(k)$.
-This gives the following concentration at location $x_k$ in dependency of the starting-time $t_0$:
-\[
-	c(x_k,t_0 + k \phi) = \frac{1}{\phi}\int_{t_0}^{t_0 + k\phi} e^{-\left(R(t)-R(\frac{w-t_0}{\phi}\right)}c_a\big(\frac{w-t_0}{\phi}\big)\Qso\big(\frac{v-t_0}{\phi}\big) \frac{\diff w}{\phi}	
-\]
-Since no tracer will arrive before timepoint $0+\phi k$ at $x_k$, we get the following closed expression for 
-\CHalert{BEGIN COMMENT HERE, ONLY FOR OUR UNDERSTANDING}
-\\
-\begin{equation}
-c(x_0,t) = e^{-R(t)}\Big (\int_{0}^t e^{R(s)} F(x_0,s)ds\Big )
-\end{equation}
- This is again equivalent with
-\begin{equation}
-c(x_0,t) = \int_{0}^t e^{-(R(t) - R(s))} F(x_0,s)ds
-\end{equation}
-and inserting the expression for $F$ leads to
-\begin{equation}
-c(x_0,t) = \frac{Q_{so}(x_0)}{\phi(x_0)} \int_{0}^t e^{-(R(t) - R(s))}c_{so}(x_0,s) ds
-\end{equation}
-\\
-END BEGIN COMMENT HERE
-\\
+% We will now try to simplify \eqref{eq:Sol}. First, let us assume that $\phi(x) = \phi$ for some $\phi \in \R$, i.e. $\phi$ is a constant within $\Omega$. In this case we can solve \eqref{eq:ODEt} directly and obtain:
+% \[
+% 	t(s) = \phi s + t_0 \quad \Leftrightarrow \quad s = (t - t_0)/\phi
+% \]
+% where $t_0$ is the starting-timepoint of the particles we want to track.
+% In order to go back to an Eulerian formulation, we can hence eliminate the parametrization variables $s$ and switch to a parametrization by regular time instead.
+% Substituting $v = (w-t_0)/\phi$ and setting $t_0 + s\phi = t$ in \eqref{eq:Sol} yields:
+% \begin{equation}
+% 	\label{eq:Solt}
+% 	c(t) = \frac{1}{\phi}\int_{t_0}^t e^{-\left(R(\frac{t-t_0}{\phi})-R(\frac{w-t_0}{\phi}\right)}c_a\big(\frac{w-t_0}{\phi}\big)\Qso\big(\frac{v-t_0}{\phi}\big) \frac{\diff w}{\phi}
+% \end{equation}
+% This equation can be interpreted as follows:
+% For a given starting-point $x_0$ and starting time $t_0$, Eq. \eqref{eq:Solt} gives the concentration at timepoint $t$ and location $x((t-t_0)/\phi)$.
+% Further assuming that $t$ is big enough that $x(t) \notin B_\epsilon$, we obtain $R(\frac{t-t_0}{\phi}) = \qi \cdot l$ for $l = (t_{max}-t_0)/\phi$ and $t_{max}$ is the timepoint at which $x(t)$ leaves the source-area $B_\epsilon$.
+% \CHalert{I am still working on the following section:}
+% This yields the following expression for $c(t)$:
+% \[
+% 	c(t) =
+% \]
+% We will now try to go back to an Eulerian Formulation: One can see that for constant $k:=(t-t_0)/\phi$ we have also a constant location $x_k:=x(k)$.
+% This gives the following concentration at location $x_k$ in dependency of the starting-time $t_0$:
+% \[
+% 	c(x_k,t_0 + k \phi) = \frac{1}{\phi}\int_{t_0}^{t_0 + k\phi} e^{-\left(R(t)-R(\frac{w-t_0}{\phi}\right)}c_a\big(\frac{w-t_0}{\phi}\big)\Qso\big(\frac{v-t_0}{\phi}\big) \frac{\diff w}{\phi}
+% \]
+% Since no tracer will arrive before timepoint $0+\phi k$ at $x_k$, we get the following closed expression for
+% \CHalert{BEGIN COMMENT HERE, ONLY FOR OUR UNDERSTANDING}
+% \\
+% \begin{equation}
+% c(x_0,t) = e^{-R(t)}\Big (\int_{0}^t e^{R(s)} F(x_0,s)ds\Big )
+% \end{equation}
+%  This is again equivalent with
+% \begin{equation}
+% c(x_0,t) = \int_{0}^t e^{-(R(t) - R(s))} F(x_0,s)ds
+% \end{equation}
+% and inserting the expression for $F$ leads to
+% \begin{equation}
+% c(x_0,t) = \frac{Q_{so}(x_0)}{\phi(x_0)} \int_{0}^t e^{-(R(t) - R(s))}c_{so}(x_0,s) ds
+% \end{equation}
+% \\
+% END BEGIN COMMENT HERE
+% \\
 Backpropagating $C = c \phi$ and inserting the expression for $F$ results in
 \begin{equation}
 C(x_0,t) = Q_{so}(x_0) \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds
@@ -740,72 +748,178 @@ where $\overline{C}_{SF}(x_i)$ is the voxelwise average value of $C_{SF}$ across
 \end{figure}
 
 
-\section{Restoring the porosity and flow field using the classical model}
+\subsection{The maximum-slope model}
+The maximum-slope model is the simplest model to recover perfusion.
+We follow [?] in its the derivation.
+Given a tissue-curve $C(t)$ and an arterial input function $c_a(t)$ as well as a venous output function $c_v(t)$, it is assumed that for any given timepoint the following relationship holds is fulfilled:
+\[
+	C(t+\Delta t) - C(t) \approx P \cdot \Delta t \big(c_a(t) - c_v(t + \Delta t)\big).
+\]
+Here $\Delta t(c_a(t) - c_v(t + \Delta t))$ is the total amount contrast-agent introduces in time $\Delta t$ and $C(t+\Delta t) - C(t)$ is the amount of contrast agent which has been measured to pass through the system.
+The Maximum-Slope model assumes that these two values are proportional with proportionality constant $P$, the perfusion. Rearranging and letting $\Delta t \to 0$ yields:
+\[
+	P = \frac{C'(t)}{c_a(t) - c_v(t)}.
+\]
+We now assume that we are in an early uptake-phase, where no contrast agent is leaving the system yet. 
+Hence it holds approximately
+\[
+	P = \frac{C'(t)}{c_a(t)} \iff Pc_a(t) = C'(t).
+\]
+Differentiating this equation with respect to $t$ yields:
+\[
+	P c_a'(t) = C''(t).
+\]
+Since this equation is fulfilled for every timepoint $t$, it is fulfilled especially for timepoint $t_{\mathrm max}:=\mathrm{argmax}_{t}c_a(t)$. 
+Since at this point it holds that $c_a'(t_{\mathrm max}) = 0$ and hence also $C''(t_{\mathrm max})=0$, we derive
+\begin{equation}\label{eq:MS}
+	P = \frac{\max_{t}C'(t)}{\max_{t}c_a(t)}.
+\end{equation}
 
-For restoration of the perfusion flow field we apply a voxelwise deconvolution of (\ref{eq:Cconv2}). For deconvolution we used the regularized Levenberg-Marquardt least squares method (here referred to as method 'least-squares deconvolution') to solve the linear system $AR = C$, corresponding to a Tikhonov regularization with $\epsilon = 10^{-4}$. Additionally, we applied a circular SVD deconvolution which is considered the state-of-the-art method for deconvolution within perfusion applications (here referred to as the method 'circular SVD'). The results for reconstructed voxelwise perfusion and porosity are presented as percentage error
-$$
-\Delta P(\%) = \frac{P_{rec}-P}{P}100\%, ~~ \Delta \phi(\%) = \frac{\phi_{rec}-\phi}{\phi}100\% 
-$$
-where $P_{rec}$ is the reconstructed perfusion and $\phi_{rec}$ is the reconstructed porosity.
-The reconstructions using a downsampling corresponding to a time spacing of $\Delta t = 0.2s$ is shown in Figs. \ref{fig:flowreconresultsgamma} - \ref{fig:flowreconresultsparker}.
 
-\begin{figure}[H]
-        \centering
-	       \subfloat[$\Delta P$ for $\Delta t = 0.2s$.]{
-                \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-gamma-T-60-dcmethod-circSVD-red-100-perfn.eps}
-                \end{overpic}}
-	       \subfloat[$\Delta \phi$ for $\Delta t = 0.2s$.]{
-                \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-gamma-T-60-dcmethod-circSVD-red-100-porosity.eps}
-                \end{overpic}}
-                \\
-	       \subfloat[$\Delta P$ for $\Delta t = 1s$.]{
-                \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-gamma-T-60-dcmethod-circSVD-red-500-perfn.eps}
-                \end{overpic}}
-	       \subfloat[$\Delta \phi$ for $\Delta t = 1s$.]{
-                \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-gamma-T-60-dcmethod-circSVD-red-500-porosity.eps}
-                \end{overpic}}
-        \caption{Percentage error of reconstructed perfusion and porosity maps using the gamma AIF, SCD and for different time spacing. (a-b) $\Delta P(\%)$ and $\Delta \phi(\%)$ for $\Delta t = 0.2s$ (c-d) $\Delta P(\%)$ and $\Delta \phi(\%)$ for $\Delta t = 1s$. }
-        \label{fig:flowreconresultsgamma}
-\end{figure}
+\section{Restoring the porosity and flow field using different models}
 
-
-\begin{figure}[H]
-        \centering
-	       \subfloat[$\Delta P$ for $\Delta t = 0.2s$.]{
-                \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-parker-T-60-dcmethod-circSVD-red-100-perfn.eps}
-                \end{overpic}}
-	       \subfloat[$\Delta \phi$ for $\Delta t = 0.2s$.]{
-                \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-parker-T-60-dcmethod-circSVD-red-100-porosity.eps}
-                \end{overpic}}
-                \\
-	       \subfloat[$\Delta P$ for $\Delta t = 1s$.]{
-                \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-parker-T-60-dcmethod-circSVD-red-500-perfn.eps}
-                \end{overpic}}
-	       \subfloat[$\Delta \phi$ for $\Delta t = 1s$.]{
-                \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-parker-T-60-dcmethod-circSVD-red-500-porosity.eps}
-                \end{overpic}}
-        \caption{Percentage error of reconstructed perfusion and porosity maps using the Parker AIF, SCD and for different time spacing. (a-b) $\Delta P(\%)$ and $\Delta \phi(\%)$ for $\Delta t = 0.2s$ (c-d) $\Delta P(\%)$ and $\Delta \phi(\%)$ for $\Delta t = 1s$. }
-        \label{fig:flowreconresultsparker}
-\end{figure}
-
+We tested the the convolution based classical model \eqref{eq:Cconv1} as well as maximum-slope model (MS, \eqref{eq:MS}) for their capability to recover the perfusion values.
+The deconvolution was performed using the block circulant SVD (bSVD) approach described in [?], which comes with a time-invariance with respect to arrival times.
+The success of the restoration was measured in terms of the relative error of the recovered perfusion with respect to the true perfusion
+\[
+	RE := \frac{P_{\mathrm rec} - P_{\mathrm true}}{P_{\mathrm true}}\cdot 100\%.
+\]
+The input data was downsampled to a final time-resolution of $\SI{1}{\second}$.
+In order to simulate different spatial resolutions, the data was spatially averaged over different block-sizes ranging from $b_1 = (1,1)$ to $b_5=(64,64)$.
+Results are displayed in Figure \ref{fig:resultsSCD},\ref{fig:resultsSFD} as well as in Table \ref{tab:resultsSim}.
+It can be observed that for the complete domain the perfusion can be restored by both methods accurately with an error of $\approx 2\%$.
+The impuls-response function reconstructed from the perfusion method is displayed in Figure \ref{fig:deconvResults}.
+However, within the capillary field the model assumptions of one inlet and one outlet are violated, causing large errors in the recovered flow field.
+Typical impuls response functions of the capillary field are also visualized in Figure \ref{fig:deconvResults}.
+These recovered gaussian-like functions seem to be describing dispersion effects, yielding a smoothing and broadening of the arterial-input.
 
 
 \begin{table}[H]
-\scriptsize
-\begin{center}
-\begin{tabular}{ l  l  l  l  l  l  l  l  l }
- & parker-ls-0.2s & parker-ls-1s & parker-circSVD-0.2s & parker-circSVD-1s & gamma-ls-0.2s & gamma-ls-1s & gamma-circSVD-0.2s & gamma-circSVD-1s\\
-\hline
-Perfusion, SFD &  61.16 &  61.22 & 5299.63 & 773.21 &  66.06 &  66.22 & 815.54 & 489.96\\
-Porosity, SFD &   3.19 &   3.19 &   3.19 &   3.19 &   0.00 &   0.02 &   0.00 &   0.02\\
-Perfusion, SCD &  74.66 &  73.34 & 5644.59 & 812.18 &  85.23 &  84.43 & 76761.61 &   1.17\\
-Porosity, SCD &  13.06 &  12.83 &  13.06 &  12.83 &   4.31 &  10.83 &   4.31 &  10.83\\
-\hline
-\end{tabular}
-\end{center}
-\caption{Average percentage error to the true perfusion and porosity fields, computed as $\overline{|\Delta P |}$ and $\overline{|\Delta \phi |}$. SFD= Simulated flow data from Darcys law and indicator-dilution theory. SCD = Simulated convolution data. The porosity has generally very low errors, although the error is higher for the Parker AIF than for the gamma AIF.  'ls' = least squares deconvolution and 'circSVD' = circular SVD deconvolution. The deviations for the perfusion are generally large.}
-\label{tab:results}
+	\caption{Results of the perfusion restoration with median relative errors in percent.}
+	\centering
+		\begin{tabular}{l c c c c c }
+			& Model & \multicolumn{4}{c}{Block Size}\\
+			 					 			& 		& (1,1) 		& (5,5) 		& (10,10) 		& entire domain \\
+			\toprule
+			\multirow{2}{*}{SFD: Perfusion} & MS 	& $170.09$ 	& $165.03$ 	& $158.57$ 		& $2.65$ \\
+			 					 	   		& bSVD  & $859.06$ 	& $768.58$ 	& $664.84$ 		& $-1.25$ \\
+			\multirow{2}{*}{SCD: Perfusion} & MS 	& $-23.20$ 	& $-24.26$ 	& $-25.75$ 		& $37.96$ \\
+			 					 			& bSVD  & $2.43$ 		& $-4.27$ 	& $-8.80$ 	& $20.72$ \\
+			\midrule											
+			SFD: CBV & & $4.37\cdot10^{-5}$      & $4.37\cdot10^{-5}$		& $4.37\cdot10^{-5}$		& $4.37\cdot10^{-5}$ \\											
+			SCD: CBV & & $1.94\cdot10^{-2}$      & $1.93\cdot10^{-2}$		& $2.12\cdot10^{-2}$		& $1.13$ 			
+		\end{tabular}
+	\label{tab:resultsSim}
 \end{table}
+
+
+
+\newcommand{\inc}[1]{\includegraphics[width = .3\textwidth]{./figs/#1}}
+\newcommand{\rbox}[2]{\rotatebox{90}{\hspace{#1}\mbox{\large #2}}}
+\begin{figure}[H]
+	\caption{Results of the restoration for the PDE Model (SFD)}
+	\centering
+		\begin{tabular}{c c c c}
+			 \rbox{5ex}{True perfusion} & \inc{recTrue-pde-1.eps} & \inc{recTrue-pde-5.eps} & \inc{recTrue-pde-10.eps}\\
+			 \rbox{13ex}{bSVD} & \inc{recCirc-pde-1.eps} & \inc{recCirc-pde-5.eps} & \inc{recCirc-pde-10.eps}\\
+			 \rbox{13ex}{MS} & \inc{recMS-pde-1.eps} & \inc{recMS-pde-5.eps} & \inc{recMS-pde-10.eps}\\			 			 			
+		\end{tabular}
+	\label{fig:resultsSFD}
+\end{figure}
+
+
+\begin{figure}[H]
+	\caption{Results of the restoration for the Convolution Model (SCD)}
+	\centering
+		\begin{tabular}{c c c c}
+			 \rbox{5ex}{True perfusion} & \inc{recTrue-conv-1.eps} & \inc{recTrue-conv-5.eps} & \inc{recTrue-conv-10.eps}\\
+			 \rbox{13ex}{bSVD} & \inc{recCirc-conv-1.eps} & \inc{recCirc-conv-5.eps} & \inc{recCirc-conv-10.eps}\\
+			 \rbox{13ex}{MS} & \inc{recMS-conv-1.eps} & \inc{recMS-conv-5.eps} & \inc{recMS-conv-10.eps}\\			 			 			
+		\end{tabular}
+	\label{fig:resultsSCD}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\caption{Deconvolution results}
+	\centering
+		\begin{tabular}{c c c}
+			 \rbox{0ex}{Entire Domain, SFD} & \inc{C-and-Crec.eps} & \inc{Irec.eps} \\
+			 \rbox{2ex}{Inside the capillary bed, SFD}& \inc{C-and-Capprox-cap.eps} & \inc{IR-cap.eps} \\			 
+			 \rbox{2ex}{Inside the capillary bed, SCD}& \inc{C-and-Crec-conv.eps} & \inc{Irec-conv.eps}			 
+		\end{tabular}
+	\label{fig:deconvResults}
+\end{figure}
+
+
+
+%
+%
+% For restoration of the perfusion flow field we apply a voxelwise deconvolution of (\ref{eq:Cconv2}). For deconvolution we used the regularized Levenberg-Marquardt least squares method (here referred to as method 'least-squares deconvolution') to solve the linear system $AR = C$, corresponding to a Tikhonov regularization with $\epsilon = 10^{-4}$. Additionally, we applied a circular SVD deconvolution which is considered the state-of-the-art method for deconvolution within perfusion applications (here referred to as the method 'circular SVD'). The results for reconstructed voxelwise perfusion and porosity are presented as percentage error
+% $$
+% \Delta P(\%) = \frac{P_{rec}-P}{P}100\%, ~~ \Delta \phi(\%) = \frac{\phi_{rec}-\phi}{\phi}100\%
+% $$
+% where $P_{rec}$ is the reconstructed perfusion and $\phi_{rec}$ is the reconstructed porosity.
+% The reconstructions using a downsampling corresponding to a time spacing of $\Delta t = 0.2s$ is shown in Figs. \ref{fig:flowreconresultsgamma} - \ref{fig:flowreconresultsparker}.
+%
+% \begin{figure}[H]
+%         \centering
+% 	       \subfloat[$\Delta P$ for $\Delta t = 0.2s$.]{
+%                 \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-gamma-T-60-dcmethod-circSVD-red-100-perfn.eps}
+%                 \end{overpic}}
+% 	       \subfloat[$\Delta \phi$ for $\Delta t = 0.2s$.]{
+%                 \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-gamma-T-60-dcmethod-circSVD-red-100-porosity.eps}
+%                 \end{overpic}}
+%                 \\
+% 	       \subfloat[$\Delta P$ for $\Delta t = 1s$.]{
+%                 \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-gamma-T-60-dcmethod-circSVD-red-500-perfn.eps}
+%                 \end{overpic}}
+% 	       \subfloat[$\Delta \phi$ for $\Delta t = 1s$.]{
+%                 \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-gamma-T-60-dcmethod-circSVD-red-500-porosity.eps}
+%                 \end{overpic}}
+%         \caption{Percentage error of reconstructed perfusion and porosity maps using the gamma AIF, SCD and for different time spacing. (a-b) $\Delta P(\%)$ and $\Delta \phi(\%)$ for $\Delta t = 0.2s$ (c-d) $\Delta P(\%)$ and $\Delta \phi(\%)$ for $\Delta t = 1s$. }
+%         \label{fig:flowreconresultsgamma}
+% \end{figure}
+%
+%
+% \begin{figure}[H]
+%         \centering
+% 	       \subfloat[$\Delta P$ for $\Delta t = 0.2s$.]{
+%                 \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-parker-T-60-dcmethod-circSVD-red-100-perfn.eps}
+%                 \end{overpic}}
+% 	       \subfloat[$\Delta \phi$ for $\Delta t = 0.2s$.]{
+%                 \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-parker-T-60-dcmethod-circSVD-red-100-porosity.eps}
+%                 \end{overpic}}
+%                 \\
+% 	       \subfloat[$\Delta P$ for $\Delta t = 1s$.]{
+%                 \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-parker-T-60-dcmethod-circSVD-red-500-perfn.eps}
+%                 \end{overpic}}
+% 	       \subfloat[$\Delta \phi$ for $\Delta t = 1s$.]{
+%                 \begin{overpic}[width=0.45\textwidth]{figs/synt-reconflow-method-classic-phi-flat-K-flat-dim-64-aif-parker-T-60-dcmethod-circSVD-red-500-porosity.eps}
+%                 \end{overpic}}
+%         \caption{Percentage error of reconstructed perfusion and porosity maps using the Parker AIF, SCD and for different time spacing. (a-b) $\Delta P(\%)$ and $\Delta \phi(\%)$ for $\Delta t = 0.2s$ (c-d) $\Delta P(\%)$ and $\Delta \phi(\%)$ for $\Delta t = 1s$. }
+%         \label{fig:flowreconresultsparker}
+% \end{figure}
+%
+%
+%
+% \begin{table}[H]
+% \scriptsize
+% \begin{center}
+% \begin{tabular}{ l  l  l  l  l  l  l  l  l }
+%  & parker-ls-0.2s & parker-ls-1s & parker-circSVD-0.2s & parker-circSVD-1s & gamma-ls-0.2s & gamma-ls-1s & gamma-circSVD-0.2s & gamma-circSVD-1s\\
+% \hline
+% Perfusion, SFD &  61.16 &  61.22 & 5299.63 & 773.21 &  66.06 &  66.22 & 815.54 & 489.96\\
+% Porosity, SFD &   3.19 &   3.19 &   3.19 &   3.19 &   0.00 &   0.02 &   0.00 &   0.02\\
+% Perfusion, SCD &  74.66 &  73.34 & 5644.59 & 812.18 &  85.23 &  84.43 & 76761.61 &   1.17\\
+% Porosity, SCD &  13.06 &  12.83 &  13.06 &  12.83 &   4.31 &  10.83 &   4.31 &  10.83\\
+% \hline
+% \end{tabular}
+% \end{center}
+% \caption{Average percentage error to the true perfusion and porosity fields, computed as $\overline{|\Delta P |}$ and $\overline{|\Delta \phi |}$. SFD= Simulated flow data from Darcys law and indicator-dilution theory. SCD = Simulated convolution data. The porosity has generally very low errors, although the error is higher for the Parker AIF than for the gamma AIF.  'ls' = least squares deconvolution and 'circSVD' = circular SVD deconvolution. The deviations for the perfusion are generally large.}
+% \label{tab:results}
+% \end{table}
 
 
 \bibliographystyle{plain} 

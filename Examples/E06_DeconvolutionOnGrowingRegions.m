@@ -1,18 +1,20 @@
 % ------------------------------------------------------------------------- 
-%                    E03_LinearDeconvolution
+%                      E06_DeconvolutionOnGrowingRegions 
 % 
-% Linear deconvolution on one of the synthetic flow models.
+% Performs deconvolution on growing regions on the synthetic flow model.
 % 
 % 
 % 
-%                                          (c)Constantin Heck, 19-Nov-2014 
+%                                          (c)Constantin Heck, 12-Mar-2015 
 %                                                http://mic.uni-luebeck.de
 % ------------------------------------------------------------------------- 
 
 
-clear;
+
 clc;
 close all;
+
+
 
 %setup which flow-calculation to use
 % indicatorcalc = 'conv';
@@ -29,22 +31,23 @@ trueFlow = 'perfusion';
 %which results to show?
 showFlowMaps       = 1;
 showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
-showSingleCurve    = 0;
+showSingleCurve    = 1;
+showPartition      = 0;
 
 
-%setup area where to run the deconvolution
-idxi  = (1:64);
-idxj  = (1:64);
+%setup size of blocks to run the deconvolution on
+blockSize = [5,5];
 
 
 %setup oscillation index OI
-OI = .5; %determined experimentally for 'conv'.
-% OI = .01; %determined experimentally for 'PDE'
+% OI = .001;
+OI = .01;
 
 
 %prepare downsampling of data (shorter runtime for SVD)
 %It will hold: Clow = Clow(:,:,1,1:step:k);
 step = 1;
+
 
 
 
@@ -56,6 +59,8 @@ prm               = settings;
 basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
 basenameFlow      = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
 foldername        = './results/';
+csi               = prm.csi;
+
 
 
 %setup paths
@@ -69,7 +74,6 @@ switch indicatorcalc
         error('Method set for indicatorcalc unknown')
 end
 
-
 % load concentration curves
 msg = ['Loading ' pathload];
 disp(msg);
@@ -79,7 +83,6 @@ D = load(pathload);
 Cmat     = squeeze(D.Cmat);
 AIF      = D.aifval;
 timeline = D.prm.timeline;
-
 
 %setup CBF
 msg = ['Loading ' pathloadFlow];
@@ -105,6 +108,8 @@ end
 clearvars E D;
 
 
+
+
 %% prepare data
 %prepare sizes
 m       = [size(Cmat,1),size(Cmat,2)];
@@ -122,16 +127,27 @@ klow    = numel(idxsamp);
 mklow   = [m,klow];
 
 
-%% setup area where to run the deconvolution
 
-%downsmaple the data
-numi        = numel(idxi)*numel(idxj);
+%% prepare blocks
+
+%setup an empty image do display the blocks
+partitionImage = zeros(csi(1),csi(2));
+
+%determine number of blocks in i and j direction
+nBlocksi = ceil(csi(1)/blockSize(1));
+nBlocksj = ceil(csi(2)/blockSize(2));
+nBlocks  = nBlocksi*nBlocksj;
+numBlock = prod(blockSize);
+
+
+%% setup area where to run the deconvolution
 
 
 %initialize variables to store results
 CBFest = zeros(m);
 Iest   = zeros([m,klow]);
 Cest   = zeros([m,klow]);
+Cblock = zeros([m,klow]);
 
 %get deconvolution matrix
 deltaT  = timelinelow(2)-timelinelow(1);
@@ -140,47 +156,85 @@ fprintf('Starting SVD...');
 tic; [U,S,V] = svd(A);
 fprintf('...done. Elapsed time: %1.3fs\n',toc);
 
-%do the job voxelwise
+%do the job in blocks
 h = waitbar(0);
-for i = idxi;
-    for j = idxj;
-                    
+for i = 1:nBlocksi
+   for j = 1:nBlocksj
        
+        %setup current block
+        idxi = blockSize(1)*(i-1) + (1:blockSize(1));
+        idxj = blockSize(2)*(j-1) + (1:blockSize(2));
+       
+        %remove indices larger then maximal entries
+        idxi(idxi>csi(1)) = [];
+        idxj(idxj>csi(2)) = [];
+        
+        %get current blockSize
+        cBlockSize = [numel(idxi),numel(idxj)];
+        cBlockn    = prod(cBlockSize);
+       
+        
+        %create image to display the blocks
+        partitionImage(idxi,idxj) = (i-1)*nBlocksj + j;
+
+        
         %do the deconvolution
-        Cij = squeeze(Clow(i,j,:));
+        Cij = Clow(idxi,idxj,:);
+        Cij = reshape(Cij,[],k);
+        Cij = mean(Cij,1)';
         [F,Irec,Crec] = perfusion1c.linearDeconvolution(Cij,timelinelow,OI,U,S,V);
         
-        %store results
-        CBFest(i,j) = F;
-        Iest(i,j,:) = Irec;
-        Cest(i,j,:) = Crec;
         
-        %fill the waitbar
-        perc = (numel(idxj)*(i-min(idxi)) + j-min(idxj)+1 )/numi;
-        waitbar(perc,h,sprintf('Calculating...%2.2f%%...',perc*100));
+        %prepare Irec and Crec to store them
+        Irec = reshape(Irec,1,1,[]);
+        Irec = repmat(Irec,cBlockSize(1),cBlockSize(2),1);
+        
+        Crec = reshape(Crec,1,1,[]);
+        Crec = repmat(Crec,cBlockSize(1),cBlockSize(2),1);
+        
+        %prepare Cbloc
+        Cij = reshape(Cij,1,1,[]);
+        Cij = repmat(Cij,cBlockSize(1),cBlockSize(2),1);
 
         
-    end
+
+        %store results
+        CBFest(idxi,idxj)   = F;
+        Iest(idxi,idxj,:)   = Irec;
+        Cest(idxi,idxj,:)   = Crec;
+        Cblock(idxi,idxj,:) = Cij;
+
+        %fill the waitbar
+        perc = (nBlocksj*(i-1) + j)/nBlocks;
+        waitbar(perc,h,sprintf('Calculating...%2.2f%%...',perc*100));       
+        
+        
+        %prepare true flow to block-size
+        Ftrue          = CBF(idxi,idxj);
+        Ftrue          = mean(Ftrue(:));
+        CBF(idxi,idxj) = Ftrue;
+       
+       
+   end
 end
 
-close(h);
+delete(h);
 
-%% show results
+
+%% showFlowMaps
 
 if showFlowMaps
     
-    %setup "segmented" Flow CBFseg
-    seg = zeros(m);
-    seg(idxi,idxj) = 1;
-    CBFseg = CBF.*seg;
-
-    %setup scaling
-    tmp  = 100*60*[reshape(CBFseg(CBFseg~=0),[],1);reshape(CBFest(CBFest~=0),[],1)];
+    %setup scaling cmax
+    cScale = 1;
+    
+    %setup color axis
+    tmp  = [CBF(:);CBFest(:)]*100*60;
     cmin = min(tmp);
-    cmax = max(tmp);
+    cmax = cScale*max(tmp);
 
     %setup 
-    REMap = abs(CBFest-CBFseg)./CBFseg;
+    REMap = abs(CBFest-CBF)./CBF;
 
     %show flow
     figure(1);clf;
@@ -189,7 +243,7 @@ if showFlowMaps
 
 
     subplot(1,3,1);
-    imagesc(CBFseg*100*60);
+    imagesc(CBF*100*60);
     caxis([cmin,cmax]);
     axis image;
     title('True flow (ml/min/100ml)')
@@ -220,7 +274,7 @@ if showMultipleCurves
 
 
     %reshape everything
-    Ctr = Clow(idxiD,idxjD,:);
+    Ctr = Cblock(idxiD,idxjD,:);
     Ctr = reshape(Ctr,numi,[]);
     Ctr = Ctr';
 
@@ -253,19 +307,60 @@ end
 
 if showSingleCurve
     
+    %setup squeeze function
+    s = @(v) squeeze(v(:));    
+    
     %position of single curve
-    pos = [32,10];
+    pos = [52,52];
+    pos = randi(m(1),2,1);
+    
+    %get the stuff
+    corig = s(Cblock(pos(1),pos(2),:));
+    cest  = s(Cest(pos(1),pos(2),:));
+    iest  = s(s(Iest(pos(1),pos(2),:)));
+    
+    %double-check
+    tau   = timelinelow(2)-timelinelow(1);
+    ctest = conv(AIFlow,iest);
+    ctest = tau*ctest(1:k);
 
-    s = @(v) squeeze(v(:));
 
     figure(3);clf;
     set(3,'name','Comparison on single voxel');
 
-    subplot(1,2,1);
-    plot(timelinelow,s(Clow(pos(1),pos(2),:)),timelinelow,s(Cest(pos(1),pos(2),:)),'LineWidth',3);
-    title('Ctrue (blue) and reconstructed C (red) at position pos')
+    subplot(1,3,1);
+    colormap gray(512);
+    imagesc(squeeze(Cblock(:,:,20)))
+    axis image;
+    hold on;
+    plot(pos(1),pos(2),'xb')
+    hold off;
+    title(sprintf('Ctrue (blue) and reconstructed C (red) at position pos=%i,%i',pos(1),pos(2)))    
     
-    subplot(1,2,2);
-    plot(s(Iest(pos(1),pos(2),:)),'LineWidth',3);
+    subplot(1,3,2);
+    plot(timelinelow,corig,timelinelow,ctest,'LineWidth',3);
+    title(sprintf('Ctrue (blue) and reconstructed C (red) at position pos=%i,%i',pos(1),pos(2)))
+    
+    subplot(1,3,3);
+    plot(iest,'LineWidth',3);
     title('estimated I at position pos')
+    
+
+end
+
+
+
+
+
+
+
+
+
+%%
+
+if showPartition
+    figure(4);clf;
+    set(4,'name','Partition of the image');
+    imagesc(partitionImage);
+    axis image;
 end
