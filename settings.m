@@ -21,7 +21,8 @@ prm.aiftype = 'gamma';
 % prm.aiftype = 'parker';
 % prm.aiftype = 'delta';
 
-prm.physdim = [10,10,1];
+% physical dimension in meter
+prm.physdim = [10,10,1]*1e-3;
 prm.physvol = prod(prm.physdim);
 
 % dimension of problem
@@ -41,8 +42,8 @@ prm.h = prm.physdim./prm.dim;
 % voxel volume in ml
 prm.voxelvol = prod(prm.h);
 
-% viscosity blood in kPa*s
-prm.mu = 5*1e-6;
+% viscosity blood in Pa*s
+prm.mu = 5*1e-6*1e3;
 
 % timeline and dt
 prm.T = 90;
@@ -94,35 +95,34 @@ prm.nsi = size(prm.csi,1);
 % Go for a perfusion of 50ml/min/100ml 
 qin = 50;
 
-% This corresponds to 0.5ml/min/ml = 0.5mm^3/min/mm^3
+% This corresponds to 0.5ml/min/ml = 0.5m^3/min/m^3
 qin = qin/100;
 
 % Multiply by volume of our slab to get the total flow into the region to
-% get ml/min
+% get m^3/min
 qin = qin*prm.physvol;
 
-% Divide by 60 to get per second: mm^3/sec
+% Divide by 60 to get per second: m^3/sec
 qin = qin/60;
 
 % this value gives a perfusion of around 50ml/min/100ml!!! Thats why we use
 % it.
 % qin = 0.0007;
 
-% Actually, must multiply Q with a unit converter a = 1(ml/mm^3), becoming
-% Q*a/rho
+% Fmat = int_Omega_i Q(x) dx where Q = [m^3/s/m^3], so Fmat = [m^3/s],
+% the absolute inflow
 Fmat = zeros(dim);
-
 qout = -qin;
 for i = 1 : prm.nso
     Fmat(prm.cso(i,1),prm.cso(i,2),prm.cso(i,3)) = qin/prm.nso;
     Fmat(prm.csi(i,1),prm.csi(i,2),prm.csi(i,3)) = qout/prm.nsi;
 end;
 
-% fluid density map in units mg/mm^3
+% fluid density map in units kg/m^3
 prm.rho = 1;
 
-% scale away the density
-Fmat = Fmat/prm.rho;
+% % scale away the density
+% Fmat = Fmat/prm.rho;
 
 % for plotting Cmat
 prm.scaling = 1;

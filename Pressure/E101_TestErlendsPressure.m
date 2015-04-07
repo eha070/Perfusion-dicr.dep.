@@ -28,8 +28,7 @@ u = D.pmat;
 m = size(u);
 h = prm.h;
 
-%setup permeabiltiy K and viscosity mu
-K  = 5e-6;
+K = D.Kmat(1,1,1,1);
 mu = prm.mu;
 
 %% build laplacian
@@ -60,7 +59,8 @@ LAP = kron(id(2),L1) + kron(L2,id(1));
 %% calculate -K/mu*\Delta u and visualize results
 f = -K/mu*(LAP*u(:));
 f = reshape(f,m);
-
+% Convert from m^3/s/m^3 to m^3/s which are the units of Fmat
+f = f*prod(prm.h);
 
 figure(1); clf;
 subplot(1,3,1);
