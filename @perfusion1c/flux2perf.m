@@ -1,6 +1,6 @@
 function [P,Pnorm] = flux2perf(X,lenim,Fmat,h)
-% Convert flux values to perfusion values. Assuming the input X is the flux 
-% with units m^3/s/m^2
+% Convert flux values to perfusion values. Assuming the input X is absolute flux 
+% with units m^3/s
 %
 
 % transfer flux to cell centered
@@ -8,6 +8,7 @@ X1 = (X{1}(2:end,:,:) + X{1}(1:end-1,:,:))/2;
 X2 = (X{2}(:,2:end,:) + X{2}(:,1:end-1,:))/2;
 X3 = (X{3}(:,:,2:end) + X{3}(:,:,1:end-1))/2;
 
+% convert to normalized flux
 X1 = X1/(h(2)*h(3));
 X2 = X2/(h(1)*h(3));
 X3 = X3/(h(1)*h(2));
