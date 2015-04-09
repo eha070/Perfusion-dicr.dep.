@@ -160,7 +160,7 @@ end;
 
 % find the streamlines
 D = load('lenmat.mat');
-if ~isequal(D.prm.dim,prm.dim) || ~isequal(D.prm.physdim,prm.physdim)
+if ~isequal(D.prm.dim,prm.dim) || ~isequal(D.prm.physsdim,prm.physdim)
     msg = ['Making and saving lenmat'];
     disp(msg);
     lenmat = perfusion1c.arclength(qmat,Fmat,prm.h);
@@ -186,7 +186,7 @@ disp(msg);
 % show(perfmatn,5);colorbar
 
 
-savpaper = 1;
+savpaper = 0;
 savdata = 1;
 basename = perfusion1c.providenameflow(prm.phiopt,prm.Kopt,prm.dim);
 if savpaper
@@ -256,6 +256,6 @@ if savdata
     pathsave = ['results/synt-' mfilename '-' basename '.mat'];
     msg = ['Saving ' pathsave];
     disp(msg);
-    save(pathsave,'pmat','qmat','perfmat','perfmatn','phimat','Fmat','prm','-v7.3')
+    save(pathsave,'pmat','qmat','perfmat','perfmatn','phimat','Fmat','prm','Kmat','-v7.3')
 end;
 

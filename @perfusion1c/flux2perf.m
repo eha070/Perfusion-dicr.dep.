@@ -1,6 +1,6 @@
 function [P,Pnorm] = flux2perf(X,lenim,Fmat,h)
-% Convert flux values to perfusion values. Assuming the input X is the flux 
-% with units m^3/s/m^2
+% Convert flux values to perfusion values. 
+%Assuming the input X is the flux with units m^3/s (absolute flux)
 %
 
 % transfer flux to cell centered
@@ -8,6 +8,8 @@ X1 = (X{1}(2:end,:,:) + X{1}(1:end-1,:,:))/2;
 X2 = (X{2}(:,2:end,:) + X{2}(:,1:end-1,:))/2;
 X3 = (X{3}(:,:,2:end) + X{3}(:,:,1:end-1))/2;
 
+%normalize with surface volume to get to 
+%normalized flux with units m^3/s/m^2
 X1 = X1/(h(2)*h(3));
 X2 = X2/(h(1)*h(3));
 X3 = X3/(h(1)*h(2));
@@ -16,12 +18,13 @@ absq = sqrt(X1.^2 + X2.^2 + X3.^2);
 % fix the source/sinc later
 absq(ne(Fmat,0)) = 0;
 
-% perfusion in units m^3/s/m^3
+% perfusion in units m^3/s/m^3 
 P = absq./lenim;
 
 % fix the source and sink values
 ind = Fmat > 0;
 len = lenim(ind);
+
 % NB this area is an assumption of source along upper row, not valid
 % elsewhere!! What???
 % We divide by the area to transfer Fmat (m^3/s) to flux (m^3/s/m^2)

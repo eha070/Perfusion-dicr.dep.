@@ -28,7 +28,7 @@ trueFlow = 'perfusion';
 
 %which results to show?
 showFlowMaps       = 1;
-showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
+showMultipleCurves = 0; %remember to setup indices idxiD and idxjD
 showSingleCurve    = 0;
 
 

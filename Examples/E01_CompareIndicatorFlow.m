@@ -14,9 +14,9 @@ clc;
 close all;
 
 
-dynamicFlow = 1;
-showMaps    = 1;
-showCurve   = 0;
+dynamicFlow = 0;
+showMaps    = 0;
+showCurve   = 1;
 
 
 %% load data

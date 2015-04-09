@@ -1,4 +1,4 @@
-function [pmat,flowmat] = syntTPFA(Kmat,Qmat,prm)
+function [pmat,flowmat] = syntTPFA(Kmat,Fmat,prm)
 
 
 % Here we make the code from Aarnes, Gimse and Lie for incompressible
@@ -18,7 +18,7 @@ disp(msg);
 perfusion1c.printstructscreen(prm);
 
 % make source/sink into a vector
-Q = Qmat(:);
+F = Fmat(:);
 
 %
 % Compute transmissibilities by harmonic averaging
@@ -81,10 +81,10 @@ A = spdiags(vals,index,nvox,nvox);
 A(1,1) = A(1,1) + sum(Kmat(:,1,1,1));
 
 % solve linear system for the pressure p
-%u = minres(A,Q);
+%u = minres(A,F);
 
-% b = voxelvol*Q;
-b = Q;
+% b = voxelvol*Q = F;
+b = F;
 
 p = A\b;
 pmat = reshape(p,dim(1),dim(2),dim(3));
