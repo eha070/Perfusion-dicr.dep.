@@ -14,6 +14,7 @@
 \usepackage{amsmath}%
 \usepackage{amsfonts}%
 \usepackage{amssymb}%
+\usepackage{amsthm}%
 %\usepackage{mwe}
 \usepackage[pdftex]{graphicx}
 %\usepackage{graucx}
@@ -319,7 +320,7 @@ where $||\mathbb{C}(x)| = \int_0^Ldl$ is the length of the streamline passing th
 
 
 \subsection{Estimating the porosity}
-The principle of mass balance of fluid and tracer particles is described by Eq.  (\ref{eq:syntcontsimp2}) and (\ref{eq:conteqlocal}}). For locations where the source and sink is zero, $Q_{so}(x) = 0$ and $Q_{si}(x) = 0$, and (\ref{eq:conteqlocal}}) becomes
+The principle of mass balance of fluid and tracer particles is described by Eq.  (\ref{eq:syntcontsimp2}) and (\ref{eq:conteqlocal}). For locations where the source and sink is zero, $Q_{so}(x) = 0$ and $Q_{si}(x) = 0$, and (\ref{eq:conteqlocal}) becomes
 \begin{equation}
 \phi\frac{\partial c}{\partial t}  = - q \cdot \nabla c.
 \label{eq:1cmodel}
@@ -520,6 +521,66 @@ This is recognized as the total perfusion $P = \overline{Q}_{so}|B_\epsilon|/|\O
 This expression is identical to the classical model in (\ref{eq:Cconv}) for $\Omega$ as the averaging domain and by taking $c_{so}(t) = c_a(t)$.
 
 Thus, we have in this section formally proven that the classical model for perfusion is correct when applying $\Omega$ as the averaging domain. On the other hand, applying the same model voxel wise will lead to an over-estimation of the perfusion, with a scaling factor growing along with the streamline length.
+
+\subsection{A PDE-Model for the impuls-response functions}
+		In order to understand the model better, we will derive in this section an equation for the impuls-response functions associated with a solution of \eqref{eq:conteqlocal}.
+		Let us assume that there exists a solution and that the solution can be represented in the following way:
+		\[
+			c(x,t) = \int_0^t c_a(s)I(x,t-s)\diff s.
+		\]
+		We will now use this relationship together with \eqref{eq:conteqlocal}.
+		In order to do that, we calculate the derivative with respect to $t$.
+		This is done as follows:
+		\begin{alignat*}{2}
+			\frac{\diff}{\diff t} \int_0^t c_a(s)I(x,t-s)\diff s &= \lim_{h \to 0} \quad & &\frac{\int_0^{t+h} c_a(s)I(x,t+h-s)\diff s - \int_0^{t} c_a(s)I(x,t-s)\diff s}{h} \\
+			&= \lim_{h \to 0} &&\frac{\int_0^{t} c_a(s)\left(I(x,t+h-s)-I(x,t-s) \right)\diff s}{h} \\
+				&&&+ \frac{1}{h}\int_t^{t+h} c_a(s)I(x,t+h-s)\diff s. \\
+				&= &&\int_0^t c_a(s) I_t(x,t-s) \diff s + c_a(t)I(x,0).
+		\end{alignat*}
+		Assuming that $I(x,0)=0$ \CHalert{(from the looks of the impuls-response functions obtained from the data this should hold)}, we obtain:
+		\[
+			\frac{\diff}{\diff t} \int_0^t c_a(s)I(x,t-s)\diff s = \int_0^t c_a(s)I_t(x,t-s)\diff s.
+		\]
+		Combining this with \eqref{eq:conteqlocal} yields:
+		\begin{align*}
+			\int_0^t c_a(s) &\big[ \phi I_t(x,t-s) + \nabla \cdot \left(\q(x)  I(x,t-s) \right) \\ 
+			&+ I(x,t-s)\Qsi(x) -  \delta_0(t-s)\Qso(x) \big]  \diff s = 0.
+		\end{align*}
+		where $\delta_0$ is the delta-distribution with respect to time.
+		Let us denote the term in squared brackets with $J(x,t)$, then we can write this equation as
+		\[
+			\int_0^t c_a(s) J(x,t-s) \diff s = 0 \quad \text{for all }x \in \Omega.
+		\]
+		The following lemma shows that this implies that $J(x,t) = 0$ for all $x \in \Omega, t \in [0,\infty)$.
+		We analyze the above equation for an arbitrary point in $\Omega$.
+		\begin{lemma}
+			Let $j,c_a:[0,\infty) \to \R$ be continuous and assume that $c_a \not\equiv 0$. If it holds for all $t>0$ that
+			\[
+				\int_0^t c_a(s) j(t-s) \diff s = 0
+			\]
+			then $j\equiv 0$.
+		\end{lemma}
+		\begin{proof}
+			Assume that $j \neq 0$ and let $t_j$ be the largest $t \in [0,\infty)$ such that $j(t_j)=0$.
+			Since we assumed that $j$ is continuous, there is a small interval $(t_j,t_j+\beta)$ where either $j>0$ or $j<0$.
+			For sake of simplicity assume that $j>0$ on $(t_j,t_j+\beta)$, the case that $j(t_j)<0$ will follow analogously.
+			For $c_a$ we analogously define the timepoint $t_c$ and analogously assume that $c_a>0$ on $(t_c, t_c + \delta)$.
+			Let $\gamma:=\min(\alpha,\delta)$.
+			Then it holds for $t_0 := t_c + t_j + \gamma$ that
+			\[
+				\int_0^{t_0} c_a(s) j(t-s) \diff s = \int_{t_0-\gamma}^{t_0} c_a(s)j(t-s) > 0.
+			\]
+			We can hence conclude the assertion.
+		\end{proof}
+		
+		Next we observe that in our case $\Qso$ and $\Qsi$ are both independent of time.
+		As a consequence, one can see that if $C$ has the above structure, $I(x,t)$ needs to fulfill the following equation:
+		\[
+			\phi I_t(x,t) - \nabla \cdot (\q(x)I(x,t)) = \delta_t\Qso(x) - I(x,t)\Qsi(x)
+		\]
+		Hence $I(x,t)$ can be regarded as a solution of a the transport equation with a Dirac-Delta as Arterial Input.
+
+
 
 \section{Numerical implementation}
 

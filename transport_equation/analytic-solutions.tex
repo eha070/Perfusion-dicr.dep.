@@ -147,10 +147,13 @@
 			Furthermore assume that there is also a sink around point $\xsi:=(1-\mu,\mu)^\top \in \Omega$, namely in the area $O:=B_{\mu}(\xsi)$.
 			We will denote the source by $\Qso(x):=\qi\cdot\chi_I(x)$ and the sink by $\Qsi(x):=\qi\cdot\chi_O(x)$ for some $\qi \in \R^+$.
 			Following \cite{BergenMIC15}, will now try to describe the flow in $\Omega_T:=\Omega \times (0,T)$ in the following way:
-			\begin{alignat*}{2}
-				c_t(x,t) + \nabla \cdot \left(c(x,t)\q(x) \right) &= c_a(t)\Qso(x) - c(x,t)\Qsi(x), &\qquad  &(x,t) \in \Omega_T, \\
-				c(x,t) &= c_0(x,t), && (x,t) \in \Gamma,
-			\end{alignat*}
+			\begin{subequations}
+				\label{eq:ourMainProblem}
+				\begin{alignat}{2}
+					c_t(x,t) + \nabla \cdot \left(c(x,t)\q(x) \right) &= c_a(t)\Qso(x) - c(x,t)\Qsi(x), &\qquad  &(x,t) \in \Omega_T, \\
+					c(x,t) &= c_0(x,t), && (x,t) \in \Gamma,
+				\end{alignat}
+			\end{subequations}
 			where $c_a(t)$ denotes the arterial input function.
 			This of course leaves the question where to put the $2D$ starting manifold $\Gamma \subseteq \overline{\Omega_T}$ and which boundary values $c_0(x,t)$ to prescribe on it.
 			Since contrast-agent is brought into the system continuously within the area $O$, we define $\Gamma:= \partial B_\epsilon(\xso) \times [0,T)$ for $\epsilon < \mu$.
@@ -177,7 +180,7 @@
 			\begin{equation}\label{eq:Darcy}
 				\left\vert
 					\begin{alignedat}{2}
-						\nabla \cdot  \left(-\frac{K}{\mu} \nabla p(x) \right) &= \Qso(x,t) + \Qsi(x,t), & \qquad &x\in \Omega, \\
+						\nabla \cdot  \left(-\frac{K}{\mu} \nabla p(x) \right) &= \Qso(x) + \Qsi(x), & \qquad &x\in \Omega, \\
 						p_\nu(x) &= 0, && x \in \partial \Omega\setminus\{x_0\},\\
 						p(x_0)     &= 0, &&
 					\end{alignedat}
@@ -296,43 +299,109 @@
 			\]
 		\end{remark}
 		
-		\textit{Comments Erlend}: This looks beautiful. I think we can understand the solution with the characteristics as a change from Eulerian $(x,t)$ to Lagrangian coordinates $(x_0,t)$. The coordinates $x$ are the "standard" coordinates and the coordinates $x_0$ are fixed, corresponding to initial starting points in $\Gamma$. The variable $t$ can be considered as the parameterisation, like $s$, since $t' = 1$ it means that $t  = s + s_0$ and we can choose $s_0 = 0$. I write the equation above slightly different ( I also change to small $c$ since that is what we solve for, as well as adding the porosity $\phi$ which has fallen out from the equations):
-		$$
-		c'(x_0,t) + \frac{Q_{so}(x_0)}{\phi}c(x_0,t) = c_a(t)\frac{Q_{so}(x_0)}{\phi}
-		$$
-		The term $q$ also gets scaled by the porosity, I think, but that doesn't change anything here. Its just a scaling of the streamline vector.
-		As before, derivative means with respect to the parametrisation $s$. Here, all variables are in Lagrangian coordinates. The source term $Q_{so}$ has no time variation and has therefore no time variable. The arterial input concentration $c_a(s)$ only exists in the source and has no spatial coordinate. With these assumptions the solution becomes, according to above,
-		$$
-		c(x_0,t) = \frac{1}{\phi}\int_0^{t}e^{-(R(t) - R(s))}c_a(s)Q_{so}(x_0)ds
-		$$
-		where $R(t) = \frac{1}{\phi}\int_0^t Q_{so}(x_0)du = \frac{tQ_{so}}{\phi}$ since $Q_{so}$ is independent of time in our case \CHalert{This would be valid only if $Q_{so}(x(s))$ is constant in $\Omega$. I was under the impression that $Q_{so}(x(s)) = 1$ for $s=0$ and $Q_{so}(x(s))=0$ for $s>0$. In this case $R(t)$ would become independent of $t$ and hence $R(t) = \frac{Q_{so}}{\phi}$}. This again can be rephrased as
-		$$
-		c(x_0,t) = \frac{Q_{so}(x_0)}{\phi}\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)ds
-		$$
-		\CHalert{This would also only be valid if $Q_{so}(x)$ would be constant in $\Omega$.}
-		for $T = \phi/Q_{so}$. Ideally we would be able to project this solution back to Eulerian coordinates (as they do in Evans) but this is hard since we don't have an explicit expression for $q$ and $Q_{so}$. So, lets stay within Lagrangian coordinates. Multipllying with $\phi$ now gives the solution in terms of big $C$,
-		$$
-		C(x_0,t) = Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)ds
-		$$
-		Note that the term $C(x_0,t)$ means the concentration at the point $x(t)$, reached at time $t$ by the particles starting at $x_0$.
-		This is exactly the classical model! And I think it tells us the following: In the classical model we compute the source flow $Q_{so}$, and not the flow that enters the voxel, what people think. Thus we can expect the classical model to be correct for computing the entire inflow of $Q_{so}$, which equals the entire flow. And that is exactly our claim, the classical model does not compute the inflow into that voxel but rather the inflow at the inlet (in the source entering the domain)! Because of this it is wrong to sum up all the flows from $\Omega$, since we are now in Lagrangian coordinates and the integration domain is over the domain of the source term, $\Gamma$.
-Embedding the above inside an integral gives
-		$$
-		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|}\int_\Omega Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
-		$$
-		The source term is only nonzero in the source so this is equal to
-		$$
-		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|}\int_\Gamma Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
-		$$
-which again becomes while assuming $Q_{so}$ is constant over $\Gamma$
-		$$
-		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|} |\Gamma| Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
-		$$
-		and again
-		$$
-		 \overline{C}(x_0,t)dx = P\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
-		$$
-		where $P = |\Gamma|Q_{so}/|\Omega|$, becoming the total flow divided by the volume (ml/s/ml) which is perfusion. Thus, the classical model can estimate the \textit{total} perfusion $P$.
+		\section{Deriving a PDE for the impuls-response functions}
+		We will now try to derive an equation the impuls-response functions need to fulfill, if the functions are solution to the PDE \eqref{eq:ourMainProblem}.
+		Let us assume that the solution can be represented in the following way:
+		\[
+			c(x,t) = \int_0^t c_a(s)I(x,t-s)\diff s.
+		\]
+		If we want to use this relationship with \eqref{eq:ourMainProblem}, we will need to calculate the derivative w.r.t. $t$.
+		This is done as follows:
+		\begin{alignat*}{2}
+			\frac{\diff}{\diff t} \int_0^t c_a(s)I(x,t-s)\diff s &= \lim_{h \to 0} \quad & &\frac{\int_0^{t+h} c_a(s)I(x,t+h-s)\diff s - \int_0^{t} c_a(s)I(x,t-s)\diff s}{h} \\
+			&= \lim_{h \to 0} &&\frac{\int_0^{t} c_a(s)\left(I(x,t+h-s)-I(x,t-s) \right)\diff s}{h} \\
+				&&&+ \frac{1}{h}\int_t^{t+h} c_a(s)I(x,t+h-s)\diff s. \\
+				&= &&\int_0^t c_a(s) I_t(x,t-s) \diff s + c_a(t)I(x,0).
+		\end{alignat*}
+		\CHalert{Assuming that $I(x,0)=0$ (from the looks of the impuls-response functions obtained from the data this should hold)}, we obtain:
+		\[
+			\frac{\diff}{\diff t} \int_0^t c_a(s)I(x,t-s)\diff s = \int_0^t c_a(s)I_t(x,t-s)\diff s.
+		\]
+		Combining this with \eqref{eq:ourMainProblem} yields:
+		\begin{align*}
+			\int_0^t c_a(s) &\big[ I_t(x,t-s) + \nabla \cdot \left(\q(x)  I(x,t-s) \right) \\ 
+			&+ I(x,t-s)\Qsi(x) -  \delta_0(t-s)\Qso(x) \big]  \diff s = 0.
+		\end{align*}
+		where $\delta_0$ is the delta-distribution with respect to time.
+		Let us denote the term in squared brackets with $J(x,t)$, then we can write this equation as
+		\[
+			\int_0^t c_a(s) J(x,t-s) \diff s = 0 \quad \text{for all }x \in \Omega.
+		\]
+		The following lemma shows that this implies that $J(x,t) = 0$ for all $x \in \Omega, t \in [0,\infty)$.
+		We analyze the above equation for an arbitrary point in $\Omega$.
+		\begin{lemma}
+			Let $j,c_a:[0,\infty) \to \R$ be continuous and assume that $c_a \not\equiv 0$. If it holds for all $t>0$ that
+			\[
+				\int_0^t c_a(s) j(t-s) \diff s = 0
+			\]
+			then $j\equiv 0$.
+		\end{lemma}
+		\begin{proof}
+			Assume that $j \neq 0$ and let $t_j$ be the largest $t \in [0,\infty)$ such that $j(t_j)=0$.
+			Since we assumed that $j$ is continuous, there is a small interval $(t_j,t_j+\beta)$ where either $j>0$ or $j<0$.
+			For sake of simplicity assume that $j>0$ on $(t_j,t_j+\beta)$, the case that $j(t_j)<0$ will follow analogously.
+			For $c_a$ we analogously define the timepoint $t_c$ and analogously assume that $c_a>0$ on $(t_c, t_c + \delta)$.
+			Let $\gamma:=\min(\alpha,\delta)$.
+			Then it holds for $t_0 := t_c + t_j + \gamma$ that
+			\[
+				\int_0^{t_0} c_a(s) j(t-s) \diff s = \int_{t_0-\gamma}^{t_0} c_a(s)j(t-s) > 0.
+			\]
+			We can hence conclude the assertion.
+		\end{proof}
+		
+		Next we observe that in our case $\Qso$ and $\Qsi$ are both independent of time.
+		As a consequence, one can see that if $C$ has the above structure, $I(x,t)$ needs to fulfill the following equation:
+		\[
+			I_t(x,t) - \nabla \cdot (\q(x)I(x,t)) = \delta_t\Qso(x) - I(x,t)\Qsi(x)
+		\]
+		Hence $I(x,t)$ can be regarded as a solution of a the transport equation with a Dirac-Delta as Arterial Input.
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+% 		\textit{Comments Erlend}: This looks beautiful. I think we can understand the solution with the characteristics as a change from Eulerian $(x,t)$ to Lagrangian coordinates $(x_0,t)$. The coordinates $x$ are the "standard" coordinates and the coordinates $x_0$ are fixed, corresponding to initial starting points in $\Gamma$. The variable $t$ can be considered as the parameterisation, like $s$, since $t' = 1$ it means that $t  = s + s_0$ and we can choose $s_0 = 0$. I write the equation above slightly different ( I also change to small $c$ since that is what we solve for, as well as adding the porosity $\phi$ which has fallen out from the equations):
+% 		$$
+% 		c'(x_0,t) + \frac{Q_{so}(x_0)}{\phi}c(x_0,t) = c_a(t)\frac{Q_{so}(x_0)}{\phi}
+% 		$$
+% 		The term $q$ also gets scaled by the porosity, I think, but that doesn't change anything here. Its just a scaling of the streamline vector.
+% 		As before, derivative means with respect to the parametrisation $s$. Here, all variables are in Lagrangian coordinates. The source term $Q_{so}$ has no time variation and has therefore no time variable. The arterial input concentration $c_a(s)$ only exists in the source and has no spatial coordinate. With these assumptions the solution becomes, according to above,
+% 		$$
+% 		c(x_0,t) = \frac{1}{\phi}\int_0^{t}e^{-(R(t) - R(s))}c_a(s)Q_{so}(x_0)ds
+% 		$$
+% 		where $R(t) = \frac{1}{\phi}\int_0^t Q_{so}(x_0)du = \frac{tQ_{so}}{\phi}$ since $Q_{so}$ is independent of time in our case \CHalert{This would be valid only if $Q_{so}(x(s))$ is constant in $\Omega$. I was under the impression that $Q_{so}(x(s)) = 1$ for $s=0$ and $Q_{so}(x(s))=0$ for $s>0$. In this case $R(t)$ would become independent of $t$ and hence $R(t) = \frac{Q_{so}}{\phi}$}. This again can be rephrased as
+% 		$$
+% 		c(x_0,t) = \frac{Q_{so}(x_0)}{\phi}\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)ds
+% 		$$
+% 		\CHalert{This would also only be valid if $Q_{so}(x)$ would be constant in $\Omega$.}
+% 		for $T = \phi/Q_{so}$. Ideally we would be able to project this solution back to Eulerian coordinates (as they do in Evans) but this is hard since we don't have an explicit expression for $q$ and $Q_{so}$. So, lets stay within Lagrangian coordinates. Multipllying with $\phi$ now gives the solution in terms of big $C$,
+% 		$$
+% 		C(x_0,t) = Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)ds
+% 		$$
+% 		Note that the term $C(x_0,t)$ means the concentration at the point $x(t)$, reached at time $t$ by the particles starting at $x_0$.
+% 		This is exactly the classical model! And I think it tells us the following: In the classical model we compute the source flow $Q_{so}$, and not the flow that enters the voxel, what people think. Thus we can expect the classical model to be correct for computing the entire inflow of $Q_{so}$, which equals the entire flow. And that is exactly our claim, the classical model does not compute the inflow into that voxel but rather the inflow at the inlet (in the source entering the domain)! Because of this it is wrong to sum up all the flows from $\Omega$, since we are now in Lagrangian coordinates and the integration domain is over the domain of the source term, $\Gamma$.
+% Embedding the above inside an integral gives
+% 		$$
+% 		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|}\int_\Omega Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
+% 		$$
+% 		The source term is only nonzero in the source so this is equal to
+% 		$$
+% 		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|}\int_\Gamma Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
+% 		$$
+% which again becomes while assuming $Q_{so}$ is constant over $\Gamma$
+% 		$$
+% 		\frac{1}{|\Omega|}\int_\Omega C(x_0,t)dx = \frac{1}{|\Omega|} |\Gamma| Q_{so}(x_0)\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
+% 		$$
+% 		and again
+% 		$$
+% 		 \overline{C}(x_0,t)dx = P\int_0^{t}e^{-\frac{t-s}{T}}c_a(s)dsdx
+% 		$$
+% 		where $P = |\Gamma|Q_{so}/|\Omega|$, becoming the total flow divided by the volume (ml/s/ml) which is perfusion. Thus, the classical model can estimate the \textit{total} perfusion $P$.
 		
 		
 	\begin{thebibliography}{9}
@@ -351,7 +420,7 @@ which again becomes while assuming $Q_{so}$ is constant over $\Gamma$
 	\end{thebibliography}
 	
 	\begin{flushright}
-		\signatureAl{7cm}{Erlend Hodneland, Erik Hanson\\University of Bergen\\Norway}
+		\signatureAl{7cm}{Erlend Hodneland, Erik Hanson\\University of Bergen}
 		\signature{28ex}
 	\end{flushright}
 
