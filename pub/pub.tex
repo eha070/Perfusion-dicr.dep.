@@ -4,33 +4,186 @@
 
 %% set author information etc
 \title{Some title}
-\author{Constantin Heck}
+\author{Constantin Heck, Erlend Hodneland, Erik A. Hanson, \\ Arvid Lundervold, Jan Modersitzki, Alexandre Malyshev \\ (random order)}
 \date{\today}
 
 
+%% define some local commands
+\newcommand{\Qso}{Q_{\mathrm{so}}}
+\newcommand{\Qsi}{Q_{\mathrm{si}}}
+\newcommand{\ca}{c_\mathrm{a}}
+
+
+%--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
 % Here begins the document
 %--------------------------------------------------------------------------------------------
-
+%--------------------------------------------------------------------------------------------
 \begin{document}
+	%--------------------------------------------------
+	% Title Page=
+	%--------------------------------------------------
 	% \maketitle
 
+
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Section: Mathematical theory
+	%--------------------------------------------------
+	%--------------------------------------------------
+	\section{Mathematical Theory} \label{sec:maththeory}
 	
-	\section{Preliminaries}
+	In order to model contrast agent (CA) propagation through the capillary system, several assumptions on flow and propagation have to be made.
+	In pharmacokinetic analysis it is often assumed that each voxel is an autonomous system that can be modeled by standard pharmacokinetic theory [?].
+	In fact, this assumption is questionable when we describe CA propagation through a larger area with a highly developed capillary system [?].
+	Here we expect in contrast a coupled system, since each voxel can be regarded as an inlet for the surrounding voxels.
+	We hence decided to describe the CA propagation as a spatially coupled transport process, which more accurately models the nature of the problem. 
+	Details of the modeling of transport will be presented in Section \ref{sec:transport}.
+	
+	The CA transport itself is driven by blood flow. 
+	We will hence describe a model for the blood flow in Section \ref{sec:flow}.
+	Within the capillary system we expect the blood flow to be driven mainly by differences in pressure.
+	This way of modeling flow comes from the theory of porous media and is expressed in Darcy's law [?].
+	As a consequence, we will apply the physical understanding of flow as surface flow $q = q(x)$ with units \si{\cubic\cubic\milli\meter\per\second\per\square\milli\meter}.
+	The surface flow is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
+	However, a model to convert surface flow to perfusion with units \si{\cubic\cubic\milli\meter\per\second\per\cubic\milli\meter} will be introduced in Section \ref{sec:flow2perf}.
+	The resulting CA flux $J(x,t)$ with units \si{\milli\mol\per\second\per\square\milli\meter} is assumed to be linear and stationary, meaning that $J(x,t) = q(x)\cdot c(x,t)$.
+	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
+	A detailed description of modeling the blood flow can be found in Section \ref{sec:flow}.
+	
+	Another key ingredient from porous media is the introduction of the porosity $\phi$ where $0 \le \phi \le 1$.
+	The porosity describes which fraction of a small tissue volume is accessible for blood.
+	Comparing with pharmacokinetic modeling, the porosity directly translates to the cerebral blood volume (CBV).
+
+	We will now describe the construction of the digital phantom in detail.
+	
+	
+	%--------------------------------------------------
+	% Subsection: Modeling the Blood Flow
+	%--------------------------------------------------
+	\subsection{Modeling the Blood Flow}\label{sec:flow}
+	
+	We model the blood flow as the flow of a fluid through a porous medium. 
+	The fluid has units \si{\kilo\gram\per\cubic\milli\meter} and is denoted by $\rho = \rho(x,t)$.
+	As explained previously, the flow $q$ (in \si{\cubic\milli\meter\per\second\per\square\milli\meter}) as well as the porosity $\phi$ (with $0 \le \phi \le 1$) are assumed to be stationary and hence independent of time.
+	Fluid introduced and extracted from the system is modeled by a source- and sink term $\tilde{Q} = \tilde{Q}(x)$ with units \si{\kilo\gram\per\second\per\cubic\milli\meter}. 
+	The continuity equation describing conservation of mass now states that
+	\begin{equation}
+		\frac{\partial (\phi \rho)}{\partial t} + \nabla \cdot (\rho q) = \tilde{Q}.
+		\label{eq:syntcont}
+	\end{equation} 
+	Furthermore assuming that the system is in steady-state and that the density of blood $\rho(x)$ is constant in space, we obtain that $\diffopcal{\rho}{t} = 0$ and hence:
+	\begin{equation}
+		\nabla \cdot q = \frac{\tilde{Q}}{\rho}.
+		\label{eq:syntcontsimp}
+	\end{equation}
+	In order to scale away the density $\rho$ we define another source term $Q$ with units \si{\cubic\milli\meter\per\second\per\cubic\milli\meter} having the relation $\tilde{Q} = Q\rho$, thus transforming \eqref{eq:syntcontsimp} into
+	\begin{equation}
+		\nabla \cdot q = Q.
+		\label{eq:syntcontsimp2}
+	\end{equation}
+	The right hand side is only non-zero within the source or the sink. 
+	Elsewhere, \eqref{eq:syntcontsimp2} is concurrent with the incompressibility condition of divergence free flow.
+	
+	Low velocity fluid flow in porous media is described by Darcy's law [?]:
+	\[
+		q = -\frac{K}{\mu} \left( \nabla p + \rho g  \nabla z \right).
+	\]
+	here $g$ is the gravitational acceleration, $K$ is the permeability tensor with units \si{\square\milli\meter}, $z$ is the spatial position along the gravitational field and $\mu = \mu(x)$ is the viscosity of the fluid with units $\si{\pascal\second}$.
+	For the current project the flow is taking place perpendicular to the gravitational field and the gravitational term can thereby be discarded.
+	That a simplified version of Darcy's law thus becomes
+	\begin{equation}
+		q = -\frac{K}{\mu} \nabla p.
+		\label{eq:syntdarcysimp}
+	\end{equation}
+	We now combine \eqref{eq:syntcontsimp2} and \eqref{eq:syntdarcysimp} and assume that $K$ is symmetric and positive definite.
+	This yields the following elliptic partial differential equation the pressure-field $p$ must fulfill:
+	\begin{equation}
+		\left\vert
+		\begin{alignedat}{2}
+			\nabla \cdot \left( -\frac{K}{\mu} \nabla p \right) &= Q  \qquad &&x \in \Omega, \\
+			n \cdot \nabla p &=0 &&x \in \partial \Omega.
+		\end{alignedat}
+		\right\vert
+		\label{eq:flowmodel}
+	\end{equation}
+	Here $\partial \Omega$ denotes the boundary of $\Omega$ and $n(x)$ the outward unit normal vector. 
+	Modeling an isolated system with no inflow or outflow along the boundary of $\Omega$, we impose the Neumann boundary conditions $n \cdot \nabla p = 0$ on $\partial \Omega$.
+	Note that \eqref{eq:flowmodel} exhibits a solution which unique up to constant since only pressure differences are taken into consideration \cite{evans1998}.
+	Having solved \eqref{eq:flowmodel} the flow field can be computed according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
+	
+	
+	%--------------------------------------------------
+	% Subsection: Modeling the Contrast Agent Transport
+	%--------------------------------------------------	
+	\section{Modeling the Contrast Agent Transport}\label{sec:transport}
+	In this section we will describe how the CA propagates in the tissue according to the flow-field.
+	We assume that the CA is introduced at a source- and extracted at a sink location.
+	The concentration map resulting from the simulation is later used to model the CA concentration one would observe with MRI or CT measurements.
+	
+	In order to define meaningful continuous contrast agent concentrations, we first describe the CA concentration in an (arbitrarily) small tissue volume $\Omega_i$.
+	Assume that $V_i$ is the volume of $\Omega_i$ and $v_i$ the the blood volume of $\Omega_i$.
+	By definition the porosity is in this case given by $\phi_i = v_i/V_i$.
+	Letting first $V_i \rightarrow 0$ leads to the continuos porosity field $\phi(x)$.	
+	We now fix a time point $t$.
+	Denote the tracer concentration in $\Omega_i$ with respect to the whole volume $V_i$ by $C_i$ and the concentration with respect to the blood volume $v_i$ by $c_i$, both with units \si{\milli\mol\per\cubic\milli\meter}. 
+	From the definition of $c_i,C_i$ and $\phi_i$ we obtain the relation $C_i = \phi_i \cdot c_i$.
+	Letting $V_i \to 0$ and assuming that all parameters are continuous allows us to introduce $C(x,t),c(x,t)$ as well as $\phi(x)$ at an arbitrary point.
+
+	Assuming differentiable functions, the rate of change of tracer molecules within the control volume $\Omega_i$ can he described by
+	\begin{equation}
+		\diffop{t}\int_{\Omega_i}C \diffint x = \int_{\Omega_i}\diffop{t}(\phi c) \diffint x.
+		\label{eq:dmdt}
+	\end{equation}	
+	Since we expect mainly transport along the vessels and marginal diffusion, the change in tracer mass within $\Omega_i$ occurs only from advective flow and the source and sink field $Q(x)$.
+	Let us write the source- and the sink term as $Q(x) = \Qsi(x) + \Qso(x)$ where $\Qsi \le 0$ is the sink and $\Qso \ge 0$ is the source. 
+	Both are assumed to be zero everywhere except at in the respective source and sink locations.
+	Note that $Q = \Qso + \Qsi$ and $\int_\Omega Q \diffint x =0$ in line with incompressible flow. 
+	The change in contrast agent at time point $t$ can hence be written as
+	\begin{equation}
+		-\int_{ \Gamma_i}c(q \cdot n)\diffint s + \int_{\Omega_i}\ca \Qso \diffint x + \int_{\Omega_i}c\Qsi \diffint x,
+		\label{eq:surfflux}
+	\end{equation}
+	where $n$ is the outward unit normal on $\Gamma_i := \partial \Omega_i$.
+	Furthermore $\ca = \ca(t)$ with unit \si{\milli\mol\per\cubic\milli\meter} describes the amount of contrast agent entering the system at the source. 
+	In standard pharmacokinetic modeling, $\ca$ is referred to as the arterial input function (AIF).
+	From preservation of the tracer mass, equations \eqref{eq:dmdt} and \eqref{eq:surfflux} must balance such that
+	\begin{equation}
+		\int_{\Omega_i}\diffop{t} (\phi c) \diffint x + \int_{ \Gamma_i}c(q \cdot n) \diffint s = \int_{\Omega_i}\ca\Qso \diffint x + \int_{\Omega_i}c \Qsi \diffint x.
+		\label{eq:conteq}
+	\end{equation}
+	Upon application of the divergence theorem, \eqref{eq:conteq} is consistent with the continuity equation on local form
+	\begin{equation}
+		\phi \frac{\partial c}{\partial t} + \nabla \cdot (cq) = \ca\Qso + c\Qsi,
+		\label{eq:conteqlocal}
+	\end{equation}
+	a linear transport equation in $c(x,t)$. 
+	
+	
+	
+	
+	\section{Converting Flow to Perfusion}\label{sec:flow2perf}
+	
+	
+	
+	
+	
+	
+	
+	 
+	
+	
+	
 	
 	
 	
 
 
+	%--------------------------------------------------
+	% Bibliography
+	%--------------------------------------------------
+	\bibliographystyle{ieeetr}	
+	\bibliography{./bibliography.bib}
 
-	\bibliographystyle{abbrvnat}	
-	\bibliography{./bibliography/bibliography.bib}
-	
-
-	\begin{flushright}
-		% \signatureAl{28ex}{Max Mustermann\\Uni Koblenz}
-		\signature{28ex}
-	\end{flushright}
-	
 	
 \end{document}

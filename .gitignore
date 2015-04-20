@@ -4,6 +4,8 @@
 *.log
 *.lb
 *.synctex.gz
+*.bbl
+*.blg
 
 #matlab-ignores
 *.m~
@@ -11,7 +13,7 @@
 #MAC-Ignores
 .DS_Store
 
-#constantin saves his commit-messages in this file
+#Constantin sometimes saves his commit-messages in this file
 commit_msg
 
 #ignore converted-to.pdf files
