@@ -1,0 +1,78 @@
+%% load necessary packages
+\RequirePackage[T1]{fontenc}
+\RequirePackage[ngerman,english]{babel}
+\RequirePackage{mathtools,amsfonts,amsthm}
+\RequirePackage{graphicx}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{datetime}
+\RequirePackage{color}
+\RequirePackage{ifdraft}
+\RequirePackage{lastpage}
+\RequirePackage{scrpage2}
+\RequirePackage{siunitx}
+
+
+%setup siunitx
+\sisetup{per-mode = symbol,qualifier-mode=brackets}
+\DeclareSIQualifier{\blood}{blood}
+
+%default page-style
+\pagestyle{scrheadings}
+\cfoot{}
+\ofoot{ \thepage/\pageref{LastPage} }
+
+%% if draft: set heading
+\ifdraft{
+\setheadsepline{.5pt}
+\ihead{\pagemark}
+\ohead{\textcolor{yellow}{\today, \currenttime}}
+}
+
+
+%commands for signature
+%good width for my signature is 28ex
+\newcommand{\signature}[1]{
+			\begin{minipage}[t]{#1}
+				\emph{
+				Constantin Heck\\
+				MIC, University of Lübeck\\
+				heck@mic.uni-luebeck.de\\
+				\today}
+			\end{minipage}
+}
+\newcommand{\signatureAl}[2]{
+			\begin{minipage}[t]{#1}
+				\emph{#2}
+			\end{minipage}
+}
+
+
+
+%% set text layout
+\frenchspacing
+
+%% set math commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+
+
+%% define theorems
+\theoremstyle{plain} %theoremstyle theorem
+\newtheorem{theorem}{Theorem}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem{corrolary}{Corrolary}
+\newtheorem*{corrolary*}{Corrolary}
+
+\theoremstyle{definition} %theoremstyle definition
+\newtheorem{definition}{Definition}
+\newtheorem*{definition*}{Definition}
+\newtheorem{assumptions}{Assumptions}
+\newtheorem*{assumptions*}{Assumptions}
+
+\theoremstyle{remark} %theoremstyle plain
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}

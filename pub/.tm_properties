@@ -1,0 +1,6 @@
+TM_LATEX_MASTER  = "$CWD/pub.tex"
+excludeInBrowser = {*.aux,*.log,*.synctex.gz,*.bbl,*.blg,*.toc}
+windowTitle 	 = 'Validation of a classic one-comartment model for perfusion -  (${CWD}) - ${TM_DISPLAYNAME}'
+spellChecking    = true
+spellingLanguage = 'en'
+fontSize         = 12
