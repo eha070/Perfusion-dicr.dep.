@@ -3,6 +3,7 @@
 \RequirePackage[ngerman,english]{babel}
 \RequirePackage{mathtools,amsfonts,amsthm}
 \RequirePackage{graphicx}
+\RequirePackage{float} %exact placement of graphics with H
 \RequirePackage[utf8]{inputenc}
 \RequirePackage{datetime}
 \RequirePackage{color}
@@ -10,9 +11,11 @@
 \RequirePackage{lastpage}
 \RequirePackage{scrpage2}
 \RequirePackage{siunitx}
+\RequirePackage{todonotes}
 
 
-%setup siunitx
+
+%setup siunitx. Hint: \si{\milli\litre\per100\gram} and \SI{20}{\milli\litre\per100\gram}
 \sisetup{per-mode = symbol,qualifier-mode=brackets}
 \DeclareSIQualifier{\blood}{blood}
 
