@@ -16,6 +16,7 @@
 \newcommand{\ca}{c_\mathrm{a}}
 \newcommand{\CBV}{\mathrm{CBV}}
 
+%define SI-units, since we want to be able to easily change them
 \newcommand{\siq}{\cubic\milli\meter\per\second\per\square\milli\meter}
 \newcommand{\siqt}{\cubic\milli\meter\per\second}
 \newcommand{\siP}{\cubic\milli\meter\per\second\per\cubic\milli\meter}
@@ -27,7 +28,7 @@
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
-% Here begins the document
+% Here begins the document, remove "draft" option in document class to include images
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
 \begin{document}
@@ -62,11 +63,12 @@
 	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
 	A detailed description of modeling the blood flow can be found in Section \ref{sec:flow}.
 	
-	Another key ingredient from porous media is the introduction of the porosity $\phi$ evans98where $0 \le \phi \le 1$.
+	Another key ingredient from porous media is the introduction of the porosity $\phi$ for $0 \le \phi \le 1$.
 	The porosity describes which fraction of a small tissue volume is accessible for blood.
 	Comparing with pharmacokinetic modeling, the porosity directly translates to the cerebral blood volume (CBV).
 	
-	In order to test the standard model for their ability to restore CBF and CBV, we need to convert flow with units \si{\siq} to perfusion with units \si{\siP}. A method to do that will be presented in Section \ref{sec:flow2perf}.
+	In order to test the standard models for their abilities to restore CBF and CBV, we need to convert the flow $q$ with units \si{\siq} to perfusion $P$ with units \si{\siP}. 
+	A method to do that will be presented in Section \ref{sec:flow2perf}.
 
 	In Section \ref{sec:CBV} we will give a proof that the porosity CBV can be estimated from the standard relationship $\CBV = \left(\int_0^\infty C(x,s) \diffint s\right)/\left(\int_0^\infty \ca(s) \diffint s\right)$.
 
@@ -131,7 +133,7 @@
 	%--------------------------------------------------
 	% Subsection: Modeling the Contrast Agent Transport
 	%--------------------------------------------------	
-	\section{Modeling the Contrast Agent Transport}\label{sec:transport}
+	\subsection{Modeling the Contrast Agent Transport}\label{sec:transport}
 	In this section we will describe how the CA propagates in the tissue according to the flow-field.
 	We assume that the CA is introduced at a source- and extracted at a sink location.
 	The concentration map resulting from the simulation is later used to model the CA concentration one would observe with MRI or CT measurements.
@@ -182,8 +184,10 @@
 	In this case we can follow \cite{evans98} to see that \eqref{eq:conteqlocal} exhibits a unique local solution.
 	
 	
-	
-	\section{Converting Flow to Perfusion}\label{sec:flow2perf}
+	%--------------------------------------------------
+	% Subsection: Converting Flow to Perfusion
+	%--------------------------------------------------
+	\subsection{Converting Flow to Perfusion}\label{sec:flow2perf}
 	The model described in \eqref{eq:flowmodel} uniquely determines the flux field $q(x)$. 
 	However, in pharmacokinetic modeling the parameter of interest is usually the cerebral blood flow (CBF), which we will denote by $P(x)$.
 	It is not obvious how to transform a flux field into a scalar perfusion field $P(x)$.
@@ -241,19 +245,23 @@
 	\]
 	Let $l \subset \Omega$ be the (unique) streamline passing through $y$ and let $L$ denote be the length of $l$.
 	We now consider a small tube $T$ of radius $\varepsilon$ around $l$.
-	Following Cavalieri's principle the volume $V$ of $T$ can be expressed as $V = \varepsilon^2\pi l$
+	Following Cavalieri's principle the volume $V$ of $T$ can be expressed as $V = \varepsilon^2\pi L$
 	Hence we can express the perfusion $P_\varepsilon$ for this volume as
 	\[
-		P_\varepsilon = \frac{F}{V} = \frac{1}{\varepsilon^2 \pi l} \int_{A_\varepsilon} \left( q\cdot \frac{q(y)}{\Vert q(y) \Vert} \right) \diffint A. 
+		P_\varepsilon = \frac{F}{V} = \frac{1}{\varepsilon^2 \pi L} \int_{A_\varepsilon} \left( q\cdot \frac{q(y)}{\Vert q(y) \Vert} \right) \diffint A. 
 	\]
 	Letting $\varepsilon \to 0$ and using that $F/(\varepsilon^2\pi)$ goes to $\Vert q(y) \Vert$ if $q(x)$ is continuous yields a value for the perfusion $P_{y}$:
 	\[
-		P_{y} = \frac{\Vert q(y) \Vert}{l}
+		P_{y} = \frac{\Vert q(y) \Vert}{L}
 	\]
 	where $l$ is the length of the streamline passing through the point $y$. 
 	This is an explicit formula for converting flux into perfusion and is later used for evaluation of the classical model for perfusion. 
-	
-	\section{A method to estimate the porosity}\label{sec:CBV}
+
+
+	%--------------------------------------------------
+	% Subsection: Estimate the Porosity
+	%--------------------------------------------------	
+	\subsection{A Method to Estimate the Porosity}\label{sec:CBV}
 	
 	
 	
