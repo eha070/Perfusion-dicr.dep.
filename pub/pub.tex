@@ -251,10 +251,11 @@
 		P_\varepsilon = \frac{F}{V} = \frac{1}{\varepsilon^2 \pi L} \int_{A_\varepsilon} \left( q\cdot \frac{q(y)}{\Vert q(y) \Vert} \right) \diffint A. 
 	\]
 	Letting $\varepsilon \to 0$ and using that $F/(\varepsilon^2\pi)$ goes to $\Vert q(y) \Vert$ if $q(x)$ is continuous yields a value for the perfusion $P_{y}$:
-	\[
+	\begin{equation}
 		P_{y} = \frac{\Vert q(y) \Vert}{L}
-	\]
-	where $l$ is the length of the streamline passing through the point $y$. 
+		\label{eq:flow2perf}
+	\end{equation}
+	where $L$ is the length of the streamline passing through the point $y$. 
 	This is an explicit formula for converting flux into perfusion and is later used for evaluation of the classical model for perfusion. 
 
 
@@ -264,7 +265,33 @@
 	\subsection{A Method to Estimate the Porosity}\label{sec:CBV}
 	
 	
-	
+	The principle of mass balance of fluid and tracer particles is described by \eqref{eq:flowmodel} and \eqref{eq:conteqlocal}. 
+	For locations $x$ where $Q(x) = 0$ one can see that \eqref{eq:conteqlocal} becomes
+	\[
+		\phi\frac{\partial c}{\partial t}  = - q \cdot \nabla c.
+		\label{eq:1cmodel}
+	\]
+	Integrating from $t_0$ to $t_1$ results in the model
+	\[
+		\phi [c(x,t_1) - c(x,t_0)]  = - \int_{t_0}^{t_1}q \cdot  \nabla c \diffint t.
+	\]
+	Going to the limit $t_0 = 0$ to $t_1 = \infty$, using the boundary conditions $c(x,0) = c(x,\infty) = 0$ and defining $E(x):= \int_0^\infty c(x,s) \diffint s$ leads to
+	\[
+		0 = q \cdot \nabla  E(x).
+		\label{eq:streamlinezero}
+	\]
+	We can interpret this equation in such a way, that $q$ lies in-plane with the level-sets of the function $E(x)$.
+	This means that $E(x)$ is constant along the streamlines of the fluid flow.
+	Since we assumed that $Q$ has a delta-like structure and since all streamlines are emerging at the arterial-input, we obtain
+	\[
+		\int_0^\infty c(x,s) \diffint s = \int_0^\infty \ca(s) \diffint s.
+	\]
+	Using $C(x,t) = \phi(x) c(x,t)$ we obtain
+	\begin{equation}
+		\phi(x) =  \frac{ \int_{0}^{\infty} C(x,s) \diffint s }{ \int_{0}^{\infty} \ca(s) \diffint s}.
+		\label{eq:phi}
+	\end{equation}
+	This expression coincides with the classical formula for CBV and is hereby proven analytically for the proposed model.
 	
 	
 	
