@@ -264,7 +264,6 @@
 	%--------------------------------------------------	
 	\subsection{A Method to Estimate the Porosity}\label{sec:CBV}
 	
-	
 	The principle of mass balance of fluid and tracer particles is described by \eqref{eq:flowmodel} and \eqref{eq:conteqlocal}. 
 	For locations $x$ where $Q(x) = 0$ one can see that \eqref{eq:conteqlocal} becomes
 	\[
@@ -294,16 +293,47 @@
 	This expression coincides with the classical formula for CBV and is hereby proven analytically for the proposed model.
 	
 	
+
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Section: Mathematical theory
+	%--------------------------------------------------
+	%--------------------------------------------------
 	
+	\section{Numerical implementation}
 	
-	 
+	In this section we will describe how the model was implemented numerically.
+	For simplicity we will assume that the domain is discretized by a regular cartesian grid of size $n \times n$ with a regular cell-spacing $h$.
+	The proposed method may be extended for non-regular grids in an analogous fashion.
 	
-	
-	
-	
-	
+	Since conservation of mass is a key factor for both the discretization of the flow and the transport, we use tailored algorithms to obtain these solutions.
+	To solve \eqref{eq:flowmodel} we used the two-point flux approximation finite volume method (TPFA). 
+	Based on mass balance equations, we calculated the flow in such a fashion that conservation of mass was guaranteed.
+	The transport equation \eqref{eq:conteqlocal} was solved in a similar fashion by a straight-forward discretization of \eqref{eq:conteq}.
+
+	%--------------------------------------------------
+	% Subsection: Estimate the Porosity
+	%--------------------------------------------------	
+	\subsection{Discretization of the single phase flow model} \label{sec:flowmodel}
 	
 
+	Considering \eqref{eq:flowmodel} on a small domain (voxel) $\Omega_i \subset \Omega$ and applying the divergence theorem yields:
+	\begin{equation}
+		\int_{\partial \Omega_i}   -(\lambda \nabla p) \cdot \nu \diffint s = \int_{\Omega_i}Q \diffint x
+	\label{eq:TPFAint}
+	\end{equation}
+	with conductivities $\lambda := K/\mu$.
+	Defining $\Gamma_{i,j}$ as the boundary between neighboring voxels $\Omega_i$ and $\Omega_j$, one can see that mainly the component perpendicular to $\Gamma_{ij}$ will drive the flow between these voxels.
+	The component of $\nabla p$ pointing along the normal vector of $\Gamma_{ij}$ can therefore be replaced in terms of the cell centered pressure values $p_i$ and $p_j$
+ 	$\Delta_h p_{ij} := \frac{(p_j - p_i)}{h}$, where $h$ denotes the grid-spacing.
+	The total flux across the face $\Gamma_{ij}$ can hence be approximated by
+	\[
+		\Delta_h p_{ij} \int_{\Gamma_{ij}}\lambda \diffint s \approx (p_i - p_j) \underbrace{\frac{\lambda_{ij} \vert \Gamma_{ij} \vert}{h}}_{:=t_{ij}}.
+	\]
+	Here $|\Gamma_{ij}|$ is notation for the surface area of $\Gamma_{ij}$ and $\lambda_{ij}$ denotes an approximation of the mean conductivity on $\Gamma_{ij}$.
+	The terms not depending on the pressure $p$ are collected into the transmissibilities $t_{ij}:=|\Gamma_{ij}|\lambda_{ij}/h$.
+	Defining furthermore $F_i:=\int_{\Omega_i}Q\diffint x$ yields an approximation of \eqref{eq:TPFAint}, a linear system which can be solved for the pressure $p$ by a suitable solver.
+	Note that $p,K$ and $\mu$ are assumed to be given cell-centered whereas the resulting flux is discretized on a staggered grid, corresponding to the voxel faces.
 
 	%--------------------------------------------------
 	% Bibliography
