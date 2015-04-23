@@ -15,6 +15,11 @@
 \newcommand{\Qsi}{Q_{\mathrm{si}}}
 \newcommand{\ca}{c_\mathrm{a}}
 \newcommand{\CBV}{\mathrm{CBV}}
+\newcommand{\MTT}{\mathrm{MTT}}
+\newcommand{\cout}{c_{\mathrm{out}}}
+\newcommand{\Pa}{P_{\mathrm{a}}}
+\newcommand{\Pout}{P_{\mathrm{out}}}
+
 
 %define SI-units, since we want to be able to easily change them
 \newcommand{\siq}{\cubic\milli\meter\per\second\per\square\milli\meter}
@@ -361,8 +366,66 @@
 	% Section: Classical models
 	%--------------------------------------------------
 	%--------------------------------------------------
-
+	\section{Classical Models} \label{sec:classical}
 	
+	Our goal is to evaluate classical methods of indicator dilution theory on the software phantom described in Section \ref{sec:maththeory}.
+	In order to do this, we briefly present the theoretical basis and implementation of the classical models.
+	We will focus on two models:
+	In Section \ref{sec:conv} we present the convolution model, as it is used for stroke-detection by multiple vendors \missingsource.
+	In Section \ref{sec:ms} we focus on the the maximum slope model, which is also used in a variety of applications \missingsource.
+
+	%----------------------------------------------------------
+	% Subsection: Discretization of the transport equation
+	%----------------------------------------------------------	
+	\subsection{The convolution model}\label{sec:conv}
+	
+	Following \cite{sourbron13}, we present the deconvolution model.
+	Let $C(t)$ be the CA concentration within a control-volume $\Omega_i$ at timepoint $t$.
+	Furthermore assume linearity and stationarity of CA inflow and CA outflow with proportionality constants $\Pa$ and $\Pout$, both in \si{\siP}.
+	Conservation of tracer molecules within the volume leads to the differential equation 
+	\begin{equation}
+		C'(t) = \Pa\ca(t) - \Pout\cout(t)
+		\label{eq:classic1}
+	\end{equation}
+	where $\ca,\cout$ in \si{\sic} are the CA concentrations at the inlet and outlet of $\Omega_i$.
+	Assuming that there is a probability distribution of transit times $h(t)$, the same conservation of mass-argument leads to
+	\[
+		\Pout\cout(t) = (h*\Pa\ca)(t) := \Pa\int_0^t \ca(s) h(t-s) \diffint s.
+	\]
+	Combining this with \eqref{eq:classic1} yields $C'(t) = \Pa\ca(t)-\Pa h*\ca(t)$.
+	Integrating the latter equation and using basic properties of the convolution one obtains
+	\[
+		C(t) = (I*\ca)(t)
+	\]
+	for the impuls-response function $I(t) = \Pa(1-\int_0^t h(s) \diffint s)$.
+	One can show that $I$ fulfills the following properties:
+	\begin{itemize}
+		\item $I(0) = \Pa$,
+		\item $I$ is monotonously decreasing,
+		\item $I\ge 0$.		
+	\end{itemize}
+	
+	The problem to identify $I$ given a tissue curve $C(t)$ is a deconvolution problem.
+	If $I$ is recovered, $\Pa$ can be estimated as $\Pa = \max_{t} I(t)$.
+	There are several methods to perform the deconvolution:
+	Fourier-based deconvolution algorithms are often showing sensitivity in the presence of noise  \cite{wirestam00}. \todo{Citation Needed}
+	
+	
+	
+	Note that in the special case of a well-mixed compartment where $C(t) = \phi\cout(t)$ as well as $\Pout=\Pa$ we obtain the ODE $(\phi \cout)' = \Pa \ca - \Pa \cout$ with $\cout(0)=0$.
+	Letting $\MTT:=\Pa/\CBV$ by the central volume theorem \missingsource yields the solution
+	\[
+		C = \Pa \int_0^t e^{-1/\MTT(t-s)}\ca(s)\diffint s
+	\]
+	with residue function $R(t):=e^{-1/\MTT}$. 
+	We will use these exponential residue functions to set up a function for validation.	
+	
+
+	%----------------------------------------------------------
+	% Subsection: Discretization of the transport equation
+	%----------------------------------------------------------
+	\subsection{The Maximum Slope Model}\label{sec:ms}
+
 
 	%--------------------------------------------------
 	% Bibliography
