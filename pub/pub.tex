@@ -1,5 +1,5 @@
 %% load necessary packages
-\documentclass[paper=a4, fontsize=12pt,parskip=half,draft,headings=small]{scrartcl}
+\documentclass[paper=a4, fontsize=12pt,parskip=half,headings=small]{scrartcl}
 \usepackage{check-short}
 \usepackage{overpic}
 
@@ -26,6 +26,9 @@
 \newcommand{\sic}{\milli\mol\per\cubic\milli\meter}
 \newcommand{\siPn}{\milli\litre\per\minute\per100\milli\litre}
 
+%define misc commands
+\newcommand{\missingsource}{\textcolor{red}{[?]}}
+
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
 % Here begins the document, remove "draft" option in document class to include images
@@ -45,9 +48,9 @@
 	%--------------------------------------------------
 	\section{Mathematical Theory} \label{sec:maththeory}
 		
-	In order to model contrast agent (CA) propagation through the capillary system, several assumptions on flow and propagation have to be made.
-	In pharmacokinetic analysis it is often assumed that each voxel is an autonomous system that can be modeled by standard pharmacokinetic theory [?].
-	In fact, this assumption is questionable when we describe CA propagation through a larger area with a highly developed capillary system [?].
+	In order to model contrast agent (CA) propagation through the capillary system, several assumptions on flux and propagation have to be made.
+	In pharmacokinetic analysis it is often assumed that each voxel is an autonomous system that can be modeled by standard pharmacokinetic theory \missingsource.
+	In fact, this assumption is questionable when we describe CA propagation through a larger area with a highly developed capillary system \missingsource.
 	Here we expect in contrast a coupled system, since each voxel can be regarded as an inlet for the surrounding voxels.
 	We hence decided to describe the CA propagation as a spatially coupled transport process, which more accurately models the nature of the problem. 
 	Details of the modeling of transport will be presented in Section \ref{sec:transport}.
@@ -55,10 +58,10 @@
 	The CA transport itself is driven by blood flow. 
 	We will hence describe a model for the blood flow in Section \ref{sec:flow}.
 	Within the capillary system we expect the blood flow to be driven mainly by differences in pressure.
-	This way of modeling flow comes from the theory of porous media and is expressed in Darcy's law [?].
-	As a consequence, we will apply the physical understanding of flow as surface flow $q = q(x)$ with units \si{\siq}.
-	The surface flow is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
-	However, a model to convert surface flow to perfusion with units \si{\siP} will be introduced in Section \ref{sec:flow2perf}.
+	This way of modeling flow comes from the theory of porous media and is expressed in Darcy's law \missingsource.
+	As a consequence, we will apply the physical understanding of flow as surface flux $q = q(x)$ with units \si{\siq}.
+	The surface flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
+	However, a model to convert surface flux to perfusion with units \si{\siP} will be introduced in Section \ref{sec:flow2perf}.
 	The resulting CA flux $J(x,t)$ with units \si{\siJ} is assumed to be linear and stationary, meaning that $J(x,t) = q(x)\cdot c(x,t)$.
 	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
 	A detailed description of modeling the blood flow can be found in Section \ref{sec:flow}.
@@ -67,7 +70,7 @@
 	The porosity describes which fraction of a small tissue volume is accessible for blood.
 	Comparing with pharmacokinetic modeling, the porosity directly translates to the cerebral blood volume (CBV).
 	
-	In order to test the standard models for their abilities to restore CBF and CBV, we need to convert the flow $q$ with units \si{\siq} to perfusion $P$ with units \si{\siP}. 
+	In order to test the standard models for their abilities to restore CBF and CBV, we need to convert the flux $q$ with units \si{\siq} to perfusion $P$ with units \si{\siP}. 
 	A method to do that will be presented in Section \ref{sec:flow2perf}.
 
 	In Section \ref{sec:CBV} we will give a proof that the porosity CBV can be estimated from the standard relationship $\CBV = \left(\int_0^\infty C(x,s) \diffint s\right)/\left(\int_0^\infty \ca(s) \diffint s\right)$.
@@ -82,7 +85,7 @@
 	
 	We model the blood flow as the flow of a fluid through a porous medium. 
 	The fluid has units \si{\sirho} and is denoted by $\rho = \rho(x,t)$.
-	As explained previously, the flow $q$ (in \si{\siq}) as well as the porosity $\phi$ (with $0 \le \phi \le 1$) are assumed to be stationary and hence independent of time.
+	As explained previously, the flux $q$ (in \si{\siq}) as well as the porosity $\phi$ (with $0 \le \phi \le 1$) are assumed to be stationary and hence independent of time.
 	Fluid introduced and extracted from the system is modeled by a source- and sink term $\tilde{Q} = \tilde{Q}(x)$ with units \si{\siQ}. 
 	The continuity equation describing conservation of mass now states that
 	\begin{equation}
@@ -102,12 +105,12 @@
 	The right hand side is only non-zero within the source or the sink. 
 	Elsewhere, \eqref{eq:syntcontsimp2} is concurrent with the incompressibility condition of divergence free flow.
 	
-	Low velocity fluid flow in porous media is described by Darcy's law [?]:
+	Low velocity fluid flux in porous media is described by Darcy's law \missingsource:
 	\[
 		q = -\frac{K}{\mu} \left( \nabla p + \rho g  \nabla z \right).
 	\]
 	here $g$ is the gravitational acceleration, $K$ is the permeability tensor with units \si{\square\milli\meter}, $z$ is the spatial position along the gravitational field and $\mu = \mu(x)$ is the viscosity of the fluid with units $\si{\pascal\second}$.
-	For the current project the flow is taking place perpendicular to the gravitational field and the gravitational term can thereby be discarded.
+	For the current project the flux is taking place perpendicular to the gravitational field and the gravitational term can thereby be discarded.
 	That a simplified version of Darcy's law thus becomes
 	\begin{equation}
 		q = -\frac{K}{\mu} \nabla p.
@@ -127,7 +130,7 @@
 	Here $\partial \Omega$ denotes the boundary of $\Omega$ and $n(x)$ the outward unit normal vector. 
 	Modeling an isolated system with no inflow or outflow along the boundary of $\Omega$, we impose the Neumann boundary conditions $n \cdot \nabla p = 0$ on $\partial \Omega$.
 	Note that \eqref{eq:flowmodel} exhibits a solution which unique up to constant since only pressure differences are taken into consideration \cite{evans98}.
-	Having solved \eqref{eq:flowmodel} the flow field can be computed according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
+	Having solved \eqref{eq:flowmodel} the flux field can be computed according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
 	
 	
 	%--------------------------------------------------
@@ -195,7 +198,7 @@
 	First, the flux is a vector field and the perfusion is a scalar field. 
 	Second, the flux relates to a surface area and the perfusion relates to a volume. 
 	Thus, these to quantities are strictly, mathematically different but still conceptually related. 
-	In the following we describe a method for converting flow into perfusion.
+	In the following we describe a method for converting flux into perfusion.
 
 	The classical understanding of perfusion is the amount of blood feeding a tissue volume per unit time. 
 	Thus, the perfusion $P$ has the units \si{\siP}.
@@ -225,7 +228,7 @@
 			\put(50,45){\color{black}$V$}
 			\put(91,42){\color{black}$\Delta V$}
 		\end{overpic}
-	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ $\si{\siqt}$ of fluid. From definition, the overall perfusion within this object becomes $P_1 = F_0/(2V)$ \si{\siq}. Right: The volume is divided into two smaller compartment (e.g. voxels), and the perfusion for each of the compartments becomes $P_2 = F_0/V = 2P_1$. This discrepancy between the two discretisation regimes occurs because the flow is counted twice as it is feeded from one voxel to the other. Right: As a solution to the described problem we pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area) which is feeded with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/dV$. The entire compartment can further be divided into infinitesimal distribution volumes, thus providing voxelwise perfusion values.}
+	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ $\si{\siqt}$ of fluid. From definition, the overall perfusion within this object becomes $P_1 = F_0/(2V)$ \si{\siq}. Right: The volume is divided into two smaller compartment (e.g. voxels), and the perfusion for each of the compartments becomes $P_2 = F_0/V = 2P_1$. This discrepancy between the two discretisation regimes occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area) which is feeded with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/dV$. The entire compartment can further be divided into infinitesimal distribution volumes, thus providing voxelwise perfusion values.}
 	    \label{fig:perfusion-problem}
 	\end{figure}
 
@@ -237,7 +240,7 @@
 	Assuming laminar flow, the streamlines are not crossing each other and we can estimate the true distribution volume that is fed by a given arterial blood flow.
 
 	Let us fix a point $y \in \Omega$.
-	Formally, the direction of the streamline passing $y$ is identical to the flow $q(y)$ at this location. 
+	Formally, the direction of the streamline passing $y$ is identical to the flux $q(y)$ at this location. 
 	Let $A_\varepsilon$ be a 2-D disc with radius $\varepsilon$ which is orthogonal to $q(y)$.
 	The total flow of particles \si{\siqt} over the disc can be expressed as
 	\[
@@ -296,7 +299,7 @@
 
 	%--------------------------------------------------
 	%--------------------------------------------------
-	% Section: Mathematical theory
+	% Section: Numerical implementation
 	%--------------------------------------------------
 	%--------------------------------------------------
 	
@@ -307,16 +310,16 @@
 	The proposed method may be extended for non-regular grids in an analogous fashion.
 	
 	Since conservation of mass is a key factor for both the discretization of the flow and the transport, we use tailored algorithms to obtain these solutions.
-	To solve \eqref{eq:flowmodel} we used the two-point flux approximation finite volume method (TPFA). 
-	Based on mass balance equations, we calculated the flow in such a fashion that conservation of mass was guaranteed.
-	The transport equation \eqref{eq:conteqlocal} was solved in a similar fashion by a straight-forward discretization of \eqref{eq:conteq}.
+	To solve \eqref{eq:flowmodel} we used the two-point flux approximation finite volume method (TPFA) \missingsource. 
+	Based on mass balance equations, we calculated the flux in such a fashion that conservation of mass was guaranteed.
+	The transport equation \eqref{eq:conteqlocal} was solved by applying an upwind scheme to \eqref{eq:conteq} \missingsource.
 
-	%--------------------------------------------------
-	% Subsection: Estimate the Porosity
-	%--------------------------------------------------	
-	\subsection{Discretization of the single phase flow model} \label{sec:flowmodel}
-	
+	%----------------------------------------------------------
+	% Subsection: Discretization of the singe phase flow model
+	%----------------------------------------------------------
+	\subsection{Discretization of the single phase flow model using TPFA} \label{sec:numflow}
 
+	We now shortly describe the direct application of the two-point flux approximation method \missingsource.
 	Considering \eqref{eq:flowmodel} on a small domain (voxel) $\Omega_i \subset \Omega$ and applying the divergence theorem yields:
 	\begin{equation}
 		\int_{\partial \Omega_i}   -(\lambda \nabla p) \cdot \nu \diffint s = \int_{\Omega_i}Q \diffint x
@@ -334,6 +337,32 @@
 	The terms not depending on the pressure $p$ are collected into the transmissibilities $t_{ij}:=|\Gamma_{ij}|\lambda_{ij}/h$.
 	Defining furthermore $F_i:=\int_{\Omega_i}Q\diffint x$ yields an approximation of \eqref{eq:TPFAint}, a linear system which can be solved for the pressure $p$ by a suitable solver.
 	Note that $p,K$ and $\mu$ are assumed to be given cell-centered whereas the resulting flux is discretized on a staggered grid, corresponding to the voxel faces.
+
+
+	%----------------------------------------------------------
+	% Subsection: Discretization of the transport equation
+	%----------------------------------------------------------
+	\subsection{Discretization of the transport equation} \label{sec:numtrans}
+	The transport described in \eqref{eq:conteq} was numerically implemented using an upwind Godunov scheme \missingsource.
+	Let $c_i$ be a cell centered voxel tracer concentration and let $\Gamma_{ij}$ be the face between voxel $i$ and $j$ with outer unit normal $n_{ij}$.
+	Let $q$ be the flux-field. 
+	Then the total CA-flow over the face $\Gamma_{ij}$ can be estimated by
+	\[
+		\int_{\Gamma_ij} (c_i q)\cdot n_{ij} \diffint s \approx c_i q_{ij} \vert \Gamma_{ij} \vert.
+	\]
+	Keeping track of in- and outflow for each voxel and applying a straight-forward discretization of \eqref{eq:conteq} yields an explicit scheme to set up the transport simulation.
+	A conversion of $c_i$ into $C_i$ is performed via the relation $C_i = c_i\phi_i$. 
+	The overall concentration map $C_i$ is later used for the inverse problem of restoring CBV and CBF.
+
+
+
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Section: Classical models
+	%--------------------------------------------------
+	%--------------------------------------------------
+
+	
 
 	%--------------------------------------------------
 	% Bibliography
