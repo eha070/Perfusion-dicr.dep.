@@ -420,8 +420,27 @@
 	% Subsection: The Maximum Slope Model
 	%----------------------------------------------------------
 	\subsection{The Maximum Slope Model: Theory and Implementation}\label{sec:ms}	
-	
-	
+	The maximum-slope model is the simplest model to recover perfusion.
+	We follow \cite{klotz99} in its the derivation.
+	Combining \eqref{eq:classicgeneral} with the assumption that $\Pout = \Pa$ yields the equation:
+	\[
+		\Pa = \frac{C'(t)}{\ca(t) - c_v(t)}.
+	\]
+	We now assume that we are in an early uptake-phase, where no contrast agent is leaving the system yet. 
+	Hence it holds approximately
+	\[
+		\Pa = \frac{C'(t)}{\ca(t)} \iff P\ca(t) = C'(t).
+	\]
+	Differentiating this equation with respect to $t$ yields:
+	\[
+		\Pa \ca'(t) = C''(t).
+	\]
+	Assuming that if $\ca$ peaks there is no or only a negligible amount of CA leaving the system, this equation is also fulfilled for timepoint $t_{\mathrm max}:=\mathrm{argmax}_{t}\ca(t)$. 
+	Since at this point it holds that $\ca'(t_{\mathrm max}) = 0$ and hence also $C''(t_{\mathrm max})=0$, we derive
+	\begin{equation}\label{eq:MS}
+		\Pa = \frac{\max_{t}C'(t)}{\max_{t}\ca(t)}.
+	\end{equation}
+
 	
 	
 	
