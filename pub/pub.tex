@@ -1,5 +1,5 @@
 %% load necessary packages
-\documentclass[paper=a4, fontsize=12pt,parskip=half,headings=small]{scrartcl}
+\documentclass[paper=a4, fontsize=12pt,parskip=half, draft, headings=small]{scrartcl}
 \usepackage{check-short}
 \usepackage{overpic}
 
@@ -375,56 +375,71 @@
 	In Section \ref{sec:ms} we focus on the the maximum slope model, which is also used in a variety of applications \missingsource.
 
 	%----------------------------------------------------------
-	% Subsection: Discretization of the transport equation
+	% Subsection: The Convolution Model: Theory and Implementation
 	%----------------------------------------------------------	
-	\subsection{The convolution model}\label{sec:conv}
+	\subsection{The Convolution Model: Theory and Implementation}\label{sec:conv}
 	
 	Following \cite{sourbron13}, we present the deconvolution model.
-	Let $C(t)$ be the CA concentration within a control-volume $\Omega_i$ at timepoint $t$.
-	Furthermore assume linearity and stationarity of CA inflow and CA outflow with proportionality constants $\Pa$ and $\Pout$, both in \si{\siP}.
+	Let $\Omega_i$ be a control-volume with one inlet and one outlet and $C(t)$ be the CA concentration within $\Omega_i$ at timepoint $t$.
+	Furthermore linearity and stationarity of CA in- and outflow with proportionality constants $\Pa,\Pout$ \si{\siP} are assumed.
 	Conservation of tracer molecules within the volume leads to the differential equation 
 	\begin{equation}
 		C'(t) = \Pa\ca(t) - \Pout\cout(t)
-		\label{eq:classic1}
+		\label{eq:classicgeneral}
 	\end{equation}
-	where $\ca,\cout$ in \si{\sic} are the CA concentrations at the inlet and outlet of $\Omega_i$.
-	Assuming that there is a probability distribution of transit times $h(t)$, the same conservation of mass-argument leads to
+	where $\ca,\cout$ are the CA concentrations at the inlet and outlet of $\Omega_i$. 	
+	Assuming that there is a probability distribution of transit times $h(t)$, the same conservation of mass argument leads to
 	\[
 		\Pout\cout(t) = (h*\Pa\ca)(t) := \Pa\int_0^t \ca(s) h(t-s) \diffint s.
 	\]
-	Combining this with \eqref{eq:classic1} yields $C'(t) = \Pa\ca(t)-\Pa h*\ca(t)$.
+	Combining this with \eqref{eq:classicgeneral} yields $C'(t) = \Pa\ca(t)-\Pa (h*\ca)(t)$.
 	Integrating the latter equation and using basic properties of the convolution one obtains
 	\[
 		C(t) = (I*\ca)(t)
 	\]
-	for the impuls-response function $I(t) = \Pa(1-\int_0^t h(s) \diffint s)$.
+	for the impuls-response function $I(t) := \Pa(1-\int_0^t h(s) \diffint s)$.
 	One can show that $I$ fulfills the following properties:
 	\begin{itemize}
 		\item $I(0) = \Pa$,
 		\item $I$ is monotonously decreasing,
 		\item $I\ge 0$.		
 	\end{itemize}
+	The problem to identify $I$ given a tissue curve $C$ and an arterial input function $\ca$ is a deconvolution problem.
+	If $I$ is recovered, $\Pa$ can subsequently be estimated as $\Pa = \max_{t} I(t)$.
+	There are several methods to perform the deconvolution.
+	A standard approach using Fourier-based algorithms has been shown sensitivity in the presence of noise \cite{wirestam00,ostergaard96}.
+	Another class of deconvolution algorithms gaining increasing attention are based on Bayesian modeling \cite{boutelier12,mouridsen06}.
+	Recent evaluations are showing good performance \cite{sasaki13}, however the numerical handling is difficult since for each voxel a complex numerical integration has to be performed.
+	The class most popular among deconvolution algorithms is based on singular value decomposition (SVD) \cite{ostergaard96}.
+	These algorithms have been shown to be robust in the presence of noise.
+	Also, they can be easily adapted to be robust against large delays in tracer arrival using block-circular structures (bSVD cf. \cite{wu03}).
+	In order to identify the impuls-response functions $I$ from the simulated data, we hence decided to use the bSVD model as proposed in \cite{wu03}.
 	
-	The problem to identify $I$ given a tissue curve $C(t)$ is a deconvolution problem.
-	If $I$ is recovered, $\Pa$ can be estimated as $\Pa = \max_{t} I(t)$.
-	There are several methods to perform the deconvolution:
-	Fourier-based deconvolution algorithms are often showing sensitivity in the presence of noise  \cite{wirestam00}. \todo{Citation Needed}
+	
+	%----------------------------------------------------------
+	% Subsection: The Maximum Slope Model
+	%----------------------------------------------------------
+	\subsection{The Maximum Slope Model: Theory and Implementation}\label{sec:ms}	
 	
 	
 	
-	Note that in the special case of a well-mixed compartment where $C(t) = \phi\cout(t)$ as well as $\Pout=\Pa$ we obtain the ODE $(\phi \cout)' = \Pa \ca - \Pa \cout$ with $\cout(0)=0$.
-	Letting $\MTT:=\Pa/\CBV$ by the central volume theorem \missingsource yields the solution
+	
+	
+	%----------------------------------------------------------
+	% Subsection: A Second Digital Phantom For Validation
+	%----------------------------------------------------------	
+	\section{A Second Digital Phantom For Validation} \label{eq:comp}
+	Note that in the special case of a well-mixed compartment where $C(t) = \phi\cout(t)$ as well as $\Pout=\Pa$, equation \eqref{eq:classicgeneral} reduces to the following ODE:
+	\begin{align*}
+		(\phi \cout)' &= \Pa \ca - \Pa \cout, \\
+		\cout(0)&=0.
+	\end{align*}
+	Making use of the central volume theorem \cite{sourbron13} and defining $\MTT:=\Pa/\CBV$ yields the solution
 	\[
-		C = \Pa \int_0^t e^{-1/\MTT(t-s)}\ca(s)\diffint s
+		C(t) = \Pa \int_0^t e^{-1/\MTT(t-s)}\ca(s)\diffint s
 	\]
-	with residue function $R(t):=e^{-1/\MTT}$. 
-	We will use these exponential residue functions to set up a function for validation.	
-	
+	with residue function $R(t)=e^{-t/\MTT}$. 
 
-	%----------------------------------------------------------
-	% Subsection: Discretization of the transport equation
-	%----------------------------------------------------------
-	\subsection{The Maximum Slope Model}\label{sec:ms}
 
 
 	%--------------------------------------------------
