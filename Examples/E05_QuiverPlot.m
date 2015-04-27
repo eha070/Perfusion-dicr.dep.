@@ -17,8 +17,8 @@ clc;
 close all;
 
 plotVectorField2D   = 1;
-plotStreamlines3D   = 1;
-vectorFieldAndSinks = 1;
+plotStreamlines3D   = 0;
+vectorFieldAndSinks = 0;
 
 
 %% setup data
@@ -81,12 +81,17 @@ if plotVectorField2D
 
     %create quiver plot. Notice that flow in y-direction is reversed since the
     %grid is reversed
-    figure(1);clf;
+    fig = figure(1);clf;
+    set(fig,'Position',[700,1000,1300,1300])        
+%     quiver(x(:),y(:),qx(:),-qy(:),10,'color',[0,0,0])
     quiver(x(:),y(:),qx(:),-qy(:),10)
-    streamline(x,y,qx,-qy,streamx,streamy)
-    xlabel('x');
-    ylabel('y');
-    set(gca,'FontSize',15);
+%     streamline(x,y,qx,-qy,streamx,streamy)
+    xlabel('cm');
+    ylabel('cm');
+    set(gca,'FontSize',40);
+    
+    
+    export_fig flowQuiver.eps -transparent
 
 end
 

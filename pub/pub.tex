@@ -477,16 +477,11 @@
 	The source term was chosen to the upper left voxel and the sink term was chosen in the lower right voxel.
 	To model the arterial-input function, we chose the standard model \cite{wu03} given by the gamma function
 	\[
-		\ca(t) = t^\alpha e^{-t/\beta}
+		\ca(t) := t^\alpha e^{-t/\beta}
 	\]
 	for $\alpha=3$ and $\beta = \SI{1.5}{\second}$.
 	
-	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional reference model was build.
-	The reference model was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the assumed perfusion values from \eqref{eq:flux2perf}.
-	
-	A comparison of the tissue curves at different positions of the tissue can be found in Figure \ref{fig:tissuecomp}. 
-
-	\begin{table}[h!tb]
+	\begin{table}[H]
 		\centering
 	  \caption{Parameters used in the numerical experiments, optimized for a slab of the capillary system in the human brain. In order to keep all parameters as simple as possible, permeability was assumed to be isotropic and permeability, porosity and viscosity were assumed constant.}		
 		\begin{tabular}{ l  c  c  r }
@@ -504,9 +499,15 @@
 			Voxel size 										& - 				& $(0.156,0.156,1)$ 	& \si{\milli\meter}	\\
 	  \end{tabular}
 	  \label{tab:par}
-	\end{table}
+	\end{table}	
+	
+	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional reference model was build.
+	The reference model was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the assumed perfusion values from \eqref{eq:flux2perf}.
+	A comparison of the tissue curves at different positions of the tissue can be found in Figure \ref{fig:tissuecomp}. 
 
-	\begin{figure}[h!tb]
+
+
+	\begin{figure}[H]
 		\centering
             \begin{subfigure}[b]{0.3\textwidth}
 				\includegraphics[width=\textwidth]{figs/pressure.eps}
@@ -524,7 +525,7 @@
 	        \label{fig:flowpressureperfusion}
 	\end{figure}
 	
-	\begin{figure}[h!tb]
+	\begin{figure}[H]
 		\centering
 		\begin{subfigure}[b]{0.45\textwidth}
 			\includegraphics[width=\textwidth]{figs/PM153247.eps}
@@ -552,19 +553,10 @@
 	\[
 		RE := \frac{\vert P_{\mathrm rec} - P_{\mathrm true}\vert}{P_{\mathrm true}}\cdot 100\%.
 	\]
-	The input data was downsampled to a final time-resolution of $\SI{1}{\second}$.
-	In order to simulate different spatial resolutions of the scanning process, the data was averaged using different block-sizes ranging from $b_1 = (1,1)$ to $b_5=(64,64)$.
-	Results are displayed in Figure \ref{fig:resultsSFD} as well as in Table \ref{tab:resultsSim}.
+	Prior to reconstruction, the input data was downsampled to a time-resolution of $\SI{1}{\second}$.
+	In order to simulate different spatial resolutions of the scanning process, the data was averaged using different block-sizes ranging from $(1,1)$ to $(64,64)$.
+	Results are displayed in Figure \ref{fig:resultsPMM} as well as in Table \ref{tab:resultsSim}.
 	
-	It can be seen that for the complete domain the perfusion can be accurately restored by both methods with an error of $\approx 2\%$.
-	However, for the voxel-wise model
-	The impuls-response function reconstructed from the Porous Media Model is displayed in Figure \ref{fig:deconvResults}.
-
-	However, within the capillary field the model assumptions of one inlet and one outlet are violated, causing large errors in the recovered flow field.
-	Typical impuls response functions of the capillary field are also visualized in Figure \ref{fig:deconvResults}.
-	These recovered gaussian-like functions seem to be describing dispersion effects, yielding a smoothing and broadening of the arterial-input.
-
-
 	\begin{table}[H]
 		\caption{Results of the perfusion restoration with median relative errors in percent. Relative error was computed block-wise as $\vert P_{\mathrm rec} - P_{\mathrm true}\vert / P_{\mathrm true}\cdot 100\%$. Displayed is the median RE over the entire domain.}
 		\centering
@@ -582,6 +574,15 @@
 		\end{tabular}
 		\label{tab:resultsSim}
 	\end{table}
+	
+	
+	It can be seen that for the complete domain the perfusion can be accurately restored by both methods with an error of $\approx 2\%$.
+	However, for the voxel-wise model the classic method works not as expected.
+	Impuls response function reconstructed from the Porous Media Model are displayed in Figure \ref{fig:deconvResults}.
+	These are clearly not exhibiting the properties described in Section \ref{sec:conv}.
+	This is possible due to the reason that the model assumptions of \eqref{eq:conv} are violated \todo{CH: think about this a bit harder...}.
+	Also dispersion effects might be playing a role \cite{calamante03}. 
+	However, these effects are typically leading to underestimation of perfusion, the opposite of the drastic overestimation we the data is showing.	
 
 
 
@@ -596,7 +597,7 @@
 			   & (1,1) & (5,5) & (10,10)
 		\end{tabular}
 		\caption{Results of the restoration of perfusion for the Porous Media Model (PMM) for different levels of discretization, displayed in the columns. All results are given in $\mathrm{ml/min/100ml}$. First Row: Ground-Truth Perfusion (cf. Section \ref{sec:flux2perf}). Second Row: Perfusion as estimated by bSVD. Third Row: Perfusion as estimated by the Maximum-Slope model.}	
-		\label{fig:resultsSFD}			
+		\label{fig:resultsPMM}			
 	\end{figure}
 
 
@@ -611,7 +612,7 @@
 				 \inc{C-and-Crec-conv.eps} & \inc{Irec-conv.eps} \\			 
 				 \multicolumn{2}{ c }{(c) Inside the capillary bed, RM} \\				 				 
 			\end{tabular}
-		\caption{Results for the deconvolution model. First row: Results of bSVD applied to SFD with block-size (64,64) (i.e. entire domain) (Model-Fit and Impuls-Response Function). Second row: Results of bSVD applied to a single voxel of the SFD in the inside of the domain. Third row: Second row: Results of bSVD applied to a single voxel of the SCD in the inside of the domain.}			
+		\caption{Results for the deconvolution model. First row: Results of bSVD applied to PMM with block-size (64,64) (i.e. entire domain) (Model-Fit and Impuls-Response Function). Second row: Results of bSVD applied to a single voxel of the PMM in the inside of the domain. Third row: Second row: Results of bSVD applied to a single voxel of the SCD in the inside of the domain.}			
 		\label{fig:deconvResults}
 	\end{figure}
 
