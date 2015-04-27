@@ -1,7 +1,8 @@
 %% load necessary packages
-\documentclass[paper=a4, fontsize=12pt,parskip=half, draft, headings=small]{scrartcl}
+\documentclass[paper=a4, fontsize=12pt,parskip=half,headings=small]{scrartcl}
 \usepackage{check-short}
 \usepackage{overpic}
+\usepackage{multirow}
 
 
 %% set author information etc
@@ -66,7 +67,7 @@
 	This way of modeling flow comes from the theory of porous media and is expressed in Darcy's law \missingsource.
 	As a consequence, we will apply the physical understanding of flow as surface flux $q = q(x)$ with units \si{\siq}.
 	The surface flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
-	However, a model to convert surface flux to perfusion with units \si{\siP} will be introduced in Section \ref{sec:flow2perf}.
+	However, a model to convert surface flux to perfusion with units \si{\siP} will be introduced in Section \ref{sec:flux2perf}.
 	The resulting CA flux $J(x,t)$ with units \si{\siJ} is assumed to be linear and stationary, meaning that $J(x,t) = q(x)\cdot c(x,t)$.
 	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
 	A detailed description of modeling the blood flow can be found in Section \ref{sec:flow}.
@@ -76,7 +77,7 @@
 	Comparing with pharmacokinetic modeling, the porosity directly translates to the cerebral blood volume (CBV).
 	
 	In order to test the standard models for their abilities to restore CBF and CBV, we need to convert the flux $q$ with units \si{\siq} to perfusion $P$ with units \si{\siP}. 
-	A method to do that will be presented in Section \ref{sec:flow2perf}.
+	A method to do that will be presented in Section \ref{sec:flux2perf}.
 
 	In Section \ref{sec:CBV} we will give a proof that the porosity CBV can be estimated from the standard relationship $\CBV = \left(\int_0^\infty C(x,s) \diffint s\right)/\left(\int_0^\infty \ca(s) \diffint s\right)$.
 
@@ -122,7 +123,7 @@
 		\label{eq:syntdarcysimp}
 	\end{equation}
 	We now combine \eqref{eq:syntcontsimp2} and \eqref{eq:syntdarcysimp} and assume that $K$ is symmetric and positive definite.
-	This yields the following elliptic partial differential equation the pressure-field $p$ must fulfill:
+	This yields the following elliptic partial differential equation the pressure-field $p$ with units \si{\pascal} must fulfill:
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
@@ -195,7 +196,7 @@
 	%--------------------------------------------------
 	% Subsection: Converting Flow to Perfusion
 	%--------------------------------------------------
-	\subsection{Converting Flow to Perfusion}\label{sec:flow2perf}
+	\subsection{Converting Flow to Perfusion}\label{sec:flux2perf}
 	The model described in \eqref{eq:flowmodel} uniquely determines the flux field $q(x)$. 
 	However, in pharmacokinetic modeling the parameter of interest is usually the cerebral blood flow (CBF), which we will denote by $P(x)$.
 	It is not obvious how to transform a flux field into a scalar perfusion field $P(x)$.
@@ -261,7 +262,7 @@
 	Letting $\varepsilon \to 0$ and using that $F/(\varepsilon^2\pi)$ goes to $\Vert q(y) \Vert$ if $q(x)$ is continuous yields a value for the perfusion $P_{y}$:
 	\begin{equation}
 		P_{y} = \frac{\Vert q(y) \Vert}{L}
-		\label{eq:flow2perf}
+		\label{eq:flux2perf}
 	\end{equation}
 	where $L$ is the length of the streamline passing through the point $y$. 
 	This is an explicit formula for converting flux into perfusion and is later used for evaluation of the classical model for perfusion. 
@@ -394,9 +395,10 @@
 	\]
 	Combining this with \eqref{eq:classicgeneral} yields $C'(t) = \Pa\ca(t)-\Pa (h*\ca)(t)$.
 	Integrating the latter equation and using basic properties of the convolution one obtains
-	\[
+	\begin{equation}
 		C(t) = (I*\ca)(t)
-	\]
+		\label{eq:conv}
+	\end{equation}
 	for the impuls-response function $I(t) := \Pa(1-\int_0^t h(s) \diffint s)$.
 	One can show that $I$ fulfills the following properties:
 	\begin{itemize}
@@ -414,6 +416,23 @@
 	These algorithms have been shown to be robust in the presence of noise.
 	Also, they can be easily adapted to be robust against large delays in tracer arrival using block-circular structures (bSVD cf. \cite{wu03}).
 	In order to identify the impuls-response functions $I$ from the simulated data, we hence decided to use the bSVD model as proposed in \cite{wu03}.
+
+	%----------------------------------------------------------
+	% Subsection: A Second Digital Phantom For Validation
+	%----------------------------------------------------------	
+	\section{The convolution model for a well-mixed compartment} \label{sec:comp}
+	Note that in the special case of a well-mixed compartment where $C(t) = \phi\cout(t)$ as well as $\Pout=\Pa$, equation \eqref{eq:classicgeneral} reduces to the following ODE:
+	\begin{align*}
+		(\phi \cout)' &= \Pa \ca - \Pa \cout, \\
+		\cout(0)&=0.
+	\end{align*}
+	Making use of the central volume theorem \cite{sourbron13} and defining $\MTT:=\Pa/\CBV$ yields the solution
+	\[
+		C(t) = \Pa \int_0^t e^{-1/\MTT(t-s)}\ca(s)\diffint s
+	\]
+	with residue function $R(t)=e^{-t/\MTT}$. 
+
+	
 	
 	
 	%----------------------------------------------------------
@@ -441,26 +460,164 @@
 		\Pa = \frac{\max_{t}C'(t)}{\max_{t}\ca(t)}.
 	\end{equation}
 
-	
-	
-	
-	%----------------------------------------------------------
-	% Subsection: A Second Digital Phantom For Validation
-	%----------------------------------------------------------	
-	\section{A Second Digital Phantom For Validation} \label{eq:comp}
-	Note that in the special case of a well-mixed compartment where $C(t) = \phi\cout(t)$ as well as $\Pout=\Pa$, equation \eqref{eq:classicgeneral} reduces to the following ODE:
-	\begin{align*}
-		(\phi \cout)' &= \Pa \ca - \Pa \cout, \\
-		\cout(0)&=0.
-	\end{align*}
-	Making use of the central volume theorem \cite{sourbron13} and defining $\MTT:=\Pa/\CBV$ yields the solution
+
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Section: Numerical experiments
+	%--------------------------------------------------
+	%--------------------------------------------------
+	\section{Numerical experiments}\label{sec:NumExp}
+
+	We will now describe the numerical experiments we performed.
+	Based on \eqref{eq:flowmodel} and \eqref{eq:conteqlocal} we set up a forward simulation of blood-flow through the capillary system.
+	A table of parameter values used for the numeral simulations are shown in Table \ref{tab:par}. 
+	We aimed at creating a transparent synthetic test case and kept all optional parameters as simple as possible. 
+	Therefore, the permeability and porosity were assumed constant in space and in time.
+	The voxel-wise perfusion field $P$ was calculated according to $\eqref{eq:flux2perf}$. 
+	The source term was chosen to the upper left voxel and the sink term was chosen in the lower right voxel.
+	To model the arterial-input function, we chose the standard model \cite{wu03} given by the gamma function
 	\[
-		C(t) = \Pa \int_0^t e^{-1/\MTT(t-s)}\ca(s)\diffint s
+		\ca(t) = t^\alpha e^{-t/\beta}
 	\]
-	with residue function $R(t)=e^{-t/\MTT}$. 
+	for $\alpha=3$ and $\beta = \SI{1.5}{\second}$.
+	
+	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional reference model was build.
+	The reference model was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the assumed perfusion values from \eqref{eq:flux2perf}.
+	
+	A comparison of the tissue curves at different positions of the tissue can be found in Figure \ref{fig:tissuecomp}. 
+
+	\begin{table}[h!tb]
+		\centering
+	  \caption{Parameters used in the numerical experiments, optimized for a slab of the capillary system in the human brain. In order to keep all parameters as simple as possible, permeability was assumed to be isotropic and permeability, porosity and viscosity were assumed constant.}		
+		\begin{tabular}{ l  c  c  r }
+		    Description 									& Symbol 			& Value(s) 				& Unit 				\\
+			\toprule
+		    Average input perfusion 				 		& $\overline{P}$ 	& $50$ 					& \si{\siPn}		\\
+			Flow source, derived from $\overline{P}$ 		& $F_{so}$ 			& $0.08333$ 			& \si{\siqt}  		\\
+			Flow sink 										& $F_{si}$ 			& $-F_{so}$ 		 	& \si{\siqt}  		\\
+			Dynamic viscosity blood \cite{rosencranz06} 	& $\mu_b$ 			& $5 \cdot 10^{-6}$ 	& \si{\kilo\pascal\second}  	\\
+			Fluid density blood \cite{kenner89} 			& $\rho$ 			& $1 $ 					& \si{\sirho} 		\\		
+			Permeability  									& $k$ 				& $5 \cdot 10^{-6}$ 	& \si{\square\milli\meter} 			\\	
+			Porosity\cite{wu03}								& $\phi$ 			& $0.05$ 				& \si{\cubic\milli\meter\per\cubic\milli\meter	}	\\	
+			Spatial resolution 								& - 				& $(64,64,1)$ 			& -					\\
+			Physical dimension 								& - 				& $(10,10,1)$ 			& \si{\milli\meter}				\\
+			Voxel size 										& - 				& $(0.156,0.156,1)$ 	& \si{\milli\meter}	\\
+	  \end{tabular}
+	  \label{tab:par}
+	\end{table}
+
+	\begin{figure}[h!tb]
+		\centering
+            \begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{figs/pressure.eps}
+                \caption{Pressure field $p$.}
+            \end{subfigure} 
+            \begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{figs/flowQuiver.eps}
+                \caption{Flow field $q$.}
+            \end{subfigure}	           	                     
+            \begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{figs/perfusion.eps}
+                \caption{Perfusion $P$.}
+            \end{subfigure}	                
+    	\caption{Synthetic flow model with a source in the upper left corner and a sink in the lower right corner. (a) Pressure field from solving the linear system in \eqref{eq:flowmodel}, in \si{\pascal} (b) flux field, (c) Voxelwise perfusion according to \eqref{eq:flux2perf} in \si{\siP}.}
+	        \label{fig:flowpressureperfusion}
+	\end{figure}
+	
+	\begin{figure}[h!tb]
+		\centering
+		\begin{subfigure}[b]{0.45\textwidth}
+			\includegraphics[width=\textwidth]{figs/PM153247.eps}
+			\caption{Porous Media Model}
+		\end{subfigure}
+		\begin{subfigure}[b]{0.45\textwidth}
+			\includegraphics[width=\textwidth]{figs/RM153247.eps}			
+			\caption{Reference Model}			
+		\end{subfigure}		
+		\caption{Comparison of tissue curves in the Porous Media (a) and the Reference Model (b). Curves were sampled in the middle row $i=32$ and columns $j \in \{15,32,47\}$.}
+		\label{fig:tissuecomp}
+	\end{figure}
+	
+	
+
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Section: Results
+	%--------------------------------------------------
+	%--------------------------------------------------
+	\section{Restoring the porosity and flow field using different models}
+
+	We tested the the convolution based classical model \eqref{eq:conv} as well as maximum-slope model \eqref{eq:MS} for their capability to recover the perfusion values.
+	The success of the restoration was measured voxelwise in terms of the relative error of the recovered perfusion with respect to the true perfusion
+	\[
+		RE := \frac{\vert P_{\mathrm rec} - P_{\mathrm true}\vert}{P_{\mathrm true}}\cdot 100\%.
+	\]
+	The input data was downsampled to a final time-resolution of $\SI{1}{\second}$.
+	In order to simulate different spatial resolutions of the scanning process, the data was averaged using different block-sizes ranging from $b_1 = (1,1)$ to $b_5=(64,64)$.
+	Results are displayed in Figure \ref{fig:resultsSFD} as well as in Table \ref{tab:resultsSim}.
+	
+	It can be seen that for the complete domain the perfusion can be accurately restored by both methods with an error of $\approx 2\%$.
+	However, for the voxel-wise model
+	The impuls-response function reconstructed from the Porous Media Model is displayed in Figure \ref{fig:deconvResults}.
+
+	However, within the capillary field the model assumptions of one inlet and one outlet are violated, causing large errors in the recovered flow field.
+	Typical impuls response functions of the capillary field are also visualized in Figure \ref{fig:deconvResults}.
+	These recovered gaussian-like functions seem to be describing dispersion effects, yielding a smoothing and broadening of the arterial-input.
+
+
+	\begin{table}[H]
+		\caption{Results of the perfusion restoration with median relative errors in percent. Relative error was computed block-wise as $\vert P_{\mathrm rec} - P_{\mathrm true}\vert / P_{\mathrm true}\cdot 100\%$. Displayed is the median RE over the entire domain.}
+		\centering
+		\begin{tabular}{l c c c c c }
+			& Model & \multicolumn{4}{c}{Block Size}\\
+			 					 			& 		& (1,1) 	& (5,5)		& (10,10)	& entire domain \\
+			\toprule
+			\multirow{2}{*}{PMM: Perfusion} & MS 	& $170.09$ 	& $165.03$ 	& $158.57$	& $2.65$ \\
+			 					 	   		& bSVD  & $859.06$ 	& $768.58$ 	& $664.84$	& $1.25$ \\
+			\multirow{2}{*}{RM: Perfusion} & MS 	& $23.20$ 	& $24.26$ 	& $25.75$ 	& $37.96$ \\
+			 					 			& bSVD  & $2.43$ 	& $4.27$ 	& $8.80$ 	& $20.72$ \\
+			\midrule											
+			PMM: CBV & & $4.37\cdot10^{-5}$      & $4.37\cdot10^{-5}$		& $4.37\cdot10^{-5}$		& $4.37\cdot10^{-5}$ \\											
+			RM:  CBV & & $1.94\cdot10^{-2}$      & $1.93\cdot10^{-2}$		& $2.12\cdot10^{-2}$		& $1.13$ 			
+		\end{tabular}
+		\label{tab:resultsSim}
+	\end{table}
 
 
 
+	\newcommand{\inc}[1]{\includegraphics[width = .25\textwidth]{./figs/#1}}
+	\newcommand{\rbox}[2]{\rotatebox{90}{\hspace{#1}\mbox{\large #2}}}
+	\begin{figure}[H]
+		\centering
+		\begin{tabular}{c c c c}
+			 \rbox{0ex}{True perfusion} & \inc{recTrue-1.eps} & \inc{recTrue-5.eps} & \inc{recTrue-10.eps}\\
+			 \rbox{5ex}{bSVD} & \inc{recCirc-pde-1.eps} & \inc{recCirc-pde-5.eps} & \inc{recCirc-pde-10.eps}\\
+			 \rbox{8ex}{MS} & \inc{recMS-pde-1.eps} & \inc{recMS-pde-5.eps} & \inc{recMS-pde-10.eps}\\			 			 			  
+			   & (1,1) & (5,5) & (10,10)
+		\end{tabular}
+		\caption{Results of the restoration of perfusion for the Porous Media Model (PMM) for different levels of discretization, displayed in the columns. All results are given in $\mathrm{ml/min/100ml}$. First Row: Ground-Truth Perfusion (cf. Section \ref{sec:flux2perf}). Second Row: Perfusion as estimated by bSVD. Third Row: Perfusion as estimated by the Maximum-Slope model.}	
+		\label{fig:resultsSFD}			
+	\end{figure}
+
+
+
+	\begin{figure}[H]
+		\centering
+			\begin{tabular}{c c}
+				 \inc{C-and-Crec.eps} & \inc{Irec.eps} \\
+				 \multicolumn{2}{ c }{(a) Entire Domain, PMM} \\
+				 \inc{C-and-Capprox-cap.eps} & \inc{IR-cap.eps} \\			 
+				 \multicolumn{2}{ c }{(b) Inside the capillary bed, PMM} \\				 
+				 \inc{C-and-Crec-conv.eps} & \inc{Irec-conv.eps} \\			 
+				 \multicolumn{2}{ c }{(c) Inside the capillary bed, RM} \\				 				 
+			\end{tabular}
+		\caption{Results for the deconvolution model. First row: Results of bSVD applied to SFD with block-size (64,64) (i.e. entire domain) (Model-Fit and Impuls-Response Function). Second row: Results of bSVD applied to a single voxel of the SFD in the inside of the domain. Third row: Second row: Results of bSVD applied to a single voxel of the SCD in the inside of the domain.}			
+		\label{fig:deconvResults}
+	\end{figure}
+
+	
+
+	
 	%--------------------------------------------------
 	% Bibliography
 	%--------------------------------------------------
