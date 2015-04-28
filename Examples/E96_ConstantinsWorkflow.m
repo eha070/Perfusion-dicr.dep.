@@ -27,7 +27,7 @@ aif = 'gamma';
 m        = [64,64,1];       %matrix size
 omega    = [0,10,0,10,0,1]; %domain in mm
 h        = (omega(2:2:end)-omega(1:2:end))./m;
-hd       = prod(h);
+hd       = prod(h); %voxel-volume
 
 %setup timeline
 dt       = 0.002;           %in seconds
@@ -39,8 +39,20 @@ timeline = (0:dt:Tmax); %timeline in seconds
 cso  = [1,1,1];
 csi  = [64,64,1];
 F    = 50/100/60*hd; %absolute in-/outflow in mm^3/s
-K    = 5e-6;         % Units in mm^2
+K    = 5e-6;         %Units in mm^2
 mu   = 5*1e-3;       %viscosity is approx 5 cP = 5e-3 Poise
+
+
+%I tried to calculate the permeability with the formula: K=(1/24)*pi*n*r^4;
+%Here n is the number of vessels?
+%Following a source (see publication) the av. capillary radius is about 3microns
+%{
+CBV  = 0.05; %in percent
+r0   = 3e-3; %in mm
+vCap = r0^2*pi*h(1); %average volume of capillary vessel
+n    = hd*CBV/vCap;
+K    = 1/24*pi*n*r0^4;
+%}
 
 
 %setup basic parameteres for the transport
