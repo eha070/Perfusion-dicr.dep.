@@ -6,6 +6,7 @@
 *.synctex.gz
 *.bbl
 *.blg
+*.toc
 
 #matlab-ignores
 *.m~
