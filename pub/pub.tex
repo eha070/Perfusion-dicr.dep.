@@ -46,6 +46,49 @@
 	%--------------------------------------------------
 	\maketitle
 	\tableofcontents
+
+	
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Section: Introduction
+	%--------------------------------------------------
+	%--------------------------------------------------
+	\section{Introduction}
+	
+	Quantitative medical measurements based on tracer kinetic models has for many years been an important field both in research and in clinical practice \cite{zierler62,axel80,zierler00}. 
+	In the present work we will focus on mathematical methods for estimation of blood perfusion in the brain (cerebral blood flow) based on dynamic MR imaging. 
+	Still, the theory covered here, will also be of relevance in general perfusion studies.
+
+	While limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern MR technology and voxel based analysis give rise to aspirations about detailed perfusion maps with millimeter precision.  
+	Examples of successful estimations of parameter maps are found in i.e. []. 
+	The perfusion maps (and other parameter maps) combines the quantitative nature of the tracer kinetic model with important qualitative anatomical information. 
+	The maps have proven to be of particular value in e.g. stroke studies []. 
+	Among the physiological parameters obtainable from tracer kinetic models, the perfusion (or CBF) has proven to be particularly difficult to reliably describe on a voxel-basis [].  
+	In several studies, perfusion or CBF are therefore only reported in relative values and the corresponding parameter maps are only used in a qualitative manner \cite{calamante99}.
+	The methodological limitations in perfusion estimation are caused both by issues in the numerical implementation, but also by the basic formulation of the model itself.  
+	It is has been widely studied how delay and dispersion of the contrast bolus between the AIF and the voxel as well as assumptions about directional flow \cite{thacker03,sourbron14} effects the perfusion estimation. 
+	In \cite{sourbron14} mathematical theory for flow field models are introduced and proposed as an alternative to the classical models for perfusion on voxel level. 
+	In this work we will use some of the same physical concepts, but also relate them to the classical perfusion models.  
+	We will further discuss limitations of classical voxel based perfusion models and focus on their validity in an unstructured flow field. T
+	he models, and how they behave under different ROI/voxel sizes and shapes, are analyzed mathematically and evaluated in a synthetic flow field.  
+	We will also derive a mathematical framework in which the medical notion of perfusion can be understood in a physical precise manner.
+
+	An evaluation of perfusion models using a synthetic flow field is also performed in i.e. \cite{calamante03}. 
+	Here, the synthetic model is based on solution of Navier-Stokes equations within the arterial system and the effect of dispersion is studied.  
+	In the present work, we model the contrast agent (CA) propagation through a small section of the capillary system. 
+	Both these approaches require several clarifying assumptions on flux and propagation. 
+	In pharmacokinetic analysis it is often assumed that each ROI (voxel) is an autonomous system that can be modeled by standard pharmacokinetic theory \missingsource. 
+	As in \cite{calamante03}, we study CA propagation through a larger area with a highly developed capillary/arterial system and thereby consider a range of connected problems where each voxel can be regarded as an inlet for the surrounding voxels.  
+	Further, the CA propagation is modeled as a spatially coupled transport process, which more accurately mimics the nature of the blood flow in the tissue.  
+	Unlike Calamante et al. we also distinguish between the (scalar) perfusion maps, describing flow normalized over a volume, and the physical (vector valued) flow field, describing flow normalized over a surface area. 
+
+
+	The rest of this paper is arranged as follows: In Section \ref{sec:classical}, we outline a classical method for perfusion estimation and discuss two solution methods within the framework of de-convolution. 
+	In Section \ref{sec:synthetic} we describe how a synthetic flow field in the capillary system can be modeled using simple models from porous media literature. 
+	We also discuss the mathematical resembling between the flow field models and the classical theory outlined in Section \ref{sec:classical}. 
+	In Section \ref{sec:results} evaluate the performance of the classical models by applying them on synthetic flow fields. 
+	The results and concluding remarks are summarized in section \ref{sec:conclusion}.
+	
 	
 	
 	
