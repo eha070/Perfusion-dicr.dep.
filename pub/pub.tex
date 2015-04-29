@@ -17,9 +17,9 @@
 \newcommand{\ca}{c_\mathrm{a}}
 \newcommand{\CBV}{\mathrm{CBV}}
 \newcommand{\MTT}{\mathrm{MTT}}
-\newcommand{\cout}{c_{\mathrm{out}}}
+\newcommand{\cout}{c_{\mathrm{v}}}
 \newcommand{\Pa}{P_{\mathrm{a}}}
-\newcommand{\Pout}{P_{\mathrm{out}}}
+\newcommand{\Pout}{P_{\mathrm{v}}}
 
 
 %define SI-units, since we want to be able to easily change them
@@ -46,6 +46,48 @@
 	%--------------------------------------------------
 	\maketitle
 	\tableofcontents
+	
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Section: Classical models
+	%--------------------------------------------------
+	%--------------------------------------------------
+	\section{Introduction}
+	
+	Quantitative medical measurements based on tracer kinetic models has for many years been an important field both in research and in clinical practice [Zierler 1962, Axel, 1980, Zierler 2000, and probably more resent works]. 
+	In the present work we will focus on mathematical methods for estimation of blood perfusion in the brain (cerebral blood flow) based on dynamic MR imaging. 
+	Still, the theory covered here, will also be of relevance in general perfusion studies.
+
+	While limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern MR technology and voxel based analysis give rise to aspirations about detailed perfusion maps with millimeter precision.  
+	Examples of successful estimations of parameter maps are found in i.e. []. 
+	The perfusion maps (and other parameter maps) combines the quantitative nature of the tracer kinetic model with important qualitative anatomical information. 
+	The maps have proven to be of particular value in e.g. stroke studies []. 
+	Among the physiological parameters obtainable from tracer kinetic models, the perfusion (or CBF) has proven to be particularly difficult to reliably describe on a voxel-basis [].  
+	In several studies, perfusion or CBF are therefore only reported in relative values and the corresponding parameter maps are only used in a qualitative manner [Calamante 1999].
+	The methodological limitations in perfusion estimation are caused both by issues in the numerical implementation, but also by the basic formulation of the model itself.  
+	It is has been widely studied how delay and dispersion of the contrast bolus between the AIF and the voxel as well as assumptions about directional flow [Thacker 2003, Sourbron 2014] effects the perfusion estimation. 
+	In [Sourbron 2014] mathematical theory for flow field models are introduced and proposed as an alternative to the classical models for perfusion on voxel level. 
+	In this work we will use some of the same physical concepts, but also relate them to the classical perfusion models.  
+	We will further discuss limitations of classical voxel based perfusion models and focus on their validity in an unstructured flow field. T
+	he models, and how they behave under different ROI/voxel sizes and shapes, are analyzed mathematically and evaluated in a synthetic flow field.  
+	We will also derive a mathematical framework in which the medical notion of perfusion can be understood in a physical precise manner.
+
+	An evaluation of perfusion models using a synthetic flow field is also performed in i.e. [Calamante 2003]. 
+	Here, the synthetic model is based on solution of Navier-Stokes equations within the arterial system and the effect of dispersion is studied.  
+	In the present work, we model the contrast agent (CA) propagation through a small section of the capillary system. 
+	Both these approaches require several clarifying assumptions on flux and propagation. 
+	In pharmacokinetic analysis it is often assumed that each ROI (voxel) is an autonomous system that can be modeled by standard pharmacokinetic theory \missingsource. 
+	As in [Calamante 2003], we study CA propagation through a larger area with a highly developed capillary/arterial system and thereby consider a range of connected problems where each voxel can be regarded as an inlet for the surrounding voxels.  
+	Further, the CA propagation is modeled as a spatially coupled transport process, which more accurately mimics the nature of the blood flow in the tissue.  
+	Unlike Calamante et al. we also distinguish between the (scalar) perfusion maps, describing flow normalized over a volume, and the physical (vector valued) flow field, describing flow normalized over a surface area. 
+
+
+	The rest of this paper is arranged as follows: In Section \ref{sec:classical}, we outline a classical method for perfusion estimation and discuss two solution methods within the framework of de-convolution. 
+	In Section \ref{sec:synthetic} we describe how a synthetic flow field in the capillary system can be modeled using simple models from porous media literature. 
+	We also discuss the mathematical resembling between the flow field models and the classical theory outlined in Section \ref{sec:classical}. 
+	In Section \ref{sec:results} evaluate the performance of the classical models by applying them on synthetic flow fields. 
+	The results and concluding remarks are summarized in section \ref{sec:conclusion}.
+	
 
 	
 	
@@ -56,16 +98,16 @@
 	%--------------------------------------------------
 	\section{Classical Models} \label{sec:classical}
 
-	We will first describe two standard models to recover CBF,CBV and MTT from data displaying propagation of a contrast agent (CA) through the tissue.
-	The so-called Deconvolution Model (DM) is used in vast amount of publications \cite{ostergaard96,abels10,straka10,bivard13,sourbron13} and has been shown to yield accurate results.
+	We will first describe two standard models to recover CBF,CBV and MTT from data displaying propagation of a contrast agent through the tissue.
+	The so-called Deconvolution Model (DM) is used in vast amount of publications \cite{ostergaard96,abels10,straka10,bivard13,sourbron13} and has been shown to yield accurate parameter results.
 	However, the application of the algorithm to real data is still challenging as it is sensitive to noise and to patient movement \cite{kudo10}.
 	Another model which has been shown to exhibit good properties in restoring CBF and MTT is the so-called Maximum Slope Model (MS) \cite{miles91,klotz99}.
 	The maximum slope model has been shown to exhibit advantages over the deconvolution model especially if uptake curves are degraded in the late phase \cite{abels10}.
 		
 	We now briefly present the theoretical basis of two models \cite{sourbron13}.
-	Let $\Omega_i$ be a control volume exhibiting one inlet and one outlet and let the CA concentration within $\Omega_i$ at timepoint $t$ be denoted by $C(t)$.
+	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$.
 	Let us furthermore assume linearity and stationarity of CA in- and outflow with proportionality constants $\Pa,\Pout$ \si{\siP}.
-	Conservation of tracer molecules within the volume leads to the differential equation 
+	These assumptions lead to the differential equation 
 	\begin{equation}
 		C'(t) = \Pa\ca(t) - \Pout\cout(t)
 		\label{eq:classicgeneral}
@@ -101,9 +143,9 @@
 	There are several methods to perform the deconvolution.
 	A standard approach using Fourier-based algorithms has been shown sensitivity in the presence of noise \cite{wirestam00,ostergaard96}.
 	Another class of deconvolution algorithms gaining increasing attention are based on Bayesian modeling \cite{boutelier12,mouridsen06}.
-	Recent evaluations are showing good performance \cite{sasaki13}, however the numerical handling is difficult since for each voxel a complex numerical integration has to be performed.
+	Recent evaluations are showing good performance \cite{sasaki13}, however the numerical handling is difficult complex numerical integrations have to be performed.
 	The class most popular among deconvolution algorithms is based on singular value decomposition (SVD) \cite{ostergaard96}.
-	These algorithms have been shown to be robust in the presence of noise.
+	These algorithms have been shown to be quite robust in the presence of noise.
 	Also, they can be easily adapted to be robust against large delays in tracer arrival using block-circular structures (bSVD cf. \cite{wu03}).
 	In order to identify the impuls-response functions $I$ from the simulated data, we hence decided to use the bSVD model as proposed in \cite{wu03}.
 
@@ -111,12 +153,13 @@
 	% Subsection: A Second Digital Phantom For Validation
 	%----------------------------------------------------------	
 	\subsection{The Convolution Model for a Well-Mixed Compartment} \label{sec:comp}
-	Note that in the special case of a well-mixed compartment where $C(t) = \phi\cout(t)$ as well as $\Pout=\Pa$, equation \eqref{eq:classicgeneral} reduces to the following ODE:
+	Let us assume that $\Omega_i$ is a well-mixed compartment where $C(t) = \phi\cout(t)$ for some $0 < \phi \le 1$ and that additionally $\Pout=\Pa$.
+	In this case \eqref{eq:classicgeneral} reduces to
 	\begin{align*}
 		(\phi \cout)' &= \Pa \ca - \Pa \cout, \\
 		\cout(0)&=0.
 	\end{align*}
-	Making use of the central volume theorem \cite{sourbron13} and defining $\MTT:=\Pa/\CBV$ yields the solution
+	Letting $\MTT:=\Pa/\CBV$ yields the solution
 	\[
 		C(t) = \Pa \int_0^t e^{-1/\MTT(t-s)}\ca(s)\diffint s
 	\]
@@ -130,7 +173,7 @@
 	%----------------------------------------------------------
 	\subsection{The Maximum Slope Model: Theory and Implementation}\label{sec:ms}	
 	In the MS Model, equation \eqref{eq:classicgeneral} is combined with the assumption that $\Pout = \Pa$ (cf. \cite{klotz99}).
-	This yields the equation:
+	This yields:
 	\[
 		\Pa = \frac{C'(t)}{\ca(t) - c_v(t)}.
 	\]
@@ -204,7 +247,7 @@
 		\nabla \cdot q = \frac{\tilde{Q}}{\rho}.
 		\label{eq:syntcontsimp}
 	\end{equation}
-	In order to scale away the density $\rho$ we define another source term $Q$ with units \si{\siQ} having the relation $\tilde{Q} = Q\rho$, thus transforming \eqref{eq:syntcontsimp} into
+	In order to scale away the density $\rho$ we define another source term $Q$ with units \si{\siQ} having the relation $Q := \tilde{Q}\rho$, thus transforming \eqref{eq:syntcontsimp} into
 	\begin{equation}
 		\nabla \cdot q = Q.
 		\label{eq:syntcontsimp2}
@@ -234,7 +277,7 @@
 		\right\vert
 		\label{eq:flowmodel}
 	\end{equation}
-	Here $\partial \Omega$ denotes the boundary of $\Omega$ and $n(x)$ the outward unit normal vector. 
+	Here $\partial \Omega$ denotes the boundary of $\Omega$ and $n$ the outward unit normal vector. 
 	Modeling an isolated system with no inflow or outflow along the boundary of $\Omega$, we impose the Neumann boundary conditions $n \cdot \nabla p = 0$ on $\partial \Omega$.
 	Note that \eqref{eq:flowmodel} exhibits a solution which unique up to constant since only pressure differences are taken into consideration \cite{evans98}.
 	Having solved \eqref{eq:flowmodel} the flux field can be computed according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
@@ -251,24 +294,23 @@
 	In order to define meaningful continuous contrast agent concentrations, we first describe the CA concentration in an (arbitrarily) small tissue volume $\Omega_i$.
 	Assume that $V_i$ is the volume of $\Omega_i$ and $v_i$ the the blood volume of $\Omega_i$.
 	By definition the porosity is in this case given by $\phi_i = v_i/V_i$.
-	Letting first $V_i \rightarrow 0$ leads to the continuos porosity field $\phi(x)$.	
-	We now fix a time point $t$.
-	Denote the tracer concentration in $\Omega_i$ with respect to the whole volume $V_i$ by $C_i$ and the concentration with respect to the blood volume $v_i$ by $c_i$, both with units \si{\sic}. 
+	Let $C_i(t)$ denote the CA concentration in $\Omega_i$ with respect to the whole volume $V_i$ at timepoint $t$.
+	The CA concentration with respect to the blood volume $v_i$ will be denoted by $c_i(t)$.
+	Both concentrations have units \si{\sic}. 
 	From the definition of $c_i,C_i$ and $\phi_i$ we obtain the relation $C_i = \phi_i \cdot c_i$.
-	Letting $V_i \to 0$ and assuming that all parameters are continuous allows us to introduce $C(x,t),c(x,t)$ as well as $\phi(x)$ at an arbitrary point.\todo{CH: Get the order continuous solution and continuous $C$ right}
 
-	Assuming differentiable functions, the rate of change of tracer molecules within the control volume $\Omega_i$ can he described by
+	The rate of change of tracer molecules within the control volume $\Omega_i$ can he described by
 	\begin{equation}
-		\diffop{t}\int_{\Omega_i}C \diffint x = \int_{\Omega_i}\diffop{t}(\phi c) \diffint x.
+		\diffop{t}\int_{\Omega_i}C_i \diffint x = \int_{\Omega_i}\diffop{t}(\phi_i c_i) \diffint x.
 		\label{eq:dmdt}
 	\end{equation}	
-	Since we expect mainly transport along the vessels and marginal diffusion, the change in tracer mass within $\Omega_i$ occurs only from advective flow and the source and sink field $Q(x)$.
-	Let us write the source- and the sink term as $Q(x) = \Qsi(x) + \Qso(x)$ where $\Qsi \le 0$ is the sink and $\Qso \ge 0$ is the source. 
+	Since we expect mainly transport along the vessels and marginal diffusion, the change in tracer mass within $\Omega_i$ occurs only from advective flow and the source and sink field $Q$.
+	Let us write the source- and the sink term as $Q = \Qsi + \Qso$ where $\Qsi \le 0$ is the sink and $\Qso \ge 0$ is the source. 
 	Both are assumed to be zero everywhere except at in the respective source and sink locations.
-	Note that $Q = \Qso + \Qsi$ and $\int_\Omega Q \diffint x =0$ in line with incompressible flow. 
+	Note that $Q = \Qso + \Qsi$ and $\int_\Omega Q \diffint x = 0$ in line with incompressible flow. 
 	The change in contrast agent at time point $t$ can hence be written as
 	\begin{equation}
-		-\int_{ \Gamma_i}c(q \cdot n)\diffint s + \int_{\Omega_i}\ca \Qso \diffint x + \int_{\Omega_i}c\Qsi \diffint x,
+		-\int_{ \Gamma_i}c_i(q_i \cdot n)\diffint s + \int_{\Omega_i}\ca \Qso \diffint x + \int_{\Omega_i}c_i\Qsi \diffint x,
 		\label{eq:surfflux}
 	\end{equation}
 	where $n$ is the outward unit normal on $\Gamma_i := \partial \Omega_i$.
@@ -276,7 +318,7 @@
 	In standard pharmacokinetic modeling, $\ca$ is referred to as the arterial input function (AIF).
 	From preservation of the tracer mass, equations \eqref{eq:dmdt} and \eqref{eq:surfflux} must balance such that
 	\begin{equation}
-		\int_{\Omega_i}\diffop{t} (\phi c) \diffint x + \int_{ \Gamma_i}c(q \cdot n) \diffint s = \int_{\Omega_i}\ca\Qso \diffint x + \int_{\Omega_i}c \Qsi \diffint x.
+		\int_{\Omega_i}\diffop{t} (\phi_i c_i) \diffint x + \int_{ \Gamma_i}c_i(q_i \cdot n) \diffint s = \int_{\Omega_i}\ca\Qso \diffint x + \int_{\Omega_i}c \Qsi \diffint x.
 		\label{eq:conteq}
 	\end{equation}
 	Upon application of the divergence theorem, \eqref{eq:conteq} is consistent with the continuity equation on local form
@@ -436,10 +478,10 @@
 	For simplicity we will assume that the domain is discretized by a regular cartesian grid of size $n \times n$ with a regular cell-spacing $h$.
 	The proposed method may be extended for non-regular grids in an analogous fashion.
 	
-	Since conservation of mass is a key factor for both the discretization of the flow and the transport, we use tailored algorithms to obtain these solutions.
+	Since conservation of mass is a key factor for both the discretization of the flow and the transport, we use algorithms preserve mass also in the simulations.
 	To solve \eqref{eq:flowmodel} we used the two-point flux approximation finite volume method (TPFA) \missingsource. 
 	Based on mass balance equations, we calculated the flux in such a fashion that conservation of mass was guaranteed.
-	The transport equation \eqref{eq:conteqlocal} was solved by applying an upwind scheme to \eqref{eq:conteq} \missingsource.
+	The transport equation \eqref{eq:conteqlocal} was solved by applying a straight-forward upwind scheme to \eqref{eq:conteq} \missingsource.
 
 	%----------------------------------------------------------
 	% Subsection: Discretization of the singe phase flow model
@@ -499,7 +541,7 @@
 	Therefore, the permeability and porosity were assumed constant in space and in time.
 	The voxel-wise perfusion field $P$ was calculated according to $\eqref{eq:flux2perf}$. 
 	The source term was chosen to the upper left voxel and the sink term was chosen in the lower right voxel.
-	To model the arterial-input function, we chose the standard model \cite{wu03} given by the gamma function
+	To model the arterial-input function, we chose a standard model \cite{wu03} given by the gamma function
 	\[
 		\ca(t) := t^\alpha e^{-t/\beta}
 	\]
@@ -570,7 +612,7 @@
 	% Section: Results
 	%--------------------------------------------------
 	%--------------------------------------------------
-	\section{Results}\label{sec:Results}
+	\section{Results}\label{sec:results}
 
 	We tested the the convolution based classical model \eqref{eq:conv} as well as maximum-slope model \eqref{eq:MS} for their capability to recover the perfusion values.
 	The success of the restoration was measured voxelwise in terms of the relative error of the recovered perfusion with respect to the true perfusion
@@ -604,7 +646,7 @@
 	However, for the voxel-wise model the classic method works not as expected.
 	Impuls response function reconstructed from the Porous Media Model are displayed in Figure \ref{fig:deconvResults}.
 	These are clearly not exhibiting the properties described in Section \ref{sec:conv}.
-	This is possible due to the reason that the model assumptions of \eqref{eq:conv} are violated \todo{CH: think about this a bit harder...}.
+	This is possible due to the reason that the model assumptions of \eqref{eq:conv} are violated \todo{CH: Let me think about this a bit harder...}.
 	Also dispersion effects might be playing a role \cite{calamante03}. 
 	However, these effects are typically leading to underestimation of perfusion, the opposite of the drastic overestimation the data is showing.	
 
@@ -616,8 +658,8 @@
 		\centering
 		\begin{tabular}{c c c c}
 			 \rbox{0ex}{True perfusion} & \inc{recTrue-1.eps} & \inc{recTrue-5.eps} & \inc{recTrue-10.eps}\\
-			 \rbox{5ex}{bSVD} & \inc{recCirc-pde-1.eps} & \inc{recCirc-pde-5.eps} & \inc{recCirc-pde-10.eps}\\
-			 \rbox{8ex}{MS} & \inc{recMS-pde-1.eps} & \inc{recMS-pde-5.eps} & \inc{recMS-pde-10.eps}\\			 			 			  
+			 \rbox{5ex}{bSVD} & \inc{recCirc-PDE-1.eps} & \inc{recCirc-PDE-5.eps} & \inc{recCirc-PDE-10.eps}\\
+			 \rbox{8ex}{MS} & \inc{recMS-PDE-1.eps} & \inc{recMS-PDE-5.eps} & \inc{recMS-PDE-10.eps}\\			 			 			  
 			   & (1,1) & (5,5) & (10,10)
 		\end{tabular}
 		\caption{Results of the restoration of perfusion for the Porous Media Model (PMM) for different levels of discretization, displayed in the columns. All results are given in $\mathrm{ml/min/100ml}$. First Row: Ground-Truth Perfusion (cf. Section \ref{sec:flux2perf}). Second Row: Perfusion as estimated by bSVD. Third Row: Perfusion as estimated by the Maximum-Slope model.}	
@@ -641,7 +683,14 @@
 	\end{figure}
 
 	
-
+	
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Section: Conclusion
+	%--------------------------------------------------
+	%--------------------------------------------------	
+	\section{Conclusion}\label{sec:conclusion}
+	Missing
 	
 	%--------------------------------------------------
 	% Bibliography
