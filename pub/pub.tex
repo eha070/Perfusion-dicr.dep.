@@ -6,7 +6,7 @@
 
 
 %% set author information etc
-\title{Some title}
+\title{A Validity Study for Perfusion in the Capillary System}
 \author{Constantin Heck, Erlend Hodneland, Erik A. Hanson, \\ Arvid Lundervold, Jan Modersitzki, Alexandre Malyshev \\ (random order)}
 \date{\today}
 
@@ -60,17 +60,17 @@
 	Still, the theory covered here, will also be of relevance in general perfusion studies.
 
 	While limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern MR technology and voxel based analysis give rise to aspirations about detailed perfusion maps with millimeter precision.  
-	Examples of successful estimations of parameter maps are found in i.e. []. 
+	Examples of successful estimations of parameter maps are found in i.e. \missingsource. 
 	The perfusion maps (and other parameter maps) combines the quantitative nature of the tracer kinetic model with important qualitative anatomical information. 
-	The maps have proven to be of particular value in e.g. stroke studies []. 
-	Among the physiological parameters obtainable from tracer kinetic models, the perfusion (or CBF) has proven to be particularly difficult to reliably describe on a voxel-basis [].  
+	The maps have proven to be of particular value in e.g. stroke studies \missingsource. 
+	Among the physiological parameters obtainable from tracer kinetic models, the perfusion (or CBF) has proven to be particularly difficult to reliably describe on a voxel-basis \cite{kudo10}.  
 	In several studies, perfusion or CBF are therefore only reported in relative values and the corresponding parameter maps are only used in a qualitative manner \cite{calamante99}.
 	The methodological limitations in perfusion estimation are caused both by issues in the numerical implementation, but also by the basic formulation of the model itself.  
 	It is has been widely studied how delay and dispersion of the contrast bolus between the AIF and the voxel as well as assumptions about directional flow \cite{thacker03,sourbron14} effects the perfusion estimation. 
 	In \cite{sourbron14} mathematical theory for flow field models are introduced and proposed as an alternative to the classical models for perfusion on voxel level. 
 	In this work we will use some of the same physical concepts, but also relate them to the classical perfusion models.  
-	We will further discuss limitations of classical voxel based perfusion models and focus on their validity in an unstructured flow field. T
-	he models, and how they behave under different ROI/voxel sizes and shapes, are analyzed mathematically and evaluated in a synthetic flow field.  
+	We will further discuss limitations of classical voxel based perfusion models and focus on their validity in an unstructured flow field.
+	The models, and how they behave under different ROI/voxel sizes and shapes, are analyzed mathematically and evaluated in a synthetic flow field.  
 	We will also derive a mathematical framework in which the medical notion of perfusion can be understood in a physical precise manner.
 
 	An evaluation of perfusion models using a synthetic flow field is also performed in i.e. \cite{calamante03}. 
@@ -101,13 +101,14 @@
 
 	We will first describe two standard models to recover CBF,CBV and MTT from data displaying propagation of a contrast agent through the tissue.
 	The so-called Deconvolution Model (DM) is used in vast amount of publications \cite{ostergaard96,abels10,straka10,bivard13,sourbron13} and has been shown to yield accurate parameter results.
-	However, the application of the algorithm to real data is still challenging as it is sensitive to noise and to patient movement \cite{kudo10}.
+	However, the application of the algorithm to real data is still challenging as it is sensitive to noise, patient movement and implementation \cite{kudo10}.
 	Another model which has been shown to exhibit good properties in restoring CBF and MTT is the so-called Maximum Slope Model (MS) \cite{miles91,klotz99}.
 	The maximum slope model has been shown to exhibit advantages over the deconvolution model especially if uptake curves are degraded in the late phase \cite{abels10}.
+	However, since it also relies on point-wise estimates application to real data is nevertheless difficult and prone to noisy measurments.
 		
-	We now briefly present the theoretical basis of two models \cite{sourbron13}.
+	Following \cite{sourbron13}, we now briefly present the theoretical basis of two models.
 	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$.
-	Let us furthermore assume linearity and stationarity of CA in- and outflow with proportionality constants $\Pa,\Pout$ \si{\siP}.
+	Let us furthermore assume linearity and stationarity of CA in- and outflux with proportionality constants $\Pa,\Pout$, given in \si{\siP}.
 	These assumptions lead to the differential equation 
 	\begin{equation}
 		C'(t) = \Pa\ca(t) - \Pout\cout(t)
@@ -144,18 +145,19 @@
 	There are several methods to perform the deconvolution.
 	A standard approach using Fourier-based algorithms has been shown sensitivity in the presence of noise \cite{wirestam00,ostergaard96}.
 	Another class of deconvolution algorithms gaining increasing attention are based on Bayesian modeling \cite{boutelier12,mouridsen06}.
-	Recent evaluations are showing good performance \cite{sasaki13}, however the numerical handling is difficult complex numerical integrations have to be performed.
+	Recent evaluations are showing good performance \cite{sasaki13}, however the numerical handling is still difficult since complex numerical integrations have to be performed.
 	The class most popular among deconvolution algorithms is based on singular value decomposition (SVD) \cite{ostergaard96}.
 	These algorithms have been shown to be quite robust in the presence of noise.
-	Also, they can be easily adapted to be robust against large delays in tracer arrival using block-circular structures (bSVD cf. \cite{wu03}).
+	Also, they can be easily adapted to be robust against delays in tracer arrival using block-circular structures (bSVD cf. \cite{wu03}).
 	In order to identify the impuls-response functions $I$ from the simulated data, we hence decided to use the bSVD model as proposed in \cite{wu03}.
 
 	%----------------------------------------------------------
 	% Subsection: A Second Digital Phantom For Validation
 	%----------------------------------------------------------	
 	\subsection{The Convolution Model for a Well-Mixed Compartment} \label{sec:comp}
-	Let us assume that $\Omega_i$ is a well-mixed compartment where $C(t) = \phi\cout(t)$ for some $0 < \phi \le 1$ and that additionally $\Pout=\Pa$.
-	In this case \eqref{eq:classicgeneral} reduces to
+	Let us assume that $\Omega_i$ is a well-mixed compartment where $C(t) = \phi\cout(t)$ for some $0 \le \phi \le 1$. 
+	Also assume incompressibility of flow in the sense of $\Pout=\Pa$.
+	In this case \eqref{eq:classicgeneral} reduces to the initial value problem
 	\begin{align*}
 		(\phi \cout)' &= \Pa \ca - \Pa \cout, \\
 		\cout(0)&=0.
@@ -178,24 +180,15 @@
 	\[
 		\Pa = \frac{C'(t)}{\ca(t) - c_v(t)}.
 	\]
-	Assuming that $t$ is in an early uptake-phase where no contrast agent is leaving the system yet, it holds approximately that
+	Let us furthermore assume that around the timepoint $t_{\mathrm max}:=\max_{t}\ca(t)$ where $\ca$ peaks no or a negligible amount of CA is leaving the system yet.
+	In this case the latter equation reduces to
 	\[
-		\Pa = \frac{C'(t)}{\ca(t)} \iff P\ca(t) = C'(t).
+		P\ca(t) = C'(t).
 	\]
-	Differentiating this equation with respect to $t$ yields:
-	\[
-		\Pa \ca'(t) = C''(t).
-	\]
-	Assuming that if $\ca$ peaks there is no or only a negligible amount of CA leaving the system, this equation is also fulfilled for timepoint $t_{\mathrm max}:=\mathrm{argmax}_{t}\ca(t)$. 
-	Since at this point it holds that $\ca'(t_{\mathrm max}) = 0$ and hence also $C''(t_{\mathrm max})=0$, we derive
+	This can be interpreted that if $\ca$ peaks, also $C'$ peaks and hence:
 	\begin{equation}\label{eq:MS}
 		\Pa = \frac{\max_{t}C'(t)}{\max_{t}\ca(t)}.
 	\end{equation}
-	
-	
-	
-	
-	
 	
 	
 	
@@ -216,10 +209,10 @@
 	Since the CA transport itself is driven mainly by blood flow, we will describe a simple model for the blood flow through capillary tissue in Section \ref{sec:flow}.
 	Within the capillary system we expect the blood flow to be driven mainly by differences in pressure.
 	This way of modeling flow comes from the theory of porous media and is expressed in Darcy's law \missingsource.
-	As a consequence, we will also apply the physical understanding of flow as surface flux $q = q(x)$ with units \si{\siq}.
+	As a consequence, we will also apply the physical understanding of flow as vector valued surface flux $q = q(x)$ with units \si{\siq}.
 	The surface flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
-	However, a model to convert surface flux to perfusion with units \si{\siP} will be introduced in Section \ref{sec:flux2perf}.
-	The resulting CA flux $J(x,t)$ with units \si{\siJ} is assumed to be linear and stationary, meaning that $J(x,t) = q(x)\cdot c(x,t)$.
+	A model to convert vector valued flux to scalar perfusion with units \si{\siP} will be introduced in Section \ref{sec:flux2perf}.
+	In our modeling, CA flux $J(x,t)$ with units \si{\siJ} is assumed to be linear and stationary, meaning that $J(x,t) = q(x)\cdot c(x,t)$.
 	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
 	A detailed description of modeling the blood flow can be found in Section \ref{sec:flow}.
 	
@@ -542,11 +535,11 @@
 	Therefore, the permeability and porosity were assumed constant in space and in time.
 	The voxel-wise perfusion field $P$ was calculated according to $\eqref{eq:flux2perf}$. 
 	The source term was chosen to the upper left voxel and the sink term was chosen in the lower right voxel.
-	To model the arterial-input function, we chose a standard model \cite{wu03} given by the gamma function
+	To model the arterial-input function, we chose a standard model \cite{ostergaard96} given by the gamma-variate \cite{chan04} function
 	\[
-		\ca(t) := t^\alpha e^{-t/\beta}
+		\ca(t) := (t-t_0^\alpha e^{-(t-t_0)/\beta}
 	\]
-	for $\alpha=3$ and $\beta = \SI{1.5}{\second}$.
+	for $\alpha=3$, $\beta = \SI{1.5}{\second}$ and $t_0 = \SI{0}{\second}$.
 	
 	\begin{table}[H]
 		\centering
@@ -567,6 +560,7 @@
 	  \end{tabular}
 	  \label{tab:par}
 	\end{table}	
+    \todo{Include all parameters}
 	
 	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional reference model was build.
 	The reference model was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the assumed perfusion values from \eqref{eq:flux2perf}.
@@ -576,32 +570,20 @@
 
 	\begin{figure}[H]
 		\centering
-            \begin{subfigure}[b]{0.3\textwidth}
-				\includegraphics[width=\textwidth]{figs/pressure.eps}
-                \caption{Pressure field $p$.}
-            \end{subfigure} 
-            \begin{subfigure}[b]{0.3\textwidth}
-				\includegraphics[width=\textwidth]{figs/flowQuiver.eps}
-                \caption{Flow field $q$.}
-            \end{subfigure}	           	                     
-            \begin{subfigure}[b]{0.3\textwidth}
-				\includegraphics[width=\textwidth]{figs/perfusion.eps}
-                \caption{Perfusion $P$.}
-            \end{subfigure}	                
+		\begin{tabular}{c c c}
+			\includegraphics[width=.3\textwidth]{figs/pressure.eps} & \includegraphics[width=.3\textwidth]{figs/flowQuiver.eps} & \includegraphics[width=.3\textwidth]{figs/perfusion.eps}\\
+			(a) Pressure field $p$ & (b) Flow field $q$ & (c) Perfusion $P$.
+		\end{tabular}
     	\caption{Synthetic flow model with a source in the upper left corner and a sink in the lower right corner. (a) Pressure field from solving the linear system in \eqref{eq:flowmodel}, in \si{\pascal} (b) flux field, (c) Voxelwise perfusion according to \eqref{eq:flux2perf} in \si{\siP}.}
 	        \label{fig:flowpressureperfusion}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
-		\begin{subfigure}[b]{0.45\textwidth}
-			\includegraphics[width=\textwidth]{figs/PM153247.eps}
-			\caption{Porous Media Model}
-		\end{subfigure}
-		\begin{subfigure}[b]{0.45\textwidth}
-			\includegraphics[width=\textwidth]{figs/RM153247.eps}			
-			\caption{Reference Model}			
-		\end{subfigure}		
+		\begin{tabular}{c c}
+			\includegraphics[width=.45\textwidth]{figs/PM153247.eps} & \includegraphics[width=.45\textwidth]{figs/RM153247.eps} \\
+			(a) Porous Media Model & (b) Convolution Model
+		\end{tabular}
 		\caption{Comparison of tissue curves in the Porous Media (a) and the Reference Model (b). Curves were sampled in the middle row $i=32$ and columns $j \in \{15,32,47\}$.}
 		\label{fig:tissuecomp}
 	\end{figure}
@@ -647,7 +629,7 @@
 	However, for the voxel-wise model the classic method works not as expected.
 	Impuls response function reconstructed from the Porous Media Model are displayed in Figure \ref{fig:deconvResults}.
 	These are clearly not exhibiting the properties described in Section \ref{sec:conv}.
-	This is possible due to the reason that the model assumptions of \eqref{eq:conv} are violated \todo{CH: Let me think about this a bit harder...}.
+	This is possible due to the reason that the model assumptions of \eqref{eq:conv} are violated.\todo{CH: Let me think about this a bit harder...}
 	Also dispersion effects might be playing a role \cite{calamante03}. 
 	However, these effects are typically leading to underestimation of perfusion, the opposite of the drastic overestimation the data is showing.	
 
@@ -687,10 +669,10 @@
 	
 	%--------------------------------------------------
 	%--------------------------------------------------
-	% Section: Conclusion
+	% Section: Discussion
 	%--------------------------------------------------
 	%--------------------------------------------------	
-	\section{Conclusion}\label{sec:conclusion}
+	\section{Discussion}\label{sec:conclusion}
 	Missing
 	
 	%--------------------------------------------------
