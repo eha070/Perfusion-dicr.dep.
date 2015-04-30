@@ -23,13 +23,13 @@
 
 
 %define SI-units, since we want to be able to easily change them
-\newcommand{\siq}{\litre\per\second\per\square\meter}
-\newcommand{\siqt}{\litre\per\second}
-\newcommand{\siP}{\litre\per\second\per\litre}
-\newcommand{\siQ}{\kilo\gram\per\second\per\litre}
-\newcommand{\sirho}{\kilo\gram\per\litre}
-\newcommand{\siJ}{\mol\per\second\per\square\meter}
-\newcommand{\sic}{\mol\per\litre}
+\newcommand{\siq}{\cubic\milli\meter\per\second\per\square\milli\meter}
+\newcommand{\siqt}{\cubic\milli\meter\per\second}
+\newcommand{\siP}{\cubic\milli\meter\per\second\per\cubic\milli\meter}
+\newcommand{\siQ}{\milli\gram\per\second\per\cubic\milli\meter}
+\newcommand{\sirho}{\milli\gram\per\cubic\milli\meter}
+\newcommand{\siJ}{\milli\mol\per\second\per\square\milli\meter}
+\newcommand{\sic}{\milli\mol\per\cubic\milli\meter}
 \newcommand{\siPn}{\milli\litre\per\minute\per100\milli\litre}
 
 %define misc commands
@@ -546,23 +546,26 @@
 		\begin{tabular}{ l  c  c  r }
 		    Description 									& Symbol 			& Value(s) 				& Unit 				\\
 			\toprule
+			Concentration w.r.t. fluid space				& $c$				& - 					& \si{\sic} 		\\
+			Concentration w.r.t. ROI						& $C$				& - 					& \si{\sic} 		\\
+			CA Flux											& $J$				& - 					& \si{\siJ} 		\\
 		    Average input perfusion 				 		& $\overline{P}$ 	& $50$ 					& \si{\siPn}		\\
-			Flow source, derived from $\overline{P}$ 		& $F_{so}$ 			& $0.08333$ 			& \si{\siqt}  		\\
-			Flow sink 										& $F_{si}$ 			& $-F_{so}$ 		 	& \si{\siqt}  		\\
-			Dynamic viscosity blood \cite{rosencranz06} 	& $\mu_b$ 			& $5 \cdot 10^{-6}$ 	& \si{\kilo\pascal\second}  	\\
-			Fluid density blood \cite{kenner89} 			& $\rho$ 			& $1 $ 					& \si{\sirho} 		\\		
-			Permeability  									& $k$ 				& $5 \cdot 10^{-6}$ 	& \si{\square\meter} 			\\	
-			Porosity\cite{wu03}								& $\phi$ 			& $0.05$ 				& \si{\litre\per\litre}	\\	
+			Flow source, derived from $\overline{P}$ 		& $F_{so}$ 			& \num{0.0833}			& \si{\cubic\milli\meter\per\second} \\
+			Flow sink 										& $F_{si}$ 			& $-F_{so}$ 		 	& \si{\cubic\milli\meter\per\second}  		\\
+			Dynamic viscosity blood \cite{rosencranz06} 	& $\mu_b$ 			& $\num{5e-6}$ 			& \si{\kilo\pascal\second}  	\\
+			Fluid density blood \cite{kenner89} 			& $\rho$ 			& $\num{1}$				& \si{\milli\gram\per\cubic\milli\meter} 		\\		
+			Permeability  									& $k$ 				& $\num{5e-6}$ 			& \si{\square\milli\meter} 			\\	
+			Porosity\cite{wu03}								& $\phi$ 			& $0.05$ 				& \si{\cubic\milli\meter\per\cubic\milli\meter}	\\	
 			Spatial resolution 								& - 				& $(64,64,1)$ 			& -					\\
-			Physical dimension 								& - 				& $(10,10,1)$ 			& \si{\meter}				\\
-			Voxel size 										& - 				& $(0.156,0.156,1)$ 	& \si{\meter}	\\
+			Physical dimension 								& - 				& $(10,10,1)$ 			& \si{\milli\meter}				\\
+			Voxel size 										& - 				& $(0.156,0.156,1)$ 	& \si{\milli\meter}	\\
 	  \end{tabular}
 	  \label{tab:par}
 	\end{table}	
     \todo{Include all parameters}
 	
 	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional convolution dataset was built.
-	The convolution dataset was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the perfusion values described in \eqref{eq:flux2perf}.
+	The convolution dataset (convM) was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the perfusion values described in \eqref{eq:flux2perf}.
 	A comparison of the tissue curves at different positions of the tissue can be found in Figure \ref{fig:tissuecomp}. 
 
 
@@ -606,7 +609,7 @@
 	Results are displayed in Figure \ref{fig:resultsPMM} as well as in Table \ref{tab:resultsSim}.
 	
 	\begin{table}[H]
-		\caption{Results of the perfusion restoration with median relative errors in percent. Relative error was computed block-wise as $\vert P_{\mathrm{rec}} - P_{\mathrm{true}}\vert / P_{\mathrm{true}}\cdot 100\%$. Displayed is the median RE over the entire domain. Abbreviations are: PMM - Porous Media Mode, ConvM - Convolution Model.}
+		\caption{Results of the perfusion restoration with median relative errors in percent. Relative error was computed block-wise as $\vert P_{\mathrm{rec}} - P_{\mathrm{true}}\vert / P_{\mathrm{true}}\cdot 100\%$. Displayed is the median RE over the entire domain. Abbreviations are: PMM - Porous Media Model, ConvM - Convolution Model.}
 		\centering
 		\begin{tabular}{l c c c c c }
 			& Model & \multicolumn{4}{c}{Block Size}\\
