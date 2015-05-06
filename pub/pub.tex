@@ -550,7 +550,7 @@
 			Concentration w.r.t. ROI						& $C$				& - 					& \si{\sic} 		\\
 			CA Flux											& $J$				& - 					& \si{\siJ} 		\\
 		    Average input perfusion 				 		& $\overline{P}$ 	& $50$ 					& \si{\siPn}		\\
-			Flow source, derived from $\overline{P}$ 		& $F_{so}$ 			& \num{0.0833}			& \si{\cubic\milli\meter\per\second} \\
+			Flow source, derived from $\overline{P}$ 		& $F_{so}$ 			& \num{0.83}			& \si{\cubic\milli\meter\per\second} \\
 			Flow sink 										& $F_{si}$ 			& $-F_{so}$ 		 	& \si{\cubic\milli\meter\per\second}  		\\
 			Dynamic viscosity blood \cite{rosencranz06} 	& $\mu_b$ 			& $\num{5e-6}$ 			& \si{\kilo\pascal\second}  	\\
 			Fluid density blood \cite{kenner89} 			& $\rho$ 			& $\num{1}$				& \si{\milli\gram\per\cubic\milli\meter} 		\\		
@@ -562,7 +562,6 @@
 	  \end{tabular}
 	  \label{tab:par}
 	\end{table}	
-    \todo{Include all parameters}
 	
 	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional convolution dataset was built.
 	The convolution dataset (convM) was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the perfusion values described in \eqref{eq:flux2perf}.
@@ -674,7 +673,46 @@
 	%--------------------------------------------------
 	%--------------------------------------------------	
 	\section{Discussion}\label{sec:conclusion}
-	Missing
+	Results in Tab. \ref{tab:resultsSim} are indicating good performance of classic models to restore the perfusion for an entire volume. 
+	Errors are $2.6\%$ for the Maximum-Slope model and $1.3\%$ for the deconvolution model.
+	However, tuning the regularization parameter for the deconvolution model is complicated and requires significant experience \missingsource.
+	The maximum slope model on the other hand assumes that no contrast agent leaves the volume when the AIF peaks.
+	This assumption is for arbitrary, possibly pathologic tissue difficult to justify \missingsource.
+	
+	Results on a voxel-level are looking quite different (see Tab. \ref{tab:resultsSim}).
+	Here perfusion is grossly overestimated and errors are in the range of far over $100\%$, indicating a lack of validity of the classic models.
+	This impression is supported by the recovered impuls-response functions, displayed in Fig. \ref{fig:deconvResults}.
+	Although classic models assume monotonously decreasing residue-functions, the impuls-response functions we obtained are looking different.
+	These effects might be due to dispersion \cite{calamante03}.
+	However, these results are still subject to current investigation.
+	
+	However, the deconvolution model worked quite good for restoring perfusion which was simulated using theory for classical models (see Tab. \ref{tab:resultsSim}).
+	The maximum-slope model however showed problems restoring these results.
+	This is possibly due to the assumption that the models are describing well-mixed compartments (see Sec. \ref{sec:comp}).
+	Under this assumption outflow is taking place instantaneously.
+	
+	However, results are indicating that the classical models are not capable to describe perfusion in tissue of the capillary bed.
+	This might lead to problems if the resolution of scanners becomes finer.
+	
+	\todo{Still a lot to do...}
+	
+	
+	
+	\textbf{Todo: Use this as a phantom for validation}
+	\begin{itemize}
+		\item Alternative to ,,classic setup'' using exponential, linear or block residue-functions
+		\item Simulate more complex effects within the VOI (different CBV, CBF, leackage etc.)
+		\item Further investigate theory for impuls-response functions
+	\end{itemize}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	%--------------------------------------------------
 	% Bibliography
