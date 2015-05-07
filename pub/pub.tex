@@ -100,40 +100,46 @@
 	\section{Classical Models} \label{sec:classical}
 
 	We will first describe two standard models to recover CBF,CBV and MTT from data displaying propagation of a contrast agent through the tissue.
-	The so-called Deconvolution Model (DM) is used in vast amount of publications \cite{ostergaard96,abels10,straka10,bivard13,sourbron13} and has been shown to yield accurate parameter results.
-	However, the application of the algorithm to real data is still challenging as it is sensitive to noise, patient movement and implementation \cite{kudo10}.
+	The so-called Deconvolution Model (DM) is used in vast amount of publications \cite{ostergaard96,abels10,straka10,bivard13,sourbron13}.
+	Restoration of CBF yields reasonable results \missingsource, however validation is still a problem as ground-truth CBF is hard to determine.
+	Validation of novel implementations is usually done in the so-called \emph{inverse crime} setting. 
+	This means that the forward model to generate data and the backward model to reconstruct parameters are similar, if not identical.
 	Another model which has been shown to exhibit good properties in restoring CBF and MTT is the so-called Maximum Slope Model (MS) \cite{miles91,klotz99}.
 	The maximum slope model has been shown to exhibit advantages over the deconvolution model especially if uptake curves are degraded in the late phase \cite{abels10}.
-	However, since it also relies on point-wise estimates application to real data is nevertheless difficult and prone to noisy measurments.
+	However, since it relies on point-wise estimates, application to real data is nevertheless difficult and prone to noisy measurements.
+	Also, the maximum slope model inherently assumes that no outflow takes place when the AIF peaks (see Sec. \ref{sec:ms}).
+	This assumption is questionable for arbitrary, maybe pathological tissue \missingsource.
+	
 		
 	Following \cite{sourbron13}, we now briefly present the theoretical basis of two models.
 	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$.
 	Let us furthermore assume linearity and stationarity of CA in- and outflux with proportionality constants $\Pa,\Pout$, given in \si{\siP}.
-	These assumptions lead to the differential equation 
+	These assumptions lead to the differential equation $C'(t) = \Pa\ca(t) - \Pout\cout(t)$.
+	Here $\ca,\cout$ are the CA concentrations at the inlet and outlet of $\Omega_i$.
+	Assuming incompressibility of flow leads to $\Pa = \Pout$ and hence we obtain the general form
 	\begin{equation}
-		C'(t) = \Pa\ca(t) - \Pout\cout(t)
+		C'(t) = \Pa\left(\ca(t) - \cout(t)\right).
 		\label{eq:classicgeneral}
 	\end{equation}
-	where $\ca,\cout$ are the CA concentrations at the inlet and outlet of $\Omega_i$. 	
-	In the next step, the deconvolution model and the maximum slope model are making different assumptions
+	In the next step, the deconvolution model and the maximum slope model are making different assumptions.
 
 	%----------------------------------------------------------
 	% Subsection: The Convolution Model: Theory and Implementation
 	%----------------------------------------------------------	
 	\subsection{The Convolution Model: Theory and Implementation}\label{sec:conv}
 	
-	For the deconvolution model it is assumed that there is a probability distribution describing transit times $h(t)$ through $\Omega_i$. 
-	The conservation of mass argument leads to
+	For the deconvolution model it is assumed that there is a probability distribution of transit times $h(t)$ through $\Omega_i$. 
+	This leads to
 	\[
-		\Pout\cout(t) = (h*\Pa\ca)(t) := \Pa\int_0^t \ca(s) h(t-s) \diffint s.
+		\cout(t) = (h*\ca)(t) := \int_0^t \ca(s) h(t-s) \diffint s.
 	\]
 	Combining this with \eqref{eq:classicgeneral} yields $C'(t) = \Pa\ca(t)-\Pa (h*\ca)(t)$.
-	Integrating the latter equation and using basic properties of the convolution one obtains
+	Integrating this equation and using basic properties of the convolution one obtains
 	\begin{equation}
-		C(t) = (I*\ca)(t)
+		C(t) = (I*\ca)(t).
 		\label{eq:conv}
 	\end{equation}
-	for the impuls-response function $I(t) := \Pa(1-\int_0^t h(s) \diffint s)$.
+	Here the \emph{impuls-response function} $I$ is defined as $I(t) := \Pa(1-\int_0^t h(s) \diffint s)$.
 	One can show that $I$ fulfills the following properties:
 	\begin{itemize}
 		\item $I(0) = \Pa$,
@@ -155,9 +161,7 @@
 	% Subsection: A Second Digital Phantom For Validation
 	%----------------------------------------------------------	
 	\subsection{The Convolution Model for a Well-Mixed Compartment} \label{sec:comp}
-	Let us assume that $\Omega_i$ is a well-mixed compartment where $C(t) = \phi\cout(t)$ for some $0 \le \phi \le 1$. 
-	Also assume incompressibility of flow in the sense of $\Pout=\Pa$.
-	In this case \eqref{eq:classicgeneral} reduces to the initial value problem
+	If we assume that $\Omega_i$ is a well-mixed compartment where $C(t) = \phi\cout(t)$ for some $0 \le \phi \le 1$, equation \eqref{eq:classicgeneral} reduces to the initial value problem
 	\begin{align*}
 		(\phi \cout)' &= \Pa \ca - \Pa \cout, \\
 		\cout(0)&=0.
@@ -175,17 +179,14 @@
 	% Subsection: The Maximum Slope Model
 	%----------------------------------------------------------
 	\subsection{The Maximum Slope Model: Theory and Implementation}\label{sec:ms}	
-	In the MS Model, equation \eqref{eq:classicgeneral} is combined with the assumption that $\Pout = \Pa$ (cf. \cite{klotz99}).
-	This yields:
+	In the MS Model it is assumed that at the beginning no or only a negligible amount of CA is leaving the system (cf. \cite{klotz99}).
+	For this time \eqref{eq:classicgeneral} reduces to 
 	\[
-		\Pa = \frac{C'(t)}{\ca(t) - c_v(t)}.
-	\]
-	Let us furthermore assume that around the timepoint $t_{\mathrm max}:=\max_{t}\ca(t)$ where $\ca$ peaks no or a negligible amount of CA is leaving the system yet.
-	In this case the latter equation reduces to
-	\[
-		\Pa\ca(t) = C'(t).
-	\]
-	This can be interpreted that if $\ca$ peaks, also $C'$ peaks and hence:
+		C'(t) = \Pa\ca(t).
+	\]	
+	It is furthermore assumed this assumption is valid for the timepoint where $\ca$ peaks.
+	In this case one can see that if $\ca$ has a maximum also $C'$ must have a maximum.
+	Hence it holds that
 	\begin{equation}\label{eq:MS}
 		\Pa = \frac{\max_{t}C'(t)}{\max_{t}\ca(t)}.
 	\end{equation}
@@ -512,7 +513,7 @@
 	\[
 		\int_{\Gamma_ij} (c_i q)\cdot n_{ij} \diffint s \approx c_i q_{ij} \vert \Gamma_{ij} \vert.
 	\]
-	Keeping track of in- and outflow for each voxel and applying a straight-forward discretization of \eqref{eq:conteq} yields an explicit scheme to set up the transport simulation.
+	Keeping track of in- and outflow for each voxel and applying a straight-forward discretization of \eqref{eq:conteq} yields an explicit discretization scheme to set up the transport simulation.
 	A conversion of $c_i$ into $C_i$ is performed via the relation $C_i = c_i\phi_i$. 
 	The overall concentration map $C_i$ is later used for the inverse problem of restoring CBV and CBF.
 
@@ -565,6 +566,8 @@
 	
 	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional convolution dataset was built.
 	The convolution dataset (convM) was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the perfusion values described in \eqref{eq:flux2perf}.
+	Note that this assumption is in contradiction to the assumptions of the maximum-slope model.
+	We can hence not expect to recover reasonable perfusion parameters from convM using the maximum slope model.
 	A comparison of the tissue curves at different positions of the tissue can be found in Figure \ref{fig:tissuecomp}. 
 
 
@@ -606,6 +609,7 @@
 	Prior to reconstruction, the input data was downsampled to a time-resolution of $\SI{.2}{\second}$.
 	In order to simulate different spatial resolutions of the scanning process, the data was averaged using different block-sizes ranging from $(1,1)$ to $(64,64)$.
 	Results are displayed in Figure \ref{fig:resultsPMM} as well as in Table \ref{tab:resultsSim}.
+	Impuls response function reconstructed from the Porous Media Model are displayed in Figure \ref{fig:deconvResults}.	
 	
 	\begin{table}[H]
 		\caption{Results of the perfusion restoration with median relative errors in percent. Relative error was computed block-wise as $\vert P_{\mathrm{rec}} - P_{\mathrm{true}}\vert / P_{\mathrm{true}}\cdot 100\%$. Displayed is the median RE over the entire domain. Abbreviations are: PMM - Porous Media Model, ConvM - Convolution Model.}
@@ -624,16 +628,6 @@
 		\end{tabular}
 		\label{tab:resultsSim}
 	\end{table}
-	
-	
-	It can be seen that for the complete domain the perfusion can be accurately restored by both methods with an error of ca. $2\%$.
-	However, for the voxel-wise model the classic method works not as expected.
-	Impuls response function reconstructed from the Porous Media Model are displayed in Figure \ref{fig:deconvResults}.
-	These are clearly not exhibiting the properties described in Section \ref{sec:conv}.
-	This is possible due to the reason that the model assumptions of \eqref{eq:conv} are violated.\todo{CH: Let me think about this a bit harder...}
-	Also dispersion effects might be playing a role \cite{calamante03}. 
-	However, these effects are typically leading to underestimation of perfusion, the opposite of the drastic overestimation the data is showing.	
-
 
 
 	\newcommand{\rbox}[2]{\rotatebox{90}{\hspace{#1}\mbox{\large #2}}}
@@ -661,7 +655,7 @@
 				 \includegraphics[width = .45\textwidth]{./figs/C-and-Crec-conv.eps} & \includegraphics[width = .45\textwidth]{./figs/Irec-conv.eps} \\			 
 				 \multicolumn{2}{ c }{(c) Inside the capillary bed, ConvM at $(i,j)=(50,50)$} \\				 				 
 			\end{tabular}
-		\caption{Results for the deconvolution model. First row: Results of bSVD applied to PMM with block-size (64,64) (i.e. entire domain) (Model-Fit and Impuls-Response Function). Second row: Results of bSVD applied to a single voxel of the PMM in the inside of the domain. Third row: Second row: Results of bSVD applied to a single voxel of the SCD in the inside of the domain.}			
+		\caption{Results for the deconvolution model. First row: Results of bSVD applied to PMM with block-size (64,64) (i.e. entire domain) (Model-Fit and Impuls-Response Function). Second row: Results of bSVD applied to a single voxel of the PMM in the inside of the domain. Third row: Second row: Results of bSVD applied to a single voxel of the SCD in the inside of the domain. In all cases the model restored the measured concentration curves perfectly.}			
 		\label{fig:deconvResults}
 	\end{figure}
 
@@ -673,46 +667,41 @@
 	%--------------------------------------------------
 	%--------------------------------------------------	
 	\section{Discussion}\label{sec:conclusion}
-	Results in Tab. \ref{tab:resultsSim} are indicating good performance of classic models to restore the perfusion for an entire volume. 
+	Results in Tab. \ref{tab:resultsSim} are indicating good performance of both models to restore the perfusion for an entire volume. 
 	Errors are $2.6\%$ for the Maximum-Slope model and $1.3\%$ for the deconvolution model.
-	However, tuning the regularization parameter for the deconvolution model is complicated and requires significant experience \missingsource.
-	The maximum slope model on the other hand assumes that no contrast agent leaves the volume when the AIF peaks.
-	This assumption is for arbitrary, possibly pathologic tissue difficult to justify \missingsource.
-	
+	However, the results of the deconvolution model depend on a heuristic choice of the regularization parameter \missingsource.
 	Results on a voxel-level are looking quite different (see Tab. \ref{tab:resultsSim}).
-	Here perfusion is grossly overestimated and errors are in the range of far over $100\%$, indicating a lack of validity of the classic models.
+	Here the perfusion is grossly overestimated by both the deconvolution model and the the maximum-slope model.
+	Errors are in the range of far over $100\%$, indicating a lack of validity of the classic models.
 	This impression is supported by the recovered impuls-response functions, displayed in Fig. \ref{fig:deconvResults}.
-	Although classic models assume monotonously decreasing residue-functions, the impuls-response functions we obtained are looking different.
-	These effects might be due to dispersion \cite{calamante03}.
-	However, these results are still subject to current investigation.
+	Although classic models assume monotonously decreasing residue-functions, the impuls-response functions we obtained are clearly violating this property.
+	These effects might be due to dispersion effects \cite{calamante03} and are subject to current investigations.
 	
-	However, the deconvolution model worked quite good for restoring perfusion which was simulated using theory for classical models (see Tab. \ref{tab:resultsSim}).
-	The maximum-slope model however showed problems restoring these results.
-	This is possibly due to the assumption that the models are describing well-mixed compartments (see Sec. \ref{sec:comp}).
-	Under this assumption outflow is taking place instantaneously.
+	However, as expected the deconvolution model worked quite good for the ConvM-dataset (see Tab. \ref{tab:resultsSim}). 
+	But results are deteriorating if several volumes are averaged, leading to errors of up to $20\%$.
+	This can be interpreted that even if the assumptions of the classical models are fulfilled, parameter-estimation will be sensitive with respect to broad resolutions.
+	As already described in Sec. \ref{sec:NumExp}, the maximum-slope model fails to restore perfusion correctly due to the assumption of well-mixed compartments.
+	Taking into account all of these observations we arrive at the following conclusions:
+	If classical models are valid, a too broad spatial resolution might lead to significant errors in the estimation of perfusion parameters.
+	On the other hand, a too fine resolution might lead to voxels placed inside of the capillary bed and hence to a dramatic overestimation of CBF.
+	A method to determine the appropriate size of voxels is unknown to the authors, as it is coupled to the validity of the assumptions on the models.
 	
-	However, results are indicating that the classical models are not capable to describe perfusion in tissue of the capillary bed.
-	This might lead to problems if the resolution of scanners becomes finer.
+	Concluding, we have proposed a novel method to validate classical models for perfusion analysis.
+	Based on porous media modeling, we described an easily extendable model to simulate CA-flow through a volume of interest.
+	The proposed model assumes stationary and linearity of flow as well as spatially constant blood-volume.
+	In this form it is completely in line with current pharmacokinetic modeling \cite{sourbron14}.
+	In order to connect (medical) volume perfusion with (physical) surface flow, a novel relationship between these two was introduced.
+	For the experiments we have confined to a most simple setup, modeling a volume of interest with one inlet, one outlet and constant porosity.
+	However, a more sophisticated simulation including more inlets and outlets at spatially varying locations as well as porosity can be set up readily.
+	We showed that under these assumptions classical models are yielding good results for perfusion values and can indeed be used with high reliability.
+	But as soon as the assumptions are violated, which is the case for the capillary bed, significant errors are introduced.
+
+	Since current validation of deconvolution algorithms is typically performed in the inverse-crime setting, the developed model could be used as an additional reference standard for validation.
+	In the proposed modeling, exact perfusion values for the whole tissue can be modeled. 
+	Using this method it is hence possible to quantify errors introduced by e.g. different numbers of input and output, more complex flow or even leakage.
 	
-	\todo{Still a lot to do...}
-	
-	
-	
-	\textbf{Todo: Use this as a phantom for validation}
-	\begin{itemize}
-		\item Alternative to ,,classic setup'' using exponential, linear or block residue-functions
-		\item Simulate more complex effects within the VOI (different CBV, CBF, leackage etc.)
-		\item Further investigate theory for impuls-response functions
-	\end{itemize}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	As future work we will further investigate the impuls-response functions of the capillary bed and will simulate more complex phenomena in the tissue.
+
 	
 	%--------------------------------------------------
 	% Bibliography
