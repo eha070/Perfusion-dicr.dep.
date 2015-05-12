@@ -23,12 +23,14 @@
 
 
 %define SI-units, since we want to be able to easily change them
-\newcommand{\siq}{\cubic\milli\meter\per\second\per\square\milli\meter}
-\newcommand{\siqt}{\cubic\milli\meter\per\second}
-\newcommand{\siP}{\cubic\milli\meter\per\second\per\cubic\milli\meter}
-\newcommand{\siQ}{\milli\gram\per\second\per\cubic\milli\meter}
-\newcommand{\sirho}{\milli\gram\per\cubic\milli\meter}
-\newcommand{\siJ}{\milli\mol\per\second\per\square\milli\meter}
+\newcommand{\siq}{\milli\meter\cubed\per\second\per\milli\meter\squared}
+\newcommand{\siqt}{\milli\meter\cubed\per\second}
+%\newcommand{\siP}{\cubic\milli\meter\per\second\per\cubic\milli\meter}
+\newcommand{\siP}{\milli\meter\cubed\per\second\per\milli\meter\cubed}
+\newcommand{\siQtilde}{\milli\gram\per\second\per\milli\meter\cubed}
+\newcommand{\siQ}{\milli\meter\cubed\per\second\per\milli\meter\cubed}
+\newcommand{\sirho}{\milli\gram\per\milli\meter\cubed}
+\newcommand{\siJ}{\milli\mol\per\second\per\milli\meter\squared}
 \newcommand{\sic}{\milli\mol\per\cubic\milli\meter}
 \newcommand{\siPn}{\milli\litre\per\minute\per100\milli\litre}
 
@@ -108,17 +110,17 @@ This more accurately mimics the nature of blood flow in the tissue.
 	This assumption is questionable for arbitrary, maybe pathological tissue \missingsource.
 	
 		
-	Following \cite{sourbron13}, we now briefly present the theoretical basis of two the models.
-	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$.
-	Let us furthermore assume linearity and stationarity of CA in- and outflux with proportionality constants $\Pa,\Pout$, given in \si{\siP}.
-	These assumptions lead to the differential equation $C'(t) = \Pa\ca(t) - \Pout\cout(t)$.
+	Following \cite{sourbron13}, we now briefly present the common theoretical basis of two the models.
+	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$, assuming a well mixed compartment \textcolor{red}{I added this assumption, isn't that correct? If its not well mixed C will be a function of space as well}. 
+	Let us furthermore assume linearity and stationarity \textcolor{red}{What is linear and what is stationary?} of CA in- and outflux with proportionality constants $\Pa, \Pout$, given in \si{\siP}.
+	These assumptions lead to the differential equation $C'(t) = \Pa\ca(t) - \Pout\cout(t)$, reflecting mass balance of the tracer. 
 	Here $\ca,\cout$ are the CA concentrations at the inlet and outlet of $\Omega_i$.
 	Assuming incompressibility of flow leads to $\Pa = \Pout$ and hence we obtain the general form
 	\begin{equation}
 		C'(t) = \Pa\left(\ca(t) - \cout(t)\right).
 		\label{eq:classicgeneral}
 	\end{equation}
-	In the next step, the deconvolution model and the maximum slope model are making different assumptions.
+	In the next step, the deconvolution model and the maximum slope model are diverging based on different assumptions.
 
 	%----------------------------------------------------------
 	% Subsection: The Convolution Model: Theory and Implementation
@@ -127,46 +129,45 @@ This more accurately mimics the nature of blood flow in the tissue.
 	
 	For the deconvolution model it is assumed that there is a probability distribution of transit times $h(t)$ through $\Omega_i$. 
 	This leads to
-	\[
+	\begin{equation}
 		\cout(t) = (h*\ca)(t) := \int_0^t \ca(s) h(t-s) \diffint s.
-	\]
+	\end{equation}
 	Combining this with \eqref{eq:classicgeneral} yields $C'(t) = \Pa\ca(t)-\Pa (h*\ca)(t)$.
 	Integrating this equation and using basic properties of the convolution one obtains
 	\begin{equation}
 		C(t) = (I*\ca)(t).
 		\label{eq:conv}
 	\end{equation}
-	Here the \emph{impuls-response function} $I$ is defined as $I(t) := \Pa(1-\int_0^t h(s) \diffint s)$.
-	One can show that $I$ fulfills the following properties:
+	Here the \emph{impuls-response function} $I$ is defined as $I(t) := \Pa(1-\int_0^t h(s) \diffint s)$, and it fulfills the following properties:
 	\begin{itemize}
 		\item $I(0) = \Pa$,
 		\item $I$ is monotonously decreasing,
 		\item $I\ge 0$.		
 	\end{itemize}
-	The problem to identify $I$ given a tissue curve $C$ and an arterial input function $\ca$ is a deconvolution problem.
-	If $I$ is recovered, $\Pa$ can subsequently be estimated as $\Pa = \max_{t} I(t)$.
+	The task of identifying $I(t)$ given a tissue curve $C(t)$ and an arterial input function $\ca(t)$ is a deconvolution problem.
+	If $I(t)$ is recovered, $\Pa$ can subsequently be estimated as $\Pa = \max_{t} I(t)$.
 	There are several methods to perform the deconvolution.
-	A standard approach using Fourier-based algorithms has been shown sensitivity in the presence of noise \cite{wirestam00,ostergaard96}.
+	A standard approach using Fourier-based algorithms is sensitive to the presence of noise \cite{ostergaard96,wirestam00}.
 	Another class of deconvolution algorithms gaining increasing attention are based on Bayesian modeling \cite{boutelier12,mouridsen06}.
-	Recent evaluations are showing good performance \cite{sasaki13}, however the numerical handling is still difficult since complex numerical integrations have to be performed.
-	The class most popular among deconvolution algorithms is based on singular value decomposition (SVD) \cite{ostergaard96}.
-	These algorithms have been shown to be quite robust in the presence of noise.
+	Recent evaluations are showing good performance \cite{sasaki13}, however the numerical handling is still difficult since complex and error-prone numerical integration has to be performed.
+	The most popular among deconvolution algorithms are based on singular value decomposition (SVD) \cite{ostergaard96}.
+	These algorithms have shown to be robust for a reasonable noise level.
 	Also, they can be easily adapted to be robust against delays in tracer arrival using block-circular structures (bSVD cf. \cite{wu03}).
-	In order to identify the impuls-response functions $I$ from the simulated data, we hence decided to use the bSVD model as proposed in \cite{wu03}.
+	In order to identify the impuls-response function $I(t)$ from simulated data, we hence decided to use the bSVD model as proposed in \cite{wu03}.
 
 	%----------------------------------------------------------
 	% Subsection: A Second Digital Phantom For Validation
 	%----------------------------------------------------------	
-	\subsection{The Convolution Model for a Well-Mixed Compartment} \label{sec:comp}
-	If we assume that $\Omega_i$ is a well-mixed compartment where $C(t) = \phi\cout(t)$ for some $0 \le \phi \le 1$, equation \eqref{eq:classicgeneral} reduces to the initial value problem
+%	\subsection{The Convolution Model for a Well-Mixed Compartment \textcolor{red}{Haven't we used this assumption earlier?}} \label{sec:comp}
+	If we recall the assumption of $\Omega_i$ as a well-mixed compartment where $C(t) = \phi\cout(t)$ for some $0 \le \phi \le 1$, equation \eqref{eq:classicgeneral} reduces to the initial value problem
 	\begin{align*}
 		(\phi \cout)' &= \Pa \ca - \Pa \cout, \\
 		\cout(0)&=0.
 	\end{align*}
 	Letting $\MTT:=\Pa/\CBV$ yields the solution
-	\[
-		C(t) = \Pa \int_0^t e^{-1/\MTT(t-s)}\ca(s)\diffint s
-	\]
+	\begin{equation}
+		C(t) = \Pa \int_0^t e^{-(t-s)/\MTT}\ca(s)\diffint s
+	\end{equation}
 	with residue function $R(t)=e^{-t/\MTT}$. 
 
 	
@@ -176,13 +177,12 @@ This more accurately mimics the nature of blood flow in the tissue.
 	% Subsection: The Maximum Slope Model
 	%----------------------------------------------------------
 	\subsection{The Maximum Slope Model: Theory and Implementation}\label{sec:ms}	
-	In the MS Model it is assumed that at the beginning no or only a negligible amount of CA is leaving the system (cf. \cite{klotz99}).
-	For this time \eqref{eq:classicgeneral} reduces to 
-	\[
+	In the MS model it is assumed that at the beginning when $\ca$ peaks, only a negligible amount of CA is leaving the system (cf. \cite{klotz99}).
+	For this time interval equation \eqref{eq:classicgeneral} reduces to 
+	\begin{equation}
 		C'(t) = \Pa\ca(t).
-	\]	
-	It is furthermore assumed this assumption is valid for the timepoint where $\ca$ peaks.
-	In this case one can see that if $\ca$ has a maximum also $C'$ must have a maximum.
+	\end{equation}
+	In this case one can see that if $\ca$ has a maximum, also $C'$ must have a maximum since stationarity in $\Pa$ is assumed.
 	Hence it holds that
 	\begin{equation}\label{eq:MS}
 		\Pa = \frac{\max_{t}C'(t)}{\max_{t}\ca(t)}.
@@ -195,27 +195,27 @@ This more accurately mimics the nature of blood flow in the tissue.
 	% Section: The synthetic model
 	%--------------------------------------------------
 	%--------------------------------------------------	
-	\section{The Novel Synthetic Model}\label{sec:synthetic}
+	\section{A Synthetic Model for Capillary Perfusion}\label{sec:synthetic}
 	
 	Structurally, the model-assumptions for both classical methods presented in Section \ref{sec:classical} are similar.
-	Both are assuming that the region of interest where the model is applied exhibits only one inlet and one outlet.
+	The validity of both methods rely on a ROI having only one inlet and one outlet, and that the CA concentration is well mixed within the entire compartment.
 	In fact, this assumption is questionable when we describe CA propagation through a larger area with a highly developed capillary system.
-	Here we expect in contrast a coupled systems, since each voxel can be regarded as an inlet for the surrounding voxels.
-	We hence decided to describe the CA propagation as a spatially coupled transport process. 
-	Details of the modeling of transport will be presented in Section \ref{sec:transport}.	
+	For this type of model system we expect instead a coupled set of equations where each voxel can be regarded as an inlet for surrounding voxels.
+	Hence, in order to make a realistic synthetic model for capillary flow, we decided to describe the CA propagation as a spatially coupled transport process. This field model is used for validation of the classical ROI based models for perfusion. 
+%	Details of the synthetic model are presented in Section \ref{sec:transport}.	
 	
 	Since the CA transport itself is driven mainly by blood flow, we will describe a simple model for the blood flow through capillary tissue in Section \ref{sec:flow}.
-	Within the capillary system we expect the blood flow to be driven mainly by differences in pressure.
-	This way of modeling flow comes from the theory of porous media and is expressed in Darcy's law \missingsource.
-	As a consequence, we will also apply the physical understanding of flow as vector valued surface flux $q = q(x)$ with units \si{\siq}.
-	The surface flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
-	A model to convert vector valued flux to scalar perfusion with units \si{\siP} will be introduced in Section \ref{sec:flux2perf}.
-	In our modeling, CA flux $J(x,t)$ with units \si{\siJ} is assumed to be linear and stationary, meaning that $J(x,t) = q(x)\cdot c(x,t)$.
-	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
+	Within the porous capillary system we expect the blood flow to be driven mainly by pressure differences, and
+	fluid flow in porous media can be modelled by Darcy's law \missingsource. Traditional tracer kinetic modelling is using volume normalized fluid flow [\si{\siq}] as the quantity for fluid transport. 
+	The concept of volume normalized fluid flow is discretization dependent, and for the current flow simulations we instead use the vector valued surface fluid flux $q = q(x)$ with units [\si{\siq}], in agreement with geoscience and reservoir simulation theory.
+	The fluid flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
+	A model to convert vector valued flux to scalar valued perfusion with units \si{\siP} will be introduced in Section \ref{sec:flux2perf}.
+	The tracer flux $J(x,t)$ with units \si{\siJ} is assumed to be a product of the fluid flux and the CA concentration, $J(x,t) = c(x,t)q(x)$.
+	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity in the fluid flux are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
 	A detailed description of modeling the blood flow can be found in Section \ref{sec:flow}.
 	
 	Another key ingredient from porous media is the introduction of the porosity $\phi$ for $0 \le \phi \le 1$.
-	The porosity describes which fraction of a small tissue volume is accessible for blood.
+	The porosity describes which fraction of a control volume is accessible for blood.
 	Comparing with pharmacokinetic modeling, the porosity directly translates to the cerebral blood volume (CBV).
 	
 	We will now describe the construction of the digital phantom in detail.	
@@ -223,23 +223,23 @@ This more accurately mimics the nature of blood flow in the tissue.
 	%--------------------------------------------------
 	% Subsection: Modeling the Blood Flow
 	%--------------------------------------------------
-	\subsection{Modeling the Blood Flow}\label{sec:flow}
+	\subsection{Modelling the Capillary Blood Flow}\label{sec:flow}
 	
-	We model the blood flow as the flow of a fluid through a porous medium. 
-	The fluid has units \si{\sirho} and is denoted by $\rho = \rho(x,t)$.
-	As explained previously, the flux $q$ (in \si{\siq}) as well as the porosity $\phi$ (with $0 \le \phi \le 1$) are assumed to be stationary and hence independent of time.
-	Fluid introduced and extracted from the system is modeled by a source- and sink term $\tilde{Q} = \tilde{Q}(x)$ with units \si{\siQ}. 
-	The continuity equation describing conservation of mass now states that
+	We model the blood flow as a fluid flow through a porous medium. 
+	The fluid density $\rho$ has units \si{\sirho} and is denoted by $\rho = \rho(x,t)$.
+	As explained previously, the flux $q$ [\si{\siq}] as well as the porosity $\phi$ (with $0 \le \phi \le 1$) are assumed to be stationary and hence independent of time.
+	Fluid entering and leaving the system is described by a source- and sink term $\tilde{Q} = \tilde{Q}(x)$ with units \si{\siQtilde}. 
+	The continuity equation describing conservation of fluid mass states
 	\begin{equation}
 		\frac{\partial (\phi \rho)}{\partial t} + \nabla \cdot (\rho q) = \tilde{Q}.
 		\label{eq:syntcont}
 	\end{equation} 
-	Furthermore assuming that the system is in steady-state and that the density of blood $\rho(x)$ is constant in space, we obtain that $\diffopcal{\rho}{t} = 0$ and hence:
+	Furthermore, assuming that the fluid flow is in a steady-state and that the density of blood $\rho$ is constant in space, we obtain that $\diffopcal{\rho}{t} = 0$ and hence:
 	\begin{equation}
 		\nabla \cdot q = \frac{\tilde{Q}}{\rho}.
 		\label{eq:syntcontsimp}
 	\end{equation}
-	In order to scale away the density $\rho$ we define another source term $Q$ with units \si{\siQ} having the relation $Q := \tilde{Q}\rho$, thus transforming \eqref{eq:syntcontsimp} into
+	In order to scale away the density $\rho$ we define another source term $Q$ with units \si{\siQ} having the relation $\tilde{Q} := Q\rho$, thus transforming \eqref{eq:syntcontsimp} into
 	\begin{equation}
 		\nabla \cdot q = Q.
 		\label{eq:syntcontsimp2}
@@ -247,32 +247,32 @@ This more accurately mimics the nature of blood flow in the tissue.
 	The right hand side is only non-zero within the source or the sink. 
 	Elsewhere, \eqref{eq:syntcontsimp2} is concurrent with the incompressibility condition of divergence free flow.
 	
-	Low velocity fluid flux in porous media is described by Darcy's law \missingsource:
-	\[
+	Low velocity fluid flux in porous media is described by Darcy's law \missingsource
+	\begin{equation}
 		q = -\frac{K}{\mu} \left( \nabla p + \rho g  \nabla z \right).
-	\]
-	here $g$ is the gravitational acceleration, $K$ is the permeability tensor with units \si{\square\meter}, $z$ is the spatial position along the gravitational field and $\mu = \mu(x)$ is the viscosity of the fluid with units $\si{\pascal\second}$.
-	For the current project the flux is taking place perpendicular to the gravitational field and the gravitational term can thereby be discarded.
-	That a simplified version of Darcy's law thus becomes
+	\end{equation}
+	Here $g$ is the gravitational acceleration, $K$ is the permeability tensor [\si{\square\meter}], $z$ is the spatial position along the gravitational field and $\mu = \mu(x)$ [$\si{\pascal\second}$] is the viscosity of the fluid.
+	For the current synthetic model, the flux field is perpendicular to the gravitational field and the gravitational term can thereby be discarded.
+	A simplified version of Darcy's law thus becomes
 	\begin{equation}
 		q = -\frac{K}{\mu} \nabla p.
 		\label{eq:syntdarcysimp}
 	\end{equation}
-	We now combine \eqref{eq:syntcontsimp2} and \eqref{eq:syntdarcysimp} and assume that $K$ is symmetric and positive definite.
-	This yields the following elliptic partial differential equation the pressure-field $p$ with units \si{\pascal} must fulfill:
+	Equations \eqref{eq:syntcontsimp2} and \eqref{eq:syntdarcysimp} can be combined, and further we assume that $K$ is a symmetric and positive definite tensor such that $K_{ii} = k$, and zero elsewhere.
+	This yields the following elliptic partial differential equation in the pressure-field $p$ [\si{\pascal}],
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
-			\nabla \cdot \left( -\frac{K}{\mu} \nabla p \right) &= Q  \qquad &&x \in \Omega, \\
-			n \cdot \nabla p &=0 &&x \in \partial \Omega.
+			\nabla \cdot \left( -\frac{k}{\mu} \nabla p \right) &= Q  \qquad &&x \in \Omega, \\
+			n \cdot \nabla p &=0 &&x \in \partial \Omega
 		\end{alignedat}
-		\right\vert
+		\right\vert .
 		\label{eq:flowmodel}
 	\end{equation}
 	Here $\partial \Omega$ denotes the boundary of $\Omega$ and $n$ the outward unit normal vector. 
 	Modeling an isolated system with no inflow or outflow along the boundary of $\Omega$, we impose the Neumann boundary conditions $n \cdot \nabla p = 0$ on $\partial \Omega$.
-	Note that \eqref{eq:flowmodel} exhibits a solution which unique up to constant since only pressure differences are taken into consideration \cite{evans98}.
-	Having solved \eqref{eq:flowmodel} the flux field can be computed according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
+	Note that \eqref{eq:flowmodel} exhibits a solution which is unique up to constant since only pressure differences are taken into consideration \cite{evans98}.
+	After solving \eqref{eq:flowmodel}, the flux field can be computed according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
 	
 	
 	%--------------------------------------------------
