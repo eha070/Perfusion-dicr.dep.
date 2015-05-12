@@ -31,7 +31,7 @@
 \newcommand{\siQ}{\milli\meter\cubed\per\second\per\milli\meter\cubed}
 \newcommand{\sirho}{\milli\gram\per\milli\meter\cubed}
 \newcommand{\siJ}{\milli\mol\per\second\per\milli\meter\squared}
-\newcommand{\sic}{\milli\mol\per\cubic\milli\meter}
+\newcommand{\sic}{\milli\mol\per\milli\meter\cubed}
 \newcommand{\siPn}{\milli\litre\per\minute\per100\milli\litre}
 
 %define misc commands
@@ -251,81 +251,82 @@ This more accurately mimics the nature of blood flow in the tissue.
 	\begin{equation}
 		q = -\frac{K}{\mu} \left( \nabla p + \rho g  \nabla z \right).
 	\end{equation}
-	Here $g$ is the gravitational acceleration, $K$ is the permeability tensor [\si{\square\meter}], $z$ is the spatial position along the gravitational field and $\mu = \mu(x)$ [$\si{\pascal\second}$] is the viscosity of the fluid.
-	For the current synthetic model, the flux field is perpendicular to the gravitational field and the gravitational term can thereby be discarded.
-	A simplified version of Darcy's law thus becomes
+	Here $g$ is the gravitational acceleration, $K$ [\si{\square\milli\meter}] is the permeability tensor, $z$ is the spatial position along the gravitational field, $p$ [\si{\pascal}] is the pressure, and $\mu = \mu(x)$ [\si{\pascal$\cdot$\second}] is the viscosity of the fluid.
+	For the current synthetic model, the flux field is perpendicular to the gravitational field and the gravitational term can thereby be discarded,
 	\begin{equation}
 		q = -\frac{K}{\mu} \nabla p.
 		\label{eq:syntdarcysimp}
 	\end{equation}
-	Equations \eqref{eq:syntcontsimp2} and \eqref{eq:syntdarcysimp} can be combined, and further we assume that $K$ is a symmetric and positive definite tensor such that $K_{ii} = k$, and zero elsewhere.
-	This yields the following elliptic partial differential equation in the pressure-field $p$ [\si{\pascal}],
+	Equations \eqref{eq:syntcontsimp2} and \eqref{eq:syntdarcysimp} can be combined, and further we assume that $K$ is a symmetric and positive definite tensor such that $K_{ii} = k$, and zero otherwise.
+	This yields the following elliptic partial differential equation in the pressure-field $p$,
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
 			\nabla \cdot \left( -\frac{k}{\mu} \nabla p \right) &= Q  \qquad &&x \in \Omega, \\
 			n \cdot \nabla p &=0 &&x \in \partial \Omega
 		\end{alignedat}
-		\right\vert .
+		\right\vert 
 		\label{eq:flowmodel}
 	\end{equation}
-	Here $\partial \Omega$ denotes the boundary of $\Omega$ and $n$ the outward unit normal vector. 
-	Modeling an isolated system with no inflow or outflow along the boundary of $\Omega$, we impose the Neumann boundary conditions $n \cdot \nabla p = 0$ on $\partial \Omega$.
-	Note that \eqref{eq:flowmodel} exhibits a solution which is unique up to constant since only pressure differences are taken into consideration \cite{evans98}.
+	where we also added Neuman boundary conditions reflecting zero fluid flux $q(x)$ across $\partial \Omega$.
+	Here, $\partial \Omega$ denotes the boundary of $\Omega$ and $n$ the outward unit normal vector. 
+	Note that \eqref{eq:flowmodel} defines a solution which is only unique up to constant \cite{evans98}.
 	After solving \eqref{eq:flowmodel}, the flux field can be computed according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
 	
 	
 	%--------------------------------------------------
 	% Subsection: Modeling the Contrast Agent Transport
 	%--------------------------------------------------	
-	\subsection{Modeling the Contrast Agent Transport}\label{sec:transport}
-	In this section we will describe how the CA propagates in the tissue according to the flow-field.
-	We assume that the CA is introduced at a source- and extracted at a sink location.
-	The concentration map resulting from the simulation is later used to model the CA concentration one would observe with MRI or CT measurements.
+	\subsection{Modelling Contrast Agent Transport}\label{sec:transport}
 	
-	In order to define meaningful continuous contrast agent concentrations, we first describe the CA concentration in an (arbitrarily) small tissue volume $\Omega_i$.
-	Assume that $V_i$ is the volume of $\Omega_i$ and $v_i$ the the blood volume of $\Omega_i$.
-	By definition the porosity is in this case given by $\phi_i = v_i/V_i$.
+	In this section describes how the CA propagates in the tissue as it is dissolved in the evolving fluid.
+	We assume that the CA is introduced at a source- and extracted at a sink.
+	The resulting concentration map is a simulation of the CA concentration one would observe within MRI measurements.
+	
+	In order to define meaningful continuous contrast agent concentrations, we first describe the CA concentration in an (arbitrarily) small tissue volume $\Omega_i$ where $C_i(t)$ is constant.
+	Assume that $V_i$ is the volume of $\Omega_i$ and $v_i$ the the blood volume within $\Omega_i$.
+	By definition, porosity is given by $\phi_i = v_i/V_i$.
 	Let $C_i(t)$ denote the CA concentration in $\Omega_i$ with respect to the whole volume $V_i$ at timepoint $t$.
-	The CA concentration with respect to the blood volume $v_i$ will be denoted by $c_i(t)$.
-	Both concentrations have units \si{\sic}. 
+	The CA concentration with respect to the blood volume $v_i$ is denoted by $c_i(t)$.
+	Both $C_i(t)$ and $c_i(t)$ have units \si{\sic}. 
 	From the definition of $c_i,C_i$ and $\phi_i$ we obtain the relation $C_i(t) = \phi_i \cdot c_i(t)$.
-
 	The rate of change of tracer molecules within the control volume $\Omega_i$ can he described by
 	\begin{equation}
-		\diffop{t}\int_{\Omega_i}C_i(t) \diffint x = \int_{\Omega_i}\diffop{t}(\phi_i c_i(t)) \diffint x.
+		\diffop{t}\int_{\Omega_i}C_i(t) \diffint x = \int_{\Omega_i}\diffop{t}(\phi_i c_i(t)) \diffint x = \int_{\Omega_i} \phi_i \frac{d c_i}{dt}\diffint x.
 		\label{eq:dmdt}
 	\end{equation}	
+	where we also used the assumption of stationarity of $\phi_i$.
 	Since we expect mainly transport along the vessels and marginal diffusion, the change in tracer mass within $\Omega_i$ occurs only from advective flow and the source and sink field $Q$.
-	Let us write the source- and the sink term as $Q = \Qsi + \Qso$ where $\Qsi \le 0$ is the sink and $\Qso \ge 0$ is the source. 
+	Let us write the source- and the sink term as $Q = \Qsi + \Qso$ where $\Qsi < 0$ is the sink and $\Qso > 0$ is the source. 
 	Both are assumed to be zero everywhere except at in the respective source and sink locations.
 	Note that $Q = \Qso + \Qsi$ and $\int_\Omega Q \diffint x = 0$ in line with incompressible flow. 
 	The change in contrast agent at time point $t$ can hence be written as
 	\begin{equation}
-		-\int_{ \Gamma_i}c_i(t)(q_i \cdot n)\diffint s + \int_{\Omega_i}\ca(t) \Qso \diffint x + \int_{\Omega_i}c_i(t)\Qsi \diffint x,
+		-\int_{ \partial \Omega_i}c_i(t)(q_i \cdot n)\diffint s + \int_{\Omega_i}\ca(t) \Qso \diffint x + \int_{\Omega_i}c_i(t)\Qsi \diffint x,
 		\label{eq:surfflux}
 	\end{equation}
-	where $n$ is the outward unit normal on $\Gamma_i := \partial \Omega_i$.
-	Furthermore $\ca(t)$ with unit \si{\sic} describes the amount of contrast agent entering the system at the source. 
+	where $n$ is the outward unit normal on $\partial \Omega_i$.
+	Furthermore, $\ca(t)$ [\si{\sic}] describes the CA concentration entering the system at the source. 
 	In standard pharmacokinetic modeling, $\ca$ is referred to as the arterial input function (AIF).
-	From preservation of the tracer mass, equations \eqref{eq:dmdt} and \eqref{eq:surfflux} must balance such that
+	From the principle of conservation of tracer molecules, equations \eqref{eq:dmdt} and \eqref{eq:surfflux} must balance such that
 	\begin{equation}
-		\int_{\Omega_i}\diffop{t} (\phi_i c_i(t)) \diffint x + \int_{ \Gamma_i}c_i(t)(q_i \cdot n) \diffint s = \int_{\Omega_i}\ca(t)\Qso \diffint x + \int_{\Omega_i}c_i(t) \Qsi \diffint x.
+		\int_{\Omega_i} \phi_i \frac{d c_i}{dt} \diffint x + \int_{ \Gamma_i}c_i(t)(q_i \cdot n) \diffint s = \int_{\Omega_i}\ca(t)\Qso \diffint x + \int_{\Omega_i}c_i(t) \Qsi \diffint x.
 		\label{eq:conteq}
 	\end{equation}
-	Upon application of the divergence theorem, \eqref{eq:conteq} is consistent with the continuity equation on local form
+	We note that upon using continuous quantities $C(x,t),c(x,t),\phi(x),q(x)$ instead of constant valued quantities within $\Omega_i$, equation (\ref{eq:conteq}) is consistent with the continuity equation on local form
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
 			\phi \frac{\partial c}{\partial t} + \nabla \cdot (cq) &= \ca\Qso + c\Qsi \qquad	&x &\in \Omega, \ t>0,  \\
-			c &= 0 																			 	&x &\in \Omega, \ t=0.
+			c(x,t) &= 0 																			 	&x &\in \Omega, \ t=0.
 		\end{alignedat}
 		\right\vert
 		\label{eq:conteqlocal}
 	\end{equation}
-	This is a linear transport equation in $c(x,t)$. 
-	Assuming that $\phi$ is Lipschitz continuous and that $\Qso,\Qsi,\ca$ are continuous, we can follow that $q$ is as the solution of \eqref{eq:flowmodel} also Lipschitz continuous.
-	In this case we can follow \cite{evans98} to see that \eqref{eq:conteqlocal} exhibits a unique local solution.
+	where we also added the initial value $c(x,0) = 0$ for uniqueness.
+	Equation \eqref{eq:conteqlocal} is a linear transport equation in $c(x,t)$. 
+	Assuming that $\phi$ is Lipschitz continuous and that $\Qso,\Qsi,\ca$ are continuous, we can follow that $q$, as the solution of \eqref{eq:flowmodel}, is also Lipschitz continuous \textcolor{red}{Constantin, you have control on the Lipschits continuities? :-)}.
+	In this case \eqref{eq:conteqlocal} has a unique local solution \cite{evans98}.
 	
 
 
