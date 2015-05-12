@@ -6,7 +6,7 @@
 
 
 %% set author information etc
-\title{A Validity Study for Perfusion in the Capillary System}
+\title{A Validity Study for Perfusion Measurements in the Capillary System}
 \author{Constantin Heck, Erik A. Hanson, \\ Arvid Lundervold, Jan Modersitzki, Alexandre Malyshev, Erlend Hodneland \\ (random order)}
 \date{\today}
 
@@ -45,7 +45,7 @@
 	% Title Page=
 	%--------------------------------------------------
 	\maketitle
-	\tableofcontents
+%	\tableofcontents
 
 	
 	%--------------------------------------------------
@@ -55,39 +55,36 @@
 	%--------------------------------------------------
 	\section{Introduction}
 	
-	Quantitative medical measurements based on tracer kinetic models has for many years been an important field both in research and in clinical practice \cite{zierler62,axel80,zierler00}. 
-	In the present work we will focus on mathematical methods for estimation of blood perfusion in the brain (cerebral blood flow) based on dynamic MR imaging. 
-	Still, the theory covered here, will also be of relevance in general perfusion studies.
+	Quantitative medical measurements based on tracer kinetic models is an important field both in research and in clinical practice \cite{zierler62,axel80,zierler00}. 
+	In the present work, we focus on mathematical models for estimating blood perfusion in the brain (cerebral blood flow, CBF) from contrast-enhanced dynamic MR 	imaging data. Still, the theory on tracer dynamics covered here will also be of relevance in general perfusion studies using other image modalities.
 
-	While limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern MR technology and voxel based analysis give rise to aspirations about detailed perfusion maps with millimeter precision.  
-	Examples of successful estimations of parameter maps are found in i.e. \missingsource. 
-	The perfusion maps (and other parameter maps) combines the quantitative nature of the tracer kinetic model with important qualitative anatomical information. 
-	The maps have proven to be of particular value in e.g. stroke studies \missingsource. 
-	Among the physiological parameters obtainable from tracer kinetic models, the perfusion (or CBF) has proven to be particularly difficult to reliably describe on a voxel-basis \cite{kudo10}.  
-	In several studies, perfusion or CBF are therefore only reported in relative values and the corresponding parameter maps are only used in a qualitative manner \cite{calamante99}.
-	The methodological limitations in perfusion estimation are caused both by issues in the numerical implementation, but also by the basic formulation of the model itself.  
+	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern MR technology and voxel based analysis give rise to aspirations about detailed perfusion maps with millimeter precision.  
+	Examples of estimated parameter maps are found in i.e. \missingsource. The quantitative perfusion maps (and other parameter maps arising from tracer kinetic modelling) can be combined with anatomical information, and the maps have proven to be of particular value in e.g. stroke studies for localization of a trauma \missingsource. 
+	Among the physiological parameters obtainable from tracer kinetic models, CBF has proven to be particularly difficult to reliably describe on a voxel-basis \cite{kudo10}.  
+	In several studies, CBF is therefore only reported in relative values and the corresponding parameter maps are mostly used in a qualitative manner \cite{calamante99}.
+	The methodological limitations in perfusion estimations are caused both by issues in the numerical implementation, but also by over-simplified dynamic models itself.  
 	It is has been widely studied how delay and dispersion of the contrast bolus between the AIF and the voxel as well as assumptions about directional flow \cite{thacker03,sourbron14} effects the perfusion estimation. 
-	In \cite{sourbron14} mathematical theory for flow field models are introduced and proposed as an alternative to the classical models for perfusion on voxel level. 
-	In this work we will use some of the same physical concepts, but also relate them to the classical perfusion models.  
-	We will further discuss limitations of classical voxel based perfusion models and focus on their validity in an unstructured flow field.
-	The models, and how they behave under different ROI/voxel sizes and shapes, are analyzed mathematically and evaluated in a synthetic flow field.  
-	We will also derive a mathematical framework in which the medical notion of perfusion can be understood in a physical precise manner.
+	In \cite{sourbron14}, a mathematical theory for voxelwise perfusion is introduced and proposed as an alternative to the classical ROI (region of interest) based models for perfusion. 
+	In this work, we will use some of the same physical concepts introduced for voxelwise perfusion, and relate them to the classical ROI based perfusion models.  
+	We will further discuss limitations of classical models applied voxel wise, and study their validity in an unstructured flow field.
+	The pharmacokinetic models, and how they behave under different ROI/voxel sizes and shapes, are analyzed mathematically and evaluated within a synthetic flow field.  
+	We also derive a mathematical framework in which the medical notion of perfusion can be understood in a physically more precise manner.
 
-	An evaluation of perfusion models using a synthetic flow field is also performed in i.e. \cite{calamante03}. 
+	Evaluation of perfusion models using a synthetic flow field is also performed in i.e. \cite{calamante03}. 
 	Here, the synthetic model is based on solution of Navier-Stokes equations within the arterial system and the effect of dispersion is studied.  
 	In the present work, we model the contrast agent (CA) propagation through a small section of the capillary system. 
 	Both these approaches require several clarifying assumptions on flux and propagation. 
 	In pharmacokinetic analysis it is often assumed that each ROI (voxel) is an autonomous system that can be modeled by standard pharmacokinetic theory \missingsource. 
 	As in \cite{calamante03}, we study CA propagation through a larger area with a highly developed capillary/arterial system and thereby consider a range of connected problems where each voxel can be regarded as an inlet for the surrounding voxels.  
-	Further, the CA propagation is modeled as a spatially coupled transport process, which more accurately mimics the nature of the blood flow in the tissue.  
-	Unlike Calamante et al. we also distinguish between the (scalar) perfusion maps, describing flow normalized over a volume, and the physical (vector valued) flow field, describing flow normalized over a surface area. 
+This more accurately mimics the nature of blood flow in the tissue.  
+	Unlike Calamante et al. \cite{calamante03} we also distinguish between scalar perfusion maps, describing flow normalized over a volume, and the physical, vector valued flux field, describing flow normalized over a surface area. 
 
 
-	The rest of this paper is arranged as follows: In Section \ref{sec:classical}, we outline a classical method for perfusion estimation and discuss two solution methods within the framework of de-convolution. 
-	In Section \ref{sec:synthetic} we describe how a synthetic flow field in the capillary system can be modeled using simple models from porous media literature. 
-	We also discuss the mathematical resembling between the flow field models and the classical theory outlined in Section \ref{sec:classical}. 
-	In Section \ref{sec:results} evaluate the performance of the classical models by applying them on synthetic flow fields. 
-	The results and concluding remarks are summarized in section \ref{sec:conclusion}.
+	The rest of this paper is arranged as follows: In Section \ref{sec:classical}, we outline classical methods for perfusion estimation and discuss two widespread solution methods. 
+	In Section \ref{sec:synthetic} we describe how a synthetic flow field in the capillary system can be modelled using simple models valid within porous media. 
+	We also discuss mathematical similarities between the flow field models and the classical theory outlined in Section \ref{sec:classical}. 
+	In Section \ref{sec:results} we evaluate the performance of classical models by applying them to the synthetic flow field. 
+	The results and concluding remarks are summarized in Section \ref{sec:conclusion}.
 	
 	
 	
@@ -99,19 +96,19 @@
 	%--------------------------------------------------
 	\section{Classical Models} \label{sec:classical}
 
-	We will first describe two standard models to recover CBF,CBV and MTT from data displaying propagation of a contrast agent through the tissue.
+	Classical theory for pharmacokinetic modelling is used to recover CBF, cerebral blood volume (CBV), as well as mean transit times (MTT) from data displaying propagation of a contrast agent through the tissue.
 	The so-called Deconvolution Model (DM) is used in vast amount of publications \cite{ostergaard96,abels10,straka10,bivard13,sourbron13}.
 	Restoration of CBF yields reasonable results \missingsource, however validation is still a problem as ground-truth CBF is hard to determine.
 	Validation of novel implementations is usually done in the so-called \emph{inverse crime} setting. 
-	This means that the forward model to generate data and the backward model to reconstruct parameters are similar, if not identical.
-	Another model which has been shown to exhibit good properties in restoring CBF and MTT is the so-called Maximum Slope Model (MS) \cite{miles91,klotz99}.
-	The maximum slope model has been shown to exhibit advantages over the deconvolution model especially if uptake curves are degraded in the late phase \cite{abels10}.
+	This means that the forward model used to generate data and the backward model to reconstruct parameters are similar, if not identical. However, the physical validity of the model can still be questionable.
+	Another model for perfusion which has been used for restoring CBF and MTT is the so-called Maximum Slope Model (MS) \cite{miles91,klotz99}.
+	The maximum slope model only considers early time points and it has been shown to exhibit advantages over the deconvolution model especially if uptake curves are degraded in the late phase \cite{abels10}.
 	However, since it relies on point-wise estimates, application to real data is nevertheless difficult and prone to noisy measurements.
 	Also, the maximum slope model inherently assumes that no outflow takes place when the AIF peaks (see Sec. \ref{sec:ms}).
 	This assumption is questionable for arbitrary, maybe pathological tissue \missingsource.
 	
 		
-	Following \cite{sourbron13}, we now briefly present the theoretical basis of two models.
+	Following \cite{sourbron13}, we now briefly present the theoretical basis of two the models.
 	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$.
 	Let us furthermore assume linearity and stationarity of CA in- and outflux with proportionality constants $\Pa,\Pout$, given in \si{\siP}.
 	These assumptions lead to the differential equation $C'(t) = \Pa\ca(t) - \Pout\cout(t)$.
@@ -707,7 +704,7 @@
 	% Bibliography
 	%--------------------------------------------------
 	\bibliographystyle{ieeetr}	
-	\bibliography{./bibliography.bib}
+	\bibliography{./bibliography}
 
 	
 \end{document}
