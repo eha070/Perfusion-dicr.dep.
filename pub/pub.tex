@@ -23,6 +23,11 @@
 
 
 %define SI-units, since we want to be able to easily change them
+\newcommand{\siflowmm}{\milli\meter\cubed\per\second}
+\newcommand{\siflowml}{\milli\litre\per\second}
+\newcommand{\siperfml}{\milli\litre\per\second\per100\milli\litre}
+\newcommand{\siperfmm}{\milli\meter\per\second\per100\milli\meter}
+
 \newcommand{\siq}{\milli\meter\cubed\per\second\per\milli\meter\squared}
 \newcommand{\siqt}{\milli\meter\cubed\per\second}
 %\newcommand{\siP}{\cubic\milli\meter\per\second\per\cubic\milli\meter}
@@ -114,7 +119,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 		
 	Following \cite{sourbron13}, we now briefly present the common theoretical basis of two the models.
 	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$, assuming a well mixed compartment \textcolor{red}{I added this assumption, isn't that correct? If its not well mixed C will be a function of space as well}. 
-	Let us furthermore assume linearity and stationarity \textcolor{red}{What is linear and what is stationary?} of CA in- and outflux with proportionality constants $\Pa, \Pout$, given in \si{\siP}.
+	Let us furthermore assume linearity and stationarity \textcolor{red}{What is linear and what is stationary?} of CA in- and outflux with proportionality constants $\Pa, \Pout$  [\si{\siperfmm}].
 	These assumptions lead to the differential equation $C'(t) = \Pa\ca(t) - \Pout\cout(t)$, reflecting mass balance of the tracer. 
 	Here $\ca,\cout$ are the CA concentrations at the inlet and outlet of $\Omega_i$.
 	Assuming incompressibility of flow leads to $\Pa = \Pout$ and hence we obtain the general form
@@ -169,6 +174,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	Letting $\MTT:=\Pa/\CBV$ yields the solution
 	\begin{equation}
 		C(t) = \Pa \int_0^t e^{-(t-s)/\MTT}\ca(s)\diffint s
+		\label{eq:classicalperf}
 	\end{equation}
 	with residue function $R(t)=e^{-t/\MTT}$. 
 
@@ -429,33 +435,41 @@ This more accurately mimics the nature of blood flow in the tissue.
 	%--------------------------------------------------	
 	\subsection{A Method to Estimate the Porosity}\label{sec:CBV}
 	
-	The principle of mass balance of fluid and tracer particles is described by \eqref{eq:flowmodel} and \eqref{eq:conteqlocal}. 
-	For locations $x$ where $Q(x) = 0$ one can see that \eqref{eq:conteqlocal} becomes
-	\[
+	It is known from literature on classical models for perfusion that CBV for the entire compartment can be expressed as
+	\begin{equation}
+		CBV = \frac{\int_0^\infty C(t) dt}{\int_0^\infty c_a(t) dt}.
+		\label{eq:CBV}
+	\end{equation}
+	where $C,c$ are the tracer concentration within a well mixed compartment.
+	However, it is not clear that this \eqref{eq:CBV} is valid also for a continuous field model where the voxels are feeding each other. We will now proof that \eqref{eq:CBV} is nevertheless valid.
+	
+	% mass balance of fluid and tracer particles is described by \eqref{eq:flowmodel} and \eqref{eq:conteqlocal}. 
+	For locations $x$ where $Q(x) = 0$ the PDE in \eqref{eq:conteqlocal} becomes
+	\begin{equation}
 		\phi\frac{\partial c}{\partial t}  = - q \cdot \nabla c.
 		\label{eq:1cmodel}
-	\]
+	\end{equation}
 	Integrating from $t_0$ to $t_1$ results in the model
-	\[
+	\begin{equation}
 		\phi [c(x,t_1) - c(x,t_0)]  = - \int_{t_0}^{t_1}q \cdot  \nabla c \diffint t.
-	\]
-	Going to the limit $t_0 = 0$ to $t_1 = \infty$, using the boundary conditions $c(x,0) = c(x,\infty) = 0$ and defining $E(x):= \int_0^\infty c(x,s) \diffint s$ leads to
-	\[
+	\end{equation}
+	Approaching the limit $t_0 = 0, t_1 = \infty$, using the boundary conditions $c(x,0) = c(x,\infty) = 0$ and defining $E(x):= \int_0^\infty c(x,t) \diffint t$ leads to
+	\begin{equation}
 		0 = q \cdot \nabla  E(x).
 		\label{eq:streamlinezero}
-	\]
-	We can interpret this equation in such a way, that $q$ lies in-plane with the level-sets of the function $E(x)$.
-	This means that $E(x)$ is constant along the streamlines of the fluid flow.
-	Since we assumed that $Q$ has a delta-like structure and since all streamlines are emerging at the arterial-input, we obtain
-	\[
-		\int_0^\infty c(x,s) \diffint s = \int_0^\infty \ca(s) \diffint s.
-	\]
+	\end{equation}
+	We can interpret this equation in such a way, that $q$ lies in-plane with the level-sets of the function $E(x)$, and this means that $E(x)$ is constant along the streamlines of the fluid flow:
+%	Since we assumed that $Q$ has a delta-like structure and since all streamlines are emerging at the arterial-input, we obtain
+	\begin{equation}
+		\int_0^\infty c(x,t) \diffint t = \int_0^\infty \ca(t) \diffint t.
+	\end{equation}
 	Using $C(x,t) = \phi(x) c(x,t)$ we obtain
 	\begin{equation}
-		\phi(x) =  \frac{ \int_{0}^{\infty} C(x,s) \diffint s }{ \int_{0}^{\infty} \ca(s) \diffint s}.
+		\phi(x) =  \frac{ \int_{0}^{\infty} C(x,t) \diffint t }{ \int_{0}^{\infty} \ca(t) \diffint t}
 		\label{eq:phi}
 	\end{equation}
-	This expression coincides with the classical formula for CBV and is hereby proven analytically for the proposed model.
+	valid for all $x: Q(x) = 0$.
+	This expression for porosity coincides with the classical formula \eqref{eq:CBV} for CBV and is hereby proven analytically also for local estimations of CBV.
 	
 	
 	
@@ -467,56 +481,60 @@ This more accurately mimics the nature of blood flow in the tissue.
 	%--------------------------------------------------
 	%--------------------------------------------------
 	
-	\section{Numerical Implementations}
+	\section{Numerical Implementations of the Synthetic Model for Capillary Perfusion}
 	
-	In this section we will describe how the model was implemented numerically.
+	In this section we describe how the models were implemented numerically.
 	For simplicity we will assume that the domain is discretized by a regular cartesian grid of size $n \times n$ with a regular cell-spacing $h$.
 	The proposed method may be extended for non-regular grids in an analogous fashion.
 	
-	Since conservation of mass is a key factor for both the discretization of the flow and the transport, we use algorithms preserve mass also in the simulations.
+%	Since conservation of mass is a key factor for both the discretization of the fluid flow and the indicator dilution, we use algorithms preserving mass also in the simulations.
 	To solve \eqref{eq:flowmodel} we used the two-point flux approximation finite volume method (TPFA) \missingsource. 
-	Based on mass balance equations, we calculated the flux in such a fashion that conservation of mass was guaranteed.
-	The transport equation \eqref{eq:conteqlocal} was solved by applying a straight-forward upwind scheme to \eqref{eq:conteq} \missingsource.
+%	Based on mass balance equations, we calculated the flux in such a fashion that conservation of mass was guaranteed.
+	The transport equation \eqref{eq:conteqlocal} was solved by applying upwinding to \eqref{eq:conteq} \missingsource.
 
 	%----------------------------------------------------------
 	% Subsection: Discretization of the singe phase flow model
 	%----------------------------------------------------------
 	\subsection{Discretization of the Single Phase Flow Model using TPFA} \label{sec:numflow}
 
-	We now shortly describe the direct application of the two-point flux approximation method \missingsource.
-	Considering \eqref{eq:flowmodel} on a small domain (voxel) $\Omega_i \subset \Omega$ and applying the divergence theorem yields:
+	For solving \eqref{eq:flowmodel} we used the TPFA method  well known from reservoir mechanics \missingsource.
+	Integrating \eqref{eq:flowmodel} across a small domain (voxel) $\Omega_i \subset \Omega$ and applying the divergence theorem yields
 	\begin{equation}
 		\int_{\partial \Omega_i}   -(\lambda \nabla p) \cdot \nu \diffint s = \int_{\Omega_i}Q \diffint x
 	\label{eq:TPFAint}
 	\end{equation}
-	with conductivities $\lambda := K/\mu$.
-	Defining $\Gamma_{i,j}$ as the boundary between neighboring voxels $\Omega_i$ and $\Omega_j$, one can see that mainly the component perpendicular to $\Gamma_{ij}$ will drive the flow between these voxels.
-	The component of $\nabla p$ pointing along the normal vector of $\Gamma_{ij}$ can therefore be replaced in terms of the cell centered pressure values $p_i$ and $p_j$
- 	$\Delta_h p_{ij} := \frac{(p_j - p_i)}{h}$, where $h$ denotes the grid-spacing.
-	The total flux across the face $\Gamma_{ij}$ can hence be approximated by
-	\[
-		\Delta_h p_{ij} \int_{\Gamma_{ij}}\lambda \diffint s \approx (p_i - p_j) \underbrace{\frac{\lambda_{ij} \vert \Gamma_{ij} \vert}{h}}_{:=t_{ij}}.
-	\]
-	Here $|\Gamma_{ij}|$ is notation for the surface area of $\Gamma_{ij}$ and $\lambda_{ij}$ denotes an approximation of the mean conductivity on $\Gamma_{ij}$.
-	The terms not depending on the pressure $p$ are collected into the transmissibilities $t_{ij}:=|\Gamma_{ij}|\lambda_{ij}/h$.
-	Defining furthermore $F_i:=\int_{\Omega_i}Q\diffint x$ yields an approximation of \eqref{eq:TPFAint}, a linear system which can be solved for the pressure $p$ by a suitable solver.
-	Note that $p,K$ and $\mu$ are assumed to be given cell-centered whereas the resulting flux is discretized on a staggered grid, corresponding to the voxel faces.
+	with conductivities $\lambda := k/\mu$.
+	Defining $\partial \Omega_{i,j}$ as the boundary between neighboring voxels $\Omega_i$ and $\Omega_j$, only the flux component perpendicular to $\partial \Omega_{ij}$ will drive the flow between these voxels.
+	The component of $\nabla p$ pointing along the normal vector of $\partial \Omega_{ij}$ can in terms of cell centered pressure values $p_i$ and $p_j$ be replaced by
+ 	$\Delta p_{ij} := (p_j - p_i)/h$.
+	Hence, the total flux across the face $\Gamma_{ij}$ can be approximated by
+	\begin{equation}
+		\Delta p_{ij} \int_{\partial \Omega_{ij}}\lambda \diffint s \approx (p_i - p_j) \underbrace{\frac{\lambda_{ij} \vert \partial \Omega_{ij} \vert}{h}}_{:=t_{ij}}.
+		\label{eq:pressnum}
+	\end{equation}
+	Here, $\lambda_{ij}$ denotes an approximation of the mean conductivity on $\partial \Omega_{ij}$, where $\lambda_{ij}$ is computed as harmonic averaging from the requirement of continuity of $p$ on the midline of $\partial \Omega_{ij}$.
+	The terms in \eqref{eq:pressnum} not depending on the pressure $p$ are collected into the transmissibilities $t_{ij}:=|\partial \Omega_{ij}|\lambda_{ij}/h$.
+	Approximating the right hand side of \eqref{eq:pressnum} as $\int_{\Omega_i}Q \diffint x \approx Q_i |\Omega_{ij}|$ yields an approximation of \eqref{eq:TPFAint}, a linear system which can be solved for the pressure $p$ by a suitable solver. To ensure uniqueness we imposed Dirichlet boundary conditions for one voxel within $\Omega$.
+	Note that $p,k$ and $\mu$ are assumed to be given cell-centered whereas the resulting flux is discretized on a staggered grid, corresponding to the voxel faces.
 
 
 	%----------------------------------------------------------
 	% Subsection: Discretization of the transport equation
 	%----------------------------------------------------------
 	\subsection{Discretization of the Transport Equation} \label{sec:numtrans}
-	The transport described in \eqref{eq:conteq} was numerically implemented using an upwind Godunov scheme \missingsource.
-	Let $c_i$ be a cell centered voxel tracer concentration and let $\Gamma_{ij}$ be the face between voxel $i$ and $j$ with outer unit normal $n_{ij}$.
-	Let $q$ be the flux-field. 
-	Then the total CA-flow over the face $\Gamma_{ij}$ can be estimated by
-	\[
-		\int_{\Gamma_ij} (c_i q)\cdot n_{ij} \diffint s \approx c_i q_{ij} \vert \Gamma_{ij} \vert.
-	\]
-	Keeping track of in- and outflow for each voxel and applying a straight-forward discretization of \eqref{eq:conteq} yields an explicit discretization scheme to set up the transport simulation.
-	A conversion of $c_i$ into $C_i$ is performed via the relation $C_i = c_i\phi_i$. 
-	The overall concentration map $C_i$ is later used for the inverse problem of restoring CBV and CBF.
+	The transport described in \eqref{eq:conteq} was implemented using an upwind Godunov scheme \missingsource.
+	Let $c_i$ be a cell centered voxel tracer concentration with respect to the clid volume, and let $n_{ij}$ be the outer normal vector of $\partial \Omega_{ij}$ within $\Omega_i$.
+	The total CA-flux over the face $\partial \Omega_{ij}$ was approximated by
+	\begin{equation}
+	\int_{\partial \Omega_{ij}} (c_{ij} q_{ij})\cdot n_{ij} \diffint s \approx
+	\begin{cases}
+	c_i q_{ij,n} \vert \partial \Omega_{ij} \vert & \text{if } q_{ij,n} \geq 0,\\
+	c_j q_{ij,n} \vert \partial \Omega_{ij} \vert & \text{if } q_{ij,n} < 0.
+	\end{cases}
+	\end{equation}
+	where $q_{ij,n} = q_{ij} \cdot n_{ij}$ is the normal component of the flux across $\partial \Omega_{ij}$.
+	Keeping track of in- and outflow for each voxel yields an explicit discretization scheme to set up the transport simulation. We used a time step of $\Delta t = 0.002 s$ in the explicit forward simulations o \eqref{eq:conteq}.
+	A conversion of $c_i$ into $C_i$ was performed via the relation $C_i = c_i\phi_i$. The overall concentration map $C_i$ was later used for the inverse problem of restoring CBV and CBF.
 
 
 
@@ -527,30 +545,20 @@ This more accurately mimics the nature of blood flow in the tissue.
 	% Section: Experiments
 	%--------------------------------------------------
 	%--------------------------------------------------
-	\section{Experiments}\label{sec:NumExp}
+	\section{Numerical Experiments}\label{sec:NumExp}
 
-	We will now describe the numerical experiments we performed.
-	Based on \eqref{eq:flowmodel} and \eqref{eq:conteqlocal} we set up a forward simulation of blood-flow through the capillary system.
-	A table of parameter values used for the numeral simulations are shown in Table \ref{tab:par}. 
-	We aimed at creating a transparent synthetic test case and kept all optional parameters as simple as possible. 
-	Therefore, the permeability and porosity were assumed constant in space and in time.
-	The voxel-wise perfusion field $P$ was calculated according to $\eqref{eq:flux2perf}$. 
-	The source term was chosen to the upper left voxel and the sink term was chosen in the lower right voxel.
-	To model the arterial-input function, we chose a standard model \cite{ostergaard96} given by the gamma-variate \cite{chan04} function
-	\[
-		\ca(t) := (t-t_0)^\alpha e^{-(t-t_0)/\beta}
-	\]
-	for $\alpha=3$, $\beta = \SI{1.5}{\second}$ and $t_0 = \SI{0}{\second}$.
-	
+	We now describe the numerical experiments that were performed.
+	Based on \eqref{eq:flowmodel} and \eqref{eq:conteqlocal} we set up a forward simulation of blood-flow and indicator dilution through the capillary system.
+	An overview of parameter settings used for the numeral simulations are shown in Table \ref{tab:par}. Note that total inflow within the source is denoted $F_{so} = \int_\Omega Q_{so}(x) dx$, as well as for the sink $F_{si} = \int_\Omega Q_{si}(x) dx$. We chose a normalized input perfusion of $50$ \si{\siPn}, which resulted in a flow with the source of $0.83$ \si{\siqt}, given the FOV of our domain.
 	\begin{table}[H]
 		\centering
-	  \caption{Parameters used in the numerical experiments, optimized for a slab of the capillary system in the human brain. In order to keep all parameters as simple as possible, permeability was assumed to be isotropic and permeability, porosity and viscosity were assumed constant.}		
+	  \caption{Parameters used in the numerical experiments, optimized for a slab of the capillary system in the human brain. In order to achieve a transparent simulation, permeability was assumed to be isotropic, and both the permeability and porosity were assumed to be constant across the domain.}		
 		\begin{tabular}{ l  c  c  r }
 		    Description 									& Symbol 			& Value(s) 				& Unit 				\\
 			\toprule
 			Concentration w.r.t. fluid space				& $c$				& - 					& \si{\sic} 		\\
 			Concentration w.r.t. ROI						& $C$				& - 					& \si{\sic} 		\\
-			CA Flux											& $J$				& - 					& \si{\siJ} 		\\
+%			CA Flux											& $J$				& - 					& \si{\siJ} 		\\
 		    Average input perfusion 				 		& $\overline{P}$ 	& $50$ 					& \si{\siPn}		\\
 			Flow source, derived from $\overline{P}$ 		& $F_{so}$ 			& \num{0.83}			& \si{\cubic\milli\meter\per\second} \\
 			Flow sink 										& $F_{si}$ 			& $-F_{so}$ 		 	& \si{\cubic\milli\meter\per\second}  		\\
@@ -559,16 +567,28 @@ This more accurately mimics the nature of blood flow in the tissue.
 			Permeability  									& $k$ 				& $\num{5e-6}$ 			& \si{\square\milli\meter} 			\\	
 			Porosity\cite{wu03}								& $\phi$ 			& $0.05$ 				& \si{\cubic\milli\meter\per\cubic\milli\meter}	\\	
 			Spatial resolution 								& - 				& $(64,64,1)$ 			& -					\\
-			Physical dimension 								& - 				& $(10,10,1)$ 			& \si{\milli\meter}				\\
+			Physical field of view 								& - 				& $(10,10,1)$ 			& \si{\milli\meter}				\\
 			Voxel size 										& - 				& $(0.156,0.156,1)$ 	& \si{\milli\meter}	\\
 	  \end{tabular}
 	  \label{tab:par}
 	\end{table}	
 	
-	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional convolution dataset was built.
+	We aimed at creating a transparent synthetic test case and kept all optional parameters as simple as possible. 
+	Therefore, the permeability and porosity were assumed constant in space and in time.
+	The voxel-wise perfusion field $P(x)$ was calculated according to $\eqref{eq:flux2perf}$. 
+	The source term was assigned to the upper left voxel and the sink term was assigned to the lower right voxel.
+	To model the arterial-input function, we chose a standard model \cite{ostergaard96}, a gamma-variate \cite{chan04} function
+	\begin{equation}
+		\ca(t) := (t-t_0)^\alpha e^{-(t-t_0)/\beta}
+	\end{equation}
+	for $\alpha=3$, $\beta = \SI{1.5}{\second}$ and $t_0 = \SI{0}{\second}$.
+	
+	
+	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional convolution dataset was built. This forward simulation was generated using \eqref{eq:classicalperf} and the given values of $P_a \leftarrow P_i$ as the perfusion for each voxel $i$.
 	The convolution dataset (convM) was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the perfusion values described in \eqref{eq:flux2perf}.
+	\textcolor{red}{
 	Note that this assumption is in contradiction to the assumptions of the maximum-slope model.
-	We can hence not expect to recover reasonable perfusion parameters from convM using the maximum slope model.
+	We can hence not expect to recover reasonable perfusion parameters from convM using the maximum slope model. DONT UNDERSTAND THIS}
 	A comparison of the tissue curves at different positions of the tissue can be found in Figure \ref{fig:tissuecomp}. 
 
 
@@ -577,9 +597,9 @@ This more accurately mimics the nature of blood flow in the tissue.
 		\centering
 		\begin{tabular}{c c c}
 			\includegraphics[width=.3\textwidth]{figs/pressure.eps} & \includegraphics[width=.3\textwidth]{figs/flowQuiver.eps} & \includegraphics[width=.3\textwidth]{figs/perfusion.eps}\\
-			(a) Pressure field $p$ & (b) Flow field $q$ & (c) Perfusion $P$.
+			(a) Pressure field $p$ & (b) Absolute flux & (c) Perfusion $P(x)$.
 		\end{tabular}
-    	\caption{Synthetic flow model with a source in the upper left corner and a sink in the lower right corner. (a) Pressure field from solving the linear system in \eqref{eq:flowmodel}, in \si{\pascal} (b) flux field, (c) Voxelwise perfusion according to \eqref{eq:flux2perf} in \si{\siP}.}
+    	\caption{Synthetic flow model with a source in the upper left corner and a sink in the lower right corner. (a) Pressure field [\si{\pascal}] from solving the linear system in \eqref{eq:flowmodel}  (b) vector valued absolute flux field $\int_{\partial \Omega_i}q ds$ [\si{\siqt}], (c) Voxelwise perfusion $P(x)$ [\si{\siPn}] resulting from  the flux field, according to \eqref{eq:flux2perf}.}
 	        \label{fig:flowpressureperfusion}
 	\end{figure}
 	
