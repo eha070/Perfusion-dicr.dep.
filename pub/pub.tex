@@ -26,13 +26,16 @@
 \newcommand{\siq}{\milli\meter\cubed\per\second\per\milli\meter\squared}
 \newcommand{\siqt}{\milli\meter\cubed\per\second}
 %\newcommand{\siP}{\cubic\milli\meter\per\second\per\cubic\milli\meter}
-\newcommand{\siP}{\milli\meter\cubed\per\second\per\milli\meter\cubed}
+\newcommand{\siP}{\milli\meter\cubed\per\second}
+\newcommand{\siPml}{\milli\litre\per\second}
 \newcommand{\siQtilde}{\milli\gram\per\second\per\milli\meter\cubed}
 \newcommand{\siQ}{\milli\meter\cubed\per\second\per\milli\meter\cubed}
 \newcommand{\sirho}{\milli\gram\per\milli\meter\cubed}
 \newcommand{\siJ}{\milli\mol\per\second\per\milli\meter\squared}
 \newcommand{\sic}{\milli\mol\per\milli\meter\cubed}
 \newcommand{\siPn}{\milli\litre\per\minute\per100\milli\litre}
+\newcommand{\simm}{\milli\meter\cubed}
+\newcommand{\siml}{\milli\litre}
 
 %define misc commands
 \newcommand{\missingsource}{\textcolor{red}{[?]}}
@@ -90,13 +93,12 @@ This more accurately mimics the nature of blood flow in the tissue.
 	
 	
 	
-	
 	%--------------------------------------------------
 	%--------------------------------------------------
 	% Section: Classical models
 	%--------------------------------------------------
 	%--------------------------------------------------
-	\section{Classical Models} \label{sec:classical}
+	\section{Classical Models for perfusion} \label{sec:classical}
 
 	Classical theory for pharmacokinetic modelling is used to recover CBF, cerebral blood volume (CBV), as well as mean transit times (MTT) from data displaying propagation of a contrast agent through the tissue.
 	The so-called Deconvolution Model (DM) is used in vast amount of publications \cite{ostergaard96,abels10,straka10,bivard13,sourbron13}.
@@ -277,7 +279,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	%--------------------------------------------------
 	% Subsection: Modeling the Contrast Agent Transport
 	%--------------------------------------------------	
-	\subsection{Modelling Contrast Agent Transport}\label{sec:transport}
+	\subsection{Modelling Indicator Dilution in the Flux Field}\label{sec:transport}
 	
 	In this section describes how the CA propagates in the tissue as it is dissolved in the evolving fluid.
 	We assume that the CA is introduced at a source- and extracted at a sink.
@@ -335,7 +337,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	% Section: Relating the classical and the synthetic model
 	%--------------------------------------------------
 	%--------------------------------------------------	
-	\section{Relating the Classical and the Synthetic Model}\label{sec:relation}
+	\subsection{Relating the Classical and the Synthetic Model}\label{sec:relation}
 	Here is still some motivation missing.
 	
 	In order to test the standard models for their abilities to restore CBF and CBV, we need to convert the flux $q$ with units \si{\siq} to perfusion $P$ with units \si{\siP}. 
@@ -348,30 +350,30 @@ This more accurately mimics the nature of blood flow in the tissue.
 	% Subsection: Converting Flow to Perfusion
 	%--------------------------------------------------
 	\subsection{Converting Flow to Perfusion}\label{sec:flux2perf}
-	The model described in \eqref{eq:flowmodel} uniquely determines the flux field $q(x)$. 
-	However, in pharmacokinetic modeling the parameter of interest is usually the cerebral blood flow (CBF), which we will denote by $P(x)$.
-	It is not obvious how to transform a flux field into a scalar perfusion field $P(x)$.
-	There are at least two obvious differences between $q$ and $P$. 
+	The model described in \eqref{eq:syntdarcysimp} - \eqref{eq:flowmodel} uniquely determines the flux field $q(x)$. 
+	However, in pharmacokinetic modeling the parameter of interest is usually the CBF, which we will denote by $P(x)$ as the voxel wise field of perfusion. However, 
+	it is not obvious how to transform a vector flux field $q(x)$ into a scalar perfusion field $P(x)$.
+	There are at least two differences between $q(x)$ and $P(x)$. 
 	First, the flux is a vector field and the perfusion is a scalar field. 
-	Second, the flux relates to a surface area and the perfusion relates to a volume. 
+	Second, the flux is normalized to a surface area and the perfusion is normalized to a volume. 
 	Thus, these to quantities are strictly, mathematically different but still conceptually related. 
-	In the following we describe a method for converting flux into perfusion.
+	In the following we describe a method for converting flux into perfusion. The other way around, converting perfusion into flux has no obvious incentive since the vector flux field contains more information than the scalar perfusion field.
 
-	The classical understanding of perfusion is the amount of blood feeding a tissue volume per unit time. 
-	Thus, the perfusion $P$ has the units \si{\siP}.
-	It is common to scale this quantity to normalized perfusion $P_n(x)$ with units \si{\siPn}. 
-	One approach for converting flux into perfusion could be to estimate the perfusion as the total inflow (or outflow) of fluid (e.g. arterial blood) into a control region per unit time, and then normalizing with the control region volume. 
-	This is only a valid approach if every control region is separated from other control regions, and not feeding each other. 
-	Thus, this approach is valid for an entire organ being the control region. 
-	Such understanding is in line with the understanding of classical compartment models for perfusion where each voxel has its own source of feeding arterial blood, independent of the neighbor voxels. 
-	Clearly, this is a simplification since voxels will be fed by their neighbors. 
-	In our synthetic flow model SFM as well as in normal tissue this assumption is violated since the voxels are feeding their neighbor voxels with arterial blood. 
-	Simply summing the total inflow into a voxel and dividing by the voxel volume will strongly over-estimate the perfusion since we would divide by the wrong normalization volume. 
-	The problematic issue is that the incoming blood is feeding more voxels than the current voxel. 
-	This phenomenon is demonstrated in Fig. \ref{fig:perfusion-problem} where the volume on the left has the true perfusion value of $P_1 = F_0/(2V)$ for an incoming flow $F_0$ in \si{\siqt} and distribution volume $2V$ in \si{\litre}. 
-	However, for another discretization as shown in the middle, the perfusion within each of these sub-volumes becomes $P_2 = F_0/V = 2P_1$. 
-	Taking the average across both sub-volumes, it is clear that the perfusion is over-estimated with a factor of two. 
-	A discretization dependent perfusion value is not desirable, and the perfusion estimate of $P_2$ is clearly wrong. 
+	The common understanding of perfusion is the amount of blood feeding a tissue volume per unit time. 
+	Thus, unnormalized perfusion, denoted by $P(x)$ has the units \si{\simm} when using \si{\simm} instead of \si{\siml} as referencing volume unit.
+	For inter-subject comparison it is common to scale this quantity to normalized perfusion $P_n(x)$ with units \si{\siPn}. 
+	One approach for converting flux into perfusion could be to estimate the perfusion as the total inflow (or outflow) of fluid (e.g. arterial blood) into a control region per unit time, and then normalizing with the entire control region volume. 
+	This is a valid approach only if every control region is separated from other control regions and not feeding each other, and is thereby well-founded 
+	for an entire organ. 
+	Such understanding of perfusion is in line with the theoretical foundation of classical compartment models for perfusion where each control region has its own source of feeding arterial blood, independent of the neighbor regions. 
+	
+	On the other hand, if the control region is a single voxel or a sub-division of an organ with common feeding arterial blood, the assumptions of the classical models is violated since the control regions will then be fed by their neighbours, thus becoming a coupled system of flow. 
+	Simply summing the total inflow into a voxel and dividing by the voxel volume will strongly over-estimate the perfusion since one would normalize with respect to the wrong normalization volume. 
+	The problematic issue is that the incoming blood is feeding more voxels than the current voxel, and the perfusion values become discretization dependent. 
+	This phenomenon is demonstrated in Fig. \ref{fig:perfusion-problem} where the volume on the left has the true normalized perfusion of $P_{n,1} = F_0/(2V)$ for an incoming flow $F_0$ [$\si{\siP}$] and distribution volume $2V$ [$\si{\simm}$]. 
+	However, for another discretization as shown in the middle, the normalized perfusion within each of these sub-volumes becomes $P_{n,2} = F_0/V = 2P_{n,1}$. 
+	Taking the average across the two sub-volumes, it is clear that the normalized perfusion is over-estimated with a factor of two. 
+	A discretization dependent perfusion value is not desirable, and the perfusion estimate of $P_{n,2}$ is clearly wrong. 
 
 
 	\begin{figure}[H]
@@ -379,42 +381,43 @@ This more accurately mimics the nature of blood flow in the tissue.
 	    \begin{overpic}[scale=0.5]{figs/perfusion-problem.eps}
 	    	\put(11,67){\color{black}$F_0$}
 			\put(49,67){\color{black}$F_0$}
-			\put(85.2,66){\color{black}$\Delta F_0$}
+			\put(85.0,66){\color{black}$\Delta F_0$}
 			\put(13,33){\color{black}$2V$}
 			\put(50,20){\color{black}$V$}
 			\put(50,45){\color{black}$V$}
 			\put(91,42){\color{black}$\Delta V$}
 		\end{overpic}
-	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ $\si{\siqt}$ of fluid. From definition, the overall perfusion within this object becomes $P_1 = F_0/(2V)$ \si{\siq}. Right: The volume is divided into two smaller compartment (e.g. voxels), and the perfusion for each of the compartments becomes $P_2 = F_0/V = 2P_1$. This discrepancy between the two discretisation regimes occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area) which is feeded with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/dV$. The entire compartment can further be divided into infinitesimal distribution volumes, thus providing voxelwise perfusion values.}
+	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ [$\si{\siqt}$] of fluid. From definition of perfusion, the normalized perfusion within this compartment becomes $P_{n,1} = F_0/(2V)$. Right: The volume is divided into two smaller compartment (e.g. voxels), and the perfusion for each of the compartments becomes $P_{n,2} = F_0/V = 2P_{n,1}$. The discrepancy between the two discretizations occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area) which is fed with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/\Delta V$. The entire compartment can further be divided into similar infinitesimal distribution volumes, thus providing correct voxelwise perfusion values.}
 	    \label{fig:perfusion-problem}
 	\end{figure}
 
-	The reason for this discrepancy is that for $P_2$ the perfusion has been counted twice since we are dividing by the wrong distribution volume. 
-	Instead, we need to consider to the classical definition of perfusion. 
-	The concept of perfusion has a very precise meaning, as the amount of arterial blood per time unit delivered to a capillary bed in a biological tissue, and then scaled by the feeded tissue volume. 
-	Therefore, we must divide the incoming flow by the total distribution volume that is covered by the fluid streamlines. 
+	The reason for the discrepancy is perfusion for $P_{n,2}$ has been counted twice since the voxels are coupled and we are dividing by the wrong distribution volume. 
+	Instead, we need to consider the classical definition of perfusion. 
+	The concept of perfusion has a very precise meaning, as the amount of arterial blood per time unit delivered to a capillary bed in a biological tissue, and then scaled by the feeding tissue volume. 
+	Therefore, the incoming flow must be divided by the total distribution volume that is covered by the fluid streamlines. 
 	This formulation coincides with the classical understanding of perfusion, and the correct distribution volume will rather be the volume that the fluid particles within an infinitesimal cross-sectional area around the streamlines are covering. 
 	Assuming laminar flow, the streamlines are not crossing each other and we can estimate the true distribution volume that is fed by a given arterial blood flow.
 
-	Let us fix a point $y \in \Omega$.
-	Formally, the direction of the streamline passing $y$ is identical to the flux $q(y)$ at this location. 
-	Let $A_\varepsilon$ be a 2-D disc with radius $\varepsilon$ which is orthogonal to $q(y)$.
-	The total volume flow \si{\siqt} over the disc can be expressed as
-	\[
-		F = \int_{A_\varepsilon} (q \cdot n) \diffint A = \int_{A_\varepsilon} \left(q\cdot \frac{q(y)}{\Vert q(y) \Vert}\right) \diffint A.
-	\]
-	Consider now a (unique) streamline passing through $y$ of length $L$ as well as a small tube of radius $\varepsilon$ around the streamline.
-	Following Cavalieri's principle the volume $V$ of the tube can be expressed as $V = \varepsilon^2\pi L$
-	Hence we can express the perfusion $P_\varepsilon$ for this volume as
-	\[
-		P_\varepsilon = \frac{F}{V} = \frac{1}{\varepsilon^2 \pi L} \int_{A_\varepsilon} \left( q\cdot \frac{q(y)}{\Vert q(y) \Vert} \right) \diffint A. 
-	\]
-	Letting $\varepsilon \to 0$ and using that $F/(\varepsilon^2\pi)$ goes to $\Vert q(y) \Vert$ if $q(x)$ is continuous yields a locally defined value for the perfusion $P_{y}$:
+	Let us fix a point $y \in \Omega$ and consider the streamline crossing through $y$. Denote the flux along this streamline as $q = q(s)$ for a parameterization $s$, noting that the direction of the streamline is identical to the direction of the flux.
+	Let $A_\varepsilon$ be a 2-D disc with radius $\varepsilon(s)$, where  $A_\varepsilon$ is orthogonal to $q(s)$. Thus, the normal vector $n$ of the disc, is parallel to $q(s)$.
+	The total volume flow [\si{\siqt}] over the disc is independent of the position along the streamlines, and can be expressed as
 	\begin{equation}
-		P_{y} = \frac{\Vert q(y) \Vert}{L}
+		F = \int_{A_\varepsilon} (q \cdot n) \diffint A = \int_{A_\varepsilon} \left(q\cdot \frac{q}{\Vert q \Vert}\right) \diffint A.
+	\end{equation}
+	for any $0 \leq s \leq L$ where $L$ is the length of the streamline, and thereby for any $\varepsilon$ along the streamline.
+%	Consider now a (unique) streamline passing through $y$ of length $L$ as well as a small tube of radius $\varepsilon(s)$ around the streamline where $s$ is a parameterisation along the streamline. 
+	Provided $q$ is continuous along the streamlines, we know $\exists ~ \tilde{\varepsilon}, 0 \leq \tilde{\varepsilon} \leq \max_s \varepsilon(s)$, such that the volume $V$ of the tube can be expressed as $V = \tilde{\varepsilon}^2\pi L$
+	Hence we can express the normalized perfusion $P_{n,\varepsilon}$ for the sub volume $V$ as
+	\begin{equation}
+		P_{n,\tilde{\varepsilon}} = \frac{F}{V} = \frac{1}{\tilde{\varepsilon}^2 \pi L} \int_{A_{\tilde{\varepsilon}}} \left( q\cdot \frac{q}{\Vert q \Vert} \right) \diffint A. 
+		\label{eq:Pneps}
+	\end{equation}
+	Letting $\tilde{\varepsilon} \to 0$ and using that $F/(\tilde{\varepsilon}^2\pi) \rightarrow \Vert q \Vert$ provided $q$ is continuous yields a locally defined value for the perfusion $P_n(y)$
+	\begin{equation}
+		P_n(y) = \frac{\Vert q(y) \Vert}{L}.
 		\label{eq:flux2perf}
 	\end{equation}
-	where $L$ is the length of the streamline passing through the point $y$. 
+	We note that \eqref{eq:Pneps} is valid for any $0 \leq \tilde{\varepsilon} \leq \max_s \varepsilon(s)$ since both $F$ and $V$ are independent of $\varepsilon$, and relation \eqref{eq:flux2perf} is thereby valid for any position along the streamline.
 	This is an explicit formula for converting flux into perfusion and is later used for evaluation of the classical model for perfusion. 
 	
 	
