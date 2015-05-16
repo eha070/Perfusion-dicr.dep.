@@ -18,9 +18,11 @@
 \newcommand{\CBV}{\mathrm{CBV}}
 \newcommand{\MTT}{\mathrm{MTT}}
 \newcommand{\cout}{c_{\mathrm{v}}}
-\newcommand{\Pa}{P_{\mathrm{a}}}
-\newcommand{\Pout}{P_{\mathrm{v}}}
-
+\newcommand{\Pa}{Q_{\mathrm{a}}}
+\newcommand{\Pout}{Q_{\mathrm{v}}}
+\newcommand{\Perf}{Q}
+\newcommand{\Perfn}{P}
+\newcommand{\Flow}{F}
 
 %define SI-units, since we want to be able to easily change them
 \newcommand{\siFmm}{\milli\meter\cubed\per\second}
@@ -265,15 +267,15 @@ This more accurately mimics the nature of blood flow in the tissue.
 	
 	Low velocity fluid flux in porous media is described by Darcy's law \missingsource
 	\begin{equation}
-		q = -\frac{\tilde{k}}{\mu} \left( \nabla p + \rho g  \nabla z \right).
+		q = -\frac{\mathbf{k}}{\mu} \left( \nabla p + \rho g  \nabla z \right).
 	\end{equation}
-	Here $g$ is the gravitational acceleration, $\tilde{k}$ [\si{\square\milli\meter}] is the permeability tensor, $z$ is the spatial position along the gravitational field, $p$ [\si{k\pascal}] is the pressure, and $\mu = \mu(x)$ [\si{k\pascal$\cdot$\second}] is the viscosity of the fluid.
+	Here $g$ is the gravitational acceleration, $\mathbf{k}$ [\si{\square\milli\meter}] is the permeability tensor, $z$ is the spatial position along the gravitational field, $p$ [\si{k\pascal}] is the pressure, and $\mu = \mu(x)$ [\si{k\pascal$\cdot$\second}] is the viscosity of the fluid.
 	For the current synthetic model, the flux field is chosen to be perpendicular to the gravitational field and the gravitational term can thereby be discarded,
 	\begin{equation}
-		q = -\frac{\tilde{k}}{\mu} \nabla p.
+		q = -\frac{\mathbf{k}}{\mu} \nabla p.
 		\label{eq:syntdarcysimp}
 	\end{equation}
-	Equations \eqref{eq:syntcontsimp2} and \eqref{eq:syntdarcysimp} can be combined, and further it is assumed that $k$ is a symmetric and positive definite tensor such that $\tilde{k}_{ii} = k$, and zero otherwise.
+	Equations \eqref{eq:syntcontsimp2} and \eqref{eq:syntdarcysimp} can be combined, and further it is assumed that $k$ is a symmetric and positive definite tensor such that $\mathbf{k}_{ii} = k$, and zero otherwise.
 	This yields the following elliptic partial differential equation in the pressure-field $p$,
 	\begin{equation}
 		\left\vert
@@ -295,27 +297,27 @@ This more accurately mimics the nature of blood flow in the tissue.
 	%--------------------------------------------------	
 	\subsection{Modelling Indicator Dilution in the Flux Field}\label{sec:transport}
 	
-	In this section describes how the CA propagates in the tissue as it is dissolved in the evolving fluid.
-	We assume that the CA is introduced at a source- and extracted at a sink.
+	This section describes how the CA propagates in the tissue as it is dissolved in the evolving fluid.
+	We assume that the CA is entering the domain along with the fluid flowing in via the source, and similarly extracted at a sink.
 	The resulting concentration map is a simulation of the CA concentration one would observe within MRI measurements.
 	
-	In order to define meaningful continuous contrast agent concentrations, we first describe the CA concentration in an (arbitrarily) small tissue volume $\Omega_i$ where $C_i(t)$ is constant.
+	In order to define meaningful continuous contrast agent concentrations, we first describe the average CA concentration in an (arbitrarily) small tissue volume $\Omega_i$ where $C_i(t)$ is constant within $\Omega_i$.
 	Assume that $V_i$ is the volume of $\Omega_i$ and $v_i$ the the blood volume within $\Omega_i$.
 	By definition, porosity is given by $\phi_i = v_i/V_i$.
 	Let $C_i(t)$ denote the CA concentration in $\Omega_i$ with respect to the whole volume $V_i$ at timepoint $t$.
 	The CA concentration with respect to the blood volume $v_i$ is denoted by $c_i(t)$.
 	% Both $C_i(t)$ and $c_i(t)$ have units \si{\sic}. 
-	From the definition of $c_i,C_i$ and $\phi_i$ we obtain the relation $C_i(t) = \phi_i \cdot c_i(t)$.
-	The rate of change of tracer molecules within the control volume $\Omega_i$ can he described by
+	From the definition of $c_i,C_i$ and $\phi_i$ we obtain the relation $C_i(t) = \phi_i  c_i(t)$.
+	The rate of change of tracer molecules within the control volume $\Omega_i$ can he phrased as
 	\begin{equation}
 		\diffop{t}\int_{\Omega_i}C_i(t) \diffint x = \int_{\Omega_i}\diffop{t}(\phi_i c_i(t)) \diffint x = \int_{\Omega_i} \phi_i \frac{d c_i}{dt}\diffint x.
 		\label{eq:dmdt}
 	\end{equation}	
-	where we also used the assumption of stationarity of $\phi_i$.
+	where the assumption of stationary $\phi_i$ was used.
 	Since we expect mainly transport along the vessels and marginal diffusion, the change in tracer mass within $\Omega_i$ occurs only from advective flow and the source and sink field $Q$.
 	Let us write the source- and the sink term as $Q = \Qsi + \Qso$ where $\Qsi < 0$ is the sink and $\Qso > 0$ is the source. 
 	Both are assumed to be zero everywhere except at in the respective source and sink locations.
-	Note that $Q = \Qso + \Qsi$ and $\int_\Omega Q \diffint x = 0$ in line with incompressible flow. 
+	Note that $\int_\Omega Q \diffint x = 0$. 
 	The change in contrast agent at time point $t$ can hence be written as
 	\begin{equation}
 		-\int_{ \partial \Omega_i}c_i(t)(q_i \cdot n)\diffint s + \int_{\Omega_i}\ca(t) \Qso \diffint x + \int_{\Omega_i}c_i(t)\Qsi \diffint x,
@@ -329,7 +331,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 		\int_{\Omega_i} \phi_i \frac{d c_i}{dt} \diffint x + \int_{ \Gamma_i}c_i(t)(q_i \cdot n) \diffint s = \int_{\Omega_i}\ca(t)\Qso \diffint x + \int_{\Omega_i}c_i(t) \Qsi \diffint x.
 		\label{eq:conteq}
 	\end{equation}
-	We note that upon using continuous quantities $C(x,t),c(x,t),\phi(x),q(x)$ instead of constant valued quantities within $\Omega_i$, equation (\ref{eq:conteq}) is consistent with the continuity equation on local form
+	Now, let the contrast agent concentrations be a continuous function of space and time, $C(x,t),c(x,t)$, and $\phi(x),q(x)$. Equation (\ref{eq:conteq}) is then consistent with the continuity equation on local form
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
@@ -339,10 +341,9 @@ This more accurately mimics the nature of blood flow in the tissue.
 		\right\vert
 		\label{eq:conteqlocal}
 	\end{equation}
-	where we also added the initial value $c(x,0) = 0$ for uniqueness.
+	where we also added the initial value $c(x,0) = 0$ to ensure uniqueness.
 	Equation \eqref{eq:conteqlocal} is a linear transport equation in $c(x,t)$. 
-	Assuming that $\phi$ is Lipschitz continuous and that $\Qso,\Qsi,\ca$ are continuous, we can follow that $q$, as the solution of \eqref{eq:flowmodel}, is also Lipschitz continuous \textcolor{red}{Constantin, you have control on the Lipschits continuities? :-)}.
-	In this case \eqref{eq:conteqlocal} has a unique local solution \cite{evans98}.
+	Assuming that $\phi$ is Lipschitz continuous and that $\Qso,\Qsi,\ca$ are continuous functions, we can follow that $q$, as the solution of \eqref{eq:flowmodel}, is also Lipschitz continuous. In this case \eqref{eq:conteqlocal} has a unique local solution \cite{evans98}.
 	
 
 
@@ -365,30 +366,28 @@ This more accurately mimics the nature of blood flow in the tissue.
 	%--------------------------------------------------
 	\subsection{Converting Flow to Perfusion}\label{sec:flux2perf}
 	The model described in \eqref{eq:syntdarcysimp} - \eqref{eq:flowmodel} uniquely determines the flux field $q(x)$. 
-	However, in pharmacokinetic modeling the parameter of interest is usually the CBF, which we will denote by $P(x)$ as the voxel wise field of perfusion. However, 
-	it is not obvious how to transform a vector flux field $q(x)$ into a scalar perfusion field $P(x)$.
-	There are at least two differences between $q(x)$ and $P(x)$. 
+	However, in pharmacokinetic modeling the parameter of interest is usually the CBF, which we will denote by $\Perf (x)$ as the voxel wise field of perfusion. However, 
+	it is not obvious how to transform a vector flux field $q(x)$ into a scalar perfusion field $\Perf (x)$.
+	There are at least two differences between $q(x)$ and $\Perf (x)$. 
 	First, the flux is a vector field and the perfusion is a scalar field. 
 	Second, the flux is normalized to a surface area and the perfusion is normalized to a volume. 
 	Thus, these to quantities are strictly, mathematically different but still conceptually related. 
-	In the following we describe a method for converting flux into perfusion. The other way around, converting perfusion into flux has no obvious incentive since the vector flux field contains more information than the scalar perfusion field.
+	In the following we describe a method for converting flux into perfusion. The other way around, converting perfusion into flux has no obvious incentive since the vector flux field contains both scalar and directional information compared to the scalar perfusion field.
 
-	The common understanding of perfusion is the amount of blood feeding a tissue volume per unit time. 
-	Thus, unnormalized perfusion, denoted by $P(x)$ has the units \si{\siQmm}.
-	% when using \si{\siQmm} instead of \si{\siQml} as referencing volume unit.
-	For inter-subject comparison it is common to scale this quantity to normalized perfusion $P_n(x)$ with units \si{\siPml}. 
+	The common understanding of perfusion $\Perf (x)$ is the amount of blood feeding a tissue volume per unit time, with units [\si{\siQmm}]. 
+	For inter-subject comparison it is common to scale this quantity to normalized perfusion $\Perfn (x)$ with units \si{\siPml}. 
 	One approach for converting flux into perfusion could be to estimate the perfusion as the total inflow (or outflow) of fluid (e.g. arterial blood) into a control region per unit time, and then normalizing with the entire control region volume. 
-	This is a valid approach only if every control region is separated from other control regions and not feeding each other, and is thereby well-founded 
+	This is a valid approach only if every control region is separated from other control regions and not feeding each other, and this approach is thereby well-founded 
 	for an entire organ. 
 	Such understanding of perfusion is in line with the theoretical foundation of classical compartment models for perfusion where each control region has its own source of feeding arterial blood, independent of the neighbor regions. 
 	
-	On the other hand, if the control region is a single voxel or a sub-division of an organ with common feeding arterial blood, the assumptions of the classical models is violated since the control regions will then be fed by their neighbours, thus becoming a coupled system of flow. 
-	Simply summing the total inflow into a voxel and dividing by the voxel volume will strongly over-estimate the perfusion since one would normalize with respect to the wrong normalization volume. 
-	The problematic issue is that the incoming blood is feeding more voxels than the current voxel, and the perfusion values become discretization dependent. 
-	This phenomenon is demonstrated in Fig. \ref{fig:perfusion-problem} where the volume on the left has the true normalized perfusion of $P_{n,1} = F_0/(2V)$ for an incoming flow $F_0$ [$\si{\siQmm}$] and distribution volume $2V$ [$\si{\simm}$]. 
-	However, for another discretization as shown in the middle, the normalized perfusion within each of these sub-volumes becomes $P_{n,2} = F_0/V = 2P_{n,1}$. 
-	Taking the average across the two sub-volumes, it is clear that the normalized perfusion is over-estimated with a factor of two. 
-	A discretization dependent perfusion value is not desirable, and the perfusion estimate of $P_{n,2}$ is clearly wrong. 
+	On the other hand, if the control region is a single voxel or a sub-division of an organ with common feeding arterial blood, the classical model assumptions are is violated since the control regions will be fed by their neighbours, and thus becoming a coupled system of flow. 
+	Simply summing the total inflow into a voxel and dividing by the voxel volume will strongly over-estimate the perfusion since the normalization would refer to the wrong volume. 
+	The problematic issue is that the incoming blood is feeding more ROIs than the current ROI, and the perfusion values thereby become discretization dependent. 
+	This phenomenon is demonstrated in Fig. \ref{fig:perfusion-problem} where the volume on the left has the true perfusion of $\Perf_{1} = \Flow_0 /(2V)$ for an incoming flow $\Flow_0$ [$\si{\siFmm}$] and distribution volume $2V$ [$\si{\simm}$]. 
+	However, for another discretization as shown in the middle, the perfusion within each of these sub-volumes becomes $\Perf_{2} = F_0/V = 2\Perf_{1}$. 
+	Taking the average across the two sub-volumes, it is clear that the perfusion is over-estimated with a factor of two. 
+	A discretization dependent perfusion value is not desirable, and the perfusion estimate of $\Perf_{2}$ is clearly wrong. 
 
 
 	\begin{figure}[H]
@@ -402,34 +401,34 @@ This more accurately mimics the nature of blood flow in the tissue.
 			\put(50,45){\color{black}$V$}
 			\put(91,42){\color{black}$\Delta V$}
 		\end{overpic}
-	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ [$\si{\siFmm}$] of fluid. From definition of perfusion, the normalized perfusion within this compartment becomes $P_{n,1} = F_0/(2V)$. Right: The volume is divided into two smaller compartment (e.g. voxels), and the perfusion for each of the compartments becomes $P_{n,2} = F_0/V = 2P_{n,1}$. The discrepancy between the two discretizations occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area) which is fed with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/\Delta V$. The entire compartment can further be divided into similar infinitesimal distribution volumes, thus providing correct voxelwise perfusion values.}
+	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $\Flow_0$ [$\si{\siFmm}$] of fluid. From definition of perfusion, the perfusion within this compartment becomes $\Perf_{1} = \Flow_0/(2V)$. Right: The volume is divided into two smaller compartment (e.g. voxels), and the perfusion for each of the compartments becomes $\Perf_{2} = \Flow_0/V = 2\Perf_{1}$. The discrepancy between the two discretizations occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we rather pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area) which is fed with arterial blood from the incoming fractional flow $\Delta \Flow_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/\Delta V$. The entire compartment can further be divided into infinitesimal distribution volumes, thus providing correct voxelwise perfusion values.}
 	    \label{fig:perfusion-problem}
 	\end{figure}
 
-	The reason for the discrepancy is perfusion for $P_{n,2}$ has been counted twice since the voxels are coupled and we are dividing by the wrong distribution volume. 
-	Instead, we need to consider the classical definition of perfusion. 
+	The reason for the discrepancy is that $\Perf_{2}$ has been counted twice since the voxels are coupled and we are dividing by the wrong distribution volume. 
+%	Instead, we need to consider the classical definition of perfusion. 
 	The concept of perfusion has a very precise meaning, as the amount of arterial blood per time unit delivered to a capillary bed in a biological tissue, and then scaled by the feeding tissue volume. 
 	Therefore, the incoming flow must be divided by the total distribution volume that is covered by the fluid streamlines. 
 	This formulation coincides with the classical understanding of perfusion, and the correct distribution volume will rather be the volume that the fluid particles within an infinitesimal cross-sectional area around the streamlines are covering. 
 	Assuming laminar flow, the streamlines are not crossing each other and we can estimate the true distribution volume that is fed by a given arterial blood flow.
 
-	Let us fix a point $y \in \Omega$ and consider the streamline crossing through $y$. Denote the flux along this streamline as $q = q(s)$ for a parameterization $s$, noting that the direction of the streamline is identical to the direction of the flux.
+	Let us fix a point $y \in \Omega$ and consider the streamline crossing through $y$. For the time being, denote the flux along this streamline as $q = q(s)$ for a parameterization $s$ along the streamline, noting that the direction of the streamline is identical to the direction of the flux.
 	Let $A_\varepsilon$ be a 2-D disc with radius $\varepsilon(s)$, where  $A_\varepsilon$ is orthogonal to $q(s)$. Thus, the normal vector $n$ of the disc, is parallel to $q(s)$.
-	The total volume flow [\si{\siQmm}] over the disc is independent of the position along the streamlines, and can be expressed as
+	The volume flow [\si{\siFmm}] over the disc is independent of the position along the streamlines, and can be expressed as
 	\begin{equation}
-		F = \int_{A_\varepsilon} (q \cdot n) \diffint A = \int_{A_\varepsilon} \left(q\cdot \frac{q}{\Vert q \Vert}\right) \diffint A.
+		F = \int_{A_\varepsilon} (q \cdot n) \diffint A = \int_{A_\varepsilon} \left(q\cdot \frac{q}{\Vert q \Vert}\right) \diffint A
 	\end{equation}
 	for any $0 \leq s \leq L$ where $L$ is the length of the streamline, and thereby for any $\varepsilon$ along the streamline.
 %	Consider now a (unique) streamline passing through $y$ of length $L$ as well as a small tube of radius $\varepsilon(s)$ around the streamline where $s$ is a parameterisation along the streamline. 
 	Provided $q$ is continuous along the streamlines, we know $\exists ~ \tilde{\varepsilon}, 0 \leq \tilde{\varepsilon} \leq \max_s \varepsilon(s)$, such that the volume $V$ of the tube can be expressed as $V = \tilde{\varepsilon}^2\pi L$
-	Hence we can express the normalized perfusion $P_{n,\varepsilon}$ for the sub volume $V$ as
+	Hence we can express the perfusion $\Perf_{\varepsilon}$ for the sub volume $V$ as
 	\begin{equation}
-		P_{n,\tilde{\varepsilon}} = \frac{F}{V} = \frac{1}{\tilde{\varepsilon}^2 \pi L} \int_{A_{\tilde{\varepsilon}}} \left( q\cdot \frac{q}{\Vert q \Vert} \right) \diffint A. 
+		\Perf= \frac{F}{V} = \frac{1}{\tilde{\varepsilon}^2 \pi L} \int_{A_{\tilde{\varepsilon}}} \left( q\cdot \frac{q}{\Vert q \Vert} \right) \diffint A. 
 		\label{eq:Pneps}
 	\end{equation}
-	Letting $\tilde{\varepsilon} \to 0$ and using that $F/(\tilde{\varepsilon}^2\pi) \rightarrow \Vert q \Vert$ provided $q$ is continuous yields a locally defined value for the perfusion $P_n(y)$
+	Letting $\tilde{\varepsilon} \to 0$ and using that $F/(\tilde{\varepsilon}^2\pi) \rightarrow \Vert q \Vert$ provided $q$ is continuous, yields a locally defined value for the perfusion $\Perf (y)$
 	\begin{equation}
-		P_n(y) = \frac{\Vert q(y) \Vert}{L}.
+		\Perf(y) = \frac{\Vert q(y) \Vert}{L}.
 		\label{eq:flux2perf}
 	\end{equation}
 	We note that \eqref{eq:Pneps} is valid for any $0 \leq \tilde{\varepsilon} \leq \max_s \varepsilon(s)$ since both $F$ and $V$ are independent of $\varepsilon$, and relation \eqref{eq:flux2perf} is thereby valid for any position along the streamline.
