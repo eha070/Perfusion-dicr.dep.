@@ -118,7 +118,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	
 		
 	Following \cite{sourbron13}, we now briefly present the common theoretical basis of two the models.
-	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$, assuming a well mixed compartment \textcolor{red}{I added this assumption, isn't that correct? If its not well mixed C will be a function of space as well}. 
+	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the CA concentration within $\Omega_i$ at timepoint $t$.
 	Let us furthermore assume linearity and stationarity \textcolor{red}{What is linear and what is stationary?} of CA in- and outflux with proportionality constants $\Pa, \Pout$  [\si{\siperfmm}].
 	These assumptions lead to the differential equation $C'(t) = \Pa\ca(t) - \Pout\cout(t)$, reflecting mass balance of the tracer. 
 	Here $\ca,\cout$ are the CA concentrations at the inlet and outlet of $\Omega_i$.
@@ -259,7 +259,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	\begin{equation}
 		q = -\frac{K}{\mu} \left( \nabla p + \rho g  \nabla z \right).
 	\end{equation}
-	Here $g$ is the gravitational acceleration, $K$ [\si{\square\milli\meter}] is the permeability tensor, $z$ is the spatial position along the gravitational field, $p$ [\si{\pascal}] is the pressure, and $\mu = \mu(x)$ [\si{\pascal$\cdot$\second}] is the viscosity of the fluid.
+	Here $g$ is the gravitational acceleration, $K$ [\si{\square\milli\meter}] is the permeability tensor, $z$ is the spatial position along the gravitational field, $p$ [\si{\pascal}] is the pressure, and $\mu = \mu(x)$ [\si{\pascal\cdot\second}] is the viscosity of the fluid.
 	For the current synthetic model, the flux field is perpendicular to the gravitational field and the gravitational term can thereby be discarded,
 	\begin{equation}
 		q = -\frac{K}{\mu} \nabla p.
@@ -333,8 +333,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	\end{equation}
 	where we also added the initial value $c(x,0) = 0$ for uniqueness.
 	Equation \eqref{eq:conteqlocal} is a linear transport equation in $c(x,t)$. 
-	Assuming that $\phi$ is Lipschitz continuous and that $\Qso,\Qsi,\ca$ are continuous, we can follow that $q$, as the solution of \eqref{eq:flowmodel}, is also Lipschitz continuous \textcolor{red}{Constantin, you have control on the Lipschits continuities? :-)}.
-	In this case \eqref{eq:conteqlocal} has a unique local solution \cite{evans98}.
+	Following \cite{evans98}, equation \eqref{eq:conteqlocal} admits a unique local solution.
 	
 
 
@@ -585,11 +584,15 @@ This more accurately mimics the nature of blood flow in the tissue.
 	
 	
 	In order to compare the Porous Media Model to the standard convolution model described in Section \ref{sec:conv}, an additional convolution dataset was built. This forward simulation was generated using \eqref{eq:classicalperf} and the given values of $P_a \leftarrow P_i$ as the perfusion for each voxel $i$.
-	The convolution dataset (convM) was set up assuming voxel-wise well-mixed compartments described in Section \ref{sec:comp} and the perfusion values described in \eqref{eq:flux2perf}.
-	\textcolor{red}{
-	Note that this assumption is in contradiction to the assumptions of the maximum-slope model.
-	We can hence not expect to recover reasonable perfusion parameters from convM using the maximum slope model. DONT UNDERSTAND THIS}
+	The convolution dataset (convM) was set up under the assumption that each voxel is a well-mixed compartment.
+	Following the derivation described in Section \ref{sec:conv}, the model was hence set up by convolution of the AIF with Impuls-Response functions $I(t) := \Pa e^{-t/\MTT}$.
+	As described in Section \ref{sec:conv}, the model parameter $\MTT$ was calculated according to $\MTT = \CBV/\Pa$.
+	Here $\Pa$ was set up using the novel relationship connecting flux with perfusion established in \eqref{eq:flux2perf}.
 	A comparison of the tissue curves at different positions of the tissue can be found in Figure \ref{fig:tissuecomp}. 
+	Note that one assumption of the maximum-slope model is that no outflow takes place during the peak of the AIF. 
+	However, under the assumption that each voxel is a well-mixed compartment this is premise is clearly violated on a voxel-basis.
+	We hence cannot expect the maximum slope model to recover perfusion on a voxel basis.
+	\todo{However, on a broader scale .... Add time-delay to convM}.
 
 
 
