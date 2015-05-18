@@ -67,7 +67,10 @@
 	\maketitle
 %	\tableofcontents
 
-	
+	\begin{abstract}
+		The usage of one-compartment (1C) models within perfusion imaging for estimation of cerebral blood flow (perfusion), cerebral blood volume and mean transit times is widespread. The classical 1C models were originally developed for larger regions of interest (ROIs) where the arterial input function is a valid tracer source function for the entire domain. The extended usage of classical 1C models voxelwise or for smaller block-sizes than the entire organ is not necessarily transferable since the arterial input function is invalid for most of the computational sub-units. In this work we generate a digital phantom for capillary blood flow in order to investigate whether the classical 1C models are applicable to various types of sub-division of the imaged organ. Our results support the usage of classical 1C models for entire organs, but also demonstrates that the usage of these models for smaller block-sizes is questionable and should be further investigated.
+	\end{abstract}
+
 	%--------------------------------------------------
 	%--------------------------------------------------
 	% Section: Introduction
@@ -550,9 +553,9 @@ This more accurately mimics the nature of blood flow in the tissue.
 
 	We chose a standard arterial input function \cite{ostergaard96}, a gamma-variate \cite{chan04} function
 	\begin{equation}
-		\ca(t) := (t-t_0)^\alpha e^{-(t-t_0)/\beta}
+		\ca(t) := D_0(t-t_0)^\alpha e^{-(t-t_0)/\beta}
 	\end{equation}
-	for $\alpha=3$, $\beta = \SI{1.5}{\second}$ and $t_0 = \SI{0}{\second}$.
+	for $\alpha=3$, $D_0 = 1$, $\beta = \SI{1.5}{\second}$ and $t_0 = \SI{0}{\second}$.
 
 
 
@@ -576,14 +579,14 @@ This more accurately mimics the nature of blood flow in the tissue.
 		\begin{tabular}{ l  c  c c  r }
 		    Description 							&	Type 	& Symbol 			& Value(s) 				& Unit 				\\
 			\toprule
-			Fluid flux 							&	Vector 			& $q$				& - 					& \si{\siq} 		\\
-			Fluid flow	($q \cdot dA$)						&	Vector			& $J$				& - 					& \si{\siFmm} 		\\
+			Surface flux 							&	Vector 			& $q$				& - 					& \si{\siq} 		\\
+			Fluid flow								&	Vector			& $J$				& - 					& \si{\siFmm} 		\\
+			Absolute flow in source, derived from $\overline{\Perf}$& 	Scalar	& $F_{so}$ 			& \num{0.83}			& \si{\siFml} \\
+			Absolute flow in sink 						&		Scalar		& $F_{si}$ 			& $-F_{so}$ 		 	& \si{\siFml}  		\\
 			Concentration w.r.t. fluid space			&	Scalar & $c$				& - 					& \si{\sic} 		\\
 			Concentration w.r.t. $\Omega_i$		&	Scalar 			& $C$				& - 					& \si{\sic} 		\\
 		         Average perfusion within $\Omega$		 &	Scalar & $\overline{\Perf}$ 	& $50$ 					& \si{\siPml}		\\
-			Volume flow source, derived from $\overline{\Perf}$& 	Scalar	& $F_{so}$ 			& \num{0.83}			& \si{\siFml} \\
-			Volume flow sink 						&		Scalar		& $F_{si}$ 			& $-F_{so}$ 		 	& \si{\siFml}  		\\
-		         Estimated perfusion							 &	Scalar & $\Perf$ 	& - 					& \si{\siQmm}		\\
+		         Volume flux/perfusion							 &	Scalar & $\Perf$ 	& - 					& \si{\siQmm}		\\
 			% Dynamic viscosity blood \cite{rosencranz06} 	& Scalar & $\mu_b$ 			& $\num{5e-6}$ 			& \si{\simu}  	\\
 			Fluid density blood \cite{kenner89} 			& Scalar & $\rho$ 			& $\num{1}$				& \si{\milli\gram\per\cubic\milli\meter} 		\\
 			Permeability  							&	Scalar	& $k$ 				& $\num{5e-6}$ 			& \si{\square\milli\meter} 			\\
@@ -720,7 +723,7 @@ From the porous media model, streamlines were found from tracking within the flu
 	%--------------------------------------------------	
 	\section{Discussion}\label{sec:conclusion}
 	
-	Accurate measurements of CBV, CBF and MTT within the brain can provide substantial input in clinical decision making. Originally, the classical 1-C models for these parameters were developed for larger ROIs, and their validity for usage in field models has not properly been established. In this work we have developed a porous media simulator for simulating blood flow within a slab of the capillary system. From the obtained flux field, we generate a perfusion map that was used to create two data sets of propagating concentration agent. The first approach is based on solving a transport equation, where every voxel acts as an arterial input to its neighbours. The other approach is based on a forward convolution model, where every voxel is exposed to the same arterial input function. The latter data set was mainly used to validate the numerical stability of the deconvolution methods, while the first data set was meant to represent a realistic data set as it can be obtained from a MR examination.
+	Accurate measurements of CBV, CBF and MTT within the brain can provide relevant information for clinical decision making. Originally, the classical 1-C models for these parameters were developed for larger ROIs, and their validity for usage in field models has not properly been established. In this work we have developed a porous media simulator for simulating blood flow within a slab of the capillary system. From the obtained flux field, we generate a perfusion map that was used to create two data sets of propagating concentration agent. The first approach is based on solving a transport equation, where every voxel acts as an arterial input to its neighbours. The other approach is based on a forward convolution model, where every voxel is exposed to the same arterial input function. The latter data set was mainly used to validate the numerical stability of the deconvolution methods, while the first data set was meant to represent a realistic data set as it can be obtained from a MR examination.
 	
 	Considering the data set created from the transport equation, the results presented in Table \ref{tab:resultsSim} indicate low errors or $RE \leq 2.6 \%$ of both the MS and the bSVD model for restoring the perfusion when applied to the entire domain. This is in good agreement with assumptions for classical models, like well-mixed fluids within the compartment, and where only the average tracer concentration is considered. Thus, these results support the usage of classical compartment models for whole organs with only one inlet and one outlet. 
 
