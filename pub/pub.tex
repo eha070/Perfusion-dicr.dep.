@@ -398,34 +398,35 @@ C(x_0,t) = Q_{so}(x_0) \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds
 for the mean transit time $T := \phi(x_0) / Q_{so}(x_0)$.
 A comparison with (\ref{eq:classicalperf}) shows that these expressions are equal provided $Q_a \rightarrow Q_{so}$ and $c_{so} \rightarrow c_{a}$. Thus, we have shown that the classical model is equivalent to a (voxelwise) field model for tracer transport in accordance with the following: (i) The computed perfusion $Q_a$ is the volume flux along the streamline at the \textit{inlet}, within $\Omega_{so}$, and not within the voxel itself. (ii) The arterial input concentration $c_a$ is identical to the concentration at the source of $\Omega$. Observation (ii) is unproblematic since it is in agreement with the understanding of $c_a$. However, observation (i) implies that the computed perfusion along the streamlines will be constant, and hence, computing the voxel wise perfusion for all voxels lying on the streamlines will over-estimate the perfusion with a factor proportional with the streamline length. From this observation we can predict that applying the classical model voxel wise will over-estimate perfusion within an arbitrary domain $\Omega$. On the other hand, computing the perfusion for any cross-section perpendicular to the streamlines within $\Omega$ and taking the average, would provide the correct perfusion of the domain as a whole.
 
-Integrating over $\Omega$ on both sides of (\ref{eq:Cpdeclassic}), and defining the average concentration $\overline{C}(t):= \frac{1}{|\Omega|}\int_{\Omega}C(x_0,t)dx$, 
-\begin{equation}
-\overline{C}(t) = \frac{1}{|\Omega|}\int_{\Omega} Q_{so}(x_0)  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
-\label{eq:Cpdeclassicroi}
-\end{equation}
-Since $Q_{so}(x_0)$ is only nonzero across $B_\epsilon$ we can write
-\begin{equation}
-\overline{C}(t) = \frac{1}{|\Omega|}\int_{B_\epsilon} Q_{so}(x_0)  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
-\label{eq:Cpdeclassicroitemp}
-\end{equation}
-For a constant source flow $\tilde{Q}_{so}$ within $B_\epsilon$, $\tilde{Q}_{so} = Q(x_0), x_0 \in B_\epsilon$, this is equivalent to
-\begin{equation}
-\overline{C}(t) = \frac{\tilde{Q}_{so}}{|\Omega|}\int_{B_\epsilon}  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
-\label{eq:Cpdeclassicroitemp}
-\end{equation}
-Further, for a content arterial input concentration $\tilde{c}_{so}(t)$ across $B_\epsilon$, $\tilde{c}_{so}(t) := c(x_0,t), x_0 \in B_\epsilon$ we can write
-\begin{equation}
-\overline{C}(t) = \frac{\tilde{Q}_{so} |B_\epsilon|}{|\Omega|}  \int_{0}^t e^{-(t - s)/T}\overline{c}_{so}(s) ds
-\label{eq:Cpdeclassicroitemp}
-\end{equation}
-This is recognized as the total perfusion $P = \overline{Q}_{so}|B_\epsilon|/|\Omega|$, which is the total source flow divided by the total distributing domain $|\Omega|$. Hence, we can state that the averaging PDE model is consistent with
-\begin{equation}
-\overline{C}(t) = P \int_{0}^t e^{-(t - s)/T}\overline{c}_{so}(s) ds,
-\label{eq:Cpdeclassicroitemp}
-\end{equation}
-This expression is identical to the classical model in (\ref{eq:Cconv}) for $\Omega$ as the averaging domain and by taking $c_{so}(t) = c_a(t)$.
 
-Thus, we have in this section formally proven that the classical model for perfusion is correct when applying $\Omega$ as the averaging domain. On the other hand, applying the same model voxel wise will lead to an over-estimation of the perfusion, with a scaling factor growing along with the streamline length.
+%Integrating over $\Omega$ on both sides of (\ref{eq:Cpdeclassic}), and defining the average concentration $\overline{C}(t):= \frac{1}{|\Omega|}\int_{\Omega}C(x_0,t)dx$, 
+%\begin{equation}
+%\overline{C}(t) = \frac{1}{|\Omega|}\int_{\Omega} Q_{so}(x_0)  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
+%\label{eq:Cpdeclassicroi}
+%\end{equation}
+%Since $Q_{so}(x_0)$ is only nonzero across $B_\epsilon$ we can write
+%\begin{equation}
+%\overline{C}(t) = \frac{1}{|\Omega|}\int_{B_\epsilon} Q_{so}(x_0)  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
+%\label{eq:Cpdeclassicroitemp}
+%\end{equation}
+%For a constant source flow $\tilde{Q}_{so}$ within $B_\epsilon$, $\tilde{Q}_{so} = Q(x_0), x_0 \in B_\epsilon$, this is equivalent to
+%\begin{equation}
+%\overline{C}(t) = \frac{\tilde{Q}_{so}}{|\Omega|}\int_{B_\epsilon}  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
+%\label{eq:Cpdeclassicroitemp}
+%\end{equation}
+%Further, for a content arterial input concentration $\tilde{c}_{so}(t)$ across $B_\epsilon$, $\tilde{c}_{so}(t) := c(x_0,t), x_0 \in B_\epsilon$ we can write
+%\begin{equation}
+%\overline{C}(t) = \frac{\tilde{Q}_{so} |B_\epsilon|}{|\Omega|}  \int_{0}^t e^{-(t - s)/T}\overline{c}_{so}(s) ds
+%\label{eq:Cpdeclassicroitemp}
+%\end{equation}
+%This is recognized as the total perfusion $P = \overline{Q}_{so}|B_\epsilon|/|\Omega|$, which is the total source flow divided by the total distributing domain $|\Omega|$. Hence, we can state that the averaging PDE model is consistent with
+%\begin{equation}
+%\overline{C}(t) = P \int_{0}^t e^{-(t - s)/T}\overline{c}_{so}(s) ds,
+%\label{eq:Cpdeclassicroitemp}
+%\end{equation}
+%This expression is identical to the classical model in (\ref{eq:Cconv}) for $\Omega$ as the averaging domain and by taking $c_{so}(t) = c_a(t)$.
+%
+%Thus, we have in this section formally proven that the classical model for perfusion is correct when applying $\Omega$ as the averaging domain. On the other hand, applying the same model voxel wise will lead to an over-estimation of the perfusion, with a scaling factor growing along with the streamline length.
 
 
 	%--------------------------------------------------
