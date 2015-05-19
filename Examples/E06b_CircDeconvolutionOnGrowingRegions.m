@@ -30,9 +30,9 @@ trueFlow = 'perfusion';
 
 %which results to show?
 showFlowMaps       = 1;
-showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
-showSingleCurve    = 1;
-writeData          = 1;
+showMultipleCurves = 0; %remember to setup indices idxiD and idxjD
+showSingleCurve    = 0;
+writeData          = 0;
 showPartition      = 0;
 
 
@@ -264,6 +264,9 @@ if showFlowMaps
     caxis([0,1]);
     axis image;
     title('Relative Error in Flows |Fest-Ftrue|/Ftrue')
+    
+    medianRE = median(REMap(:));
+    fprintf('medianRE: %1.4f\n',medianRE);
 
 end
 
@@ -410,10 +413,10 @@ if saveSingleCurve
     plot(timelinelow,corig,timelinelow,ctest,'LineWidth',3);
     legend('Measured C','Model Approximation of C');
     xlabel('Time (s)')
-    ylabel('Concentration (mmol/mm^3)')
+    ylabel('Concentration (mol/l)')
     set(gca,'FontSize',15)
 
-    export_fig ./figs/C-and-Crec-conv.eps -transparent
+    export_fig ./figs/C-and-Crec-PDE.eps -transparent
     
     figure(3);clf;
     plot(timelinelow,iest(1:k),'LineWidth',3);
@@ -422,7 +425,7 @@ if saveSingleCurve
     legend('I')
     set(gca,'FontSize',15)
 
-    export_fig ./figs/Irec-conv.eps -transparent    
+    export_fig ./figs/Irec-PDE.eps -transparent    
     
 end
 
