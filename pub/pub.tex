@@ -26,7 +26,7 @@
 
 %define SI-units, since we want to be able to easily change them
 % \newcommand{\simu}{k\pascal$\cdot$\second} %CH: I have problems compiling with the cdot
-\newcommand{\simu}{k\pascal$\cdot$\second}
+\newcommand{\simu}{k\pascal\second}
 \newcommand{\siFmm}{\milli\meter\cubed\per\second}
 \newcommand{\siFml}{\milli\litre\per\second}
 \newcommand{\siQmm}{\milli\meter\cubed\per\second\per\milli\meter\cubed}
@@ -108,7 +108,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	In Section \ref{sec:synthetic} we describe how a synthetic flow field in the capillary system can be modelled using simple models valid within porous media. 
 	We also discuss mathematical similarities between the flow field models and the classical theory outlined in Section \ref{sec:classical}. 
 	\textcolor{red}{Some missing sections here?}
-	In Section \ref{sec:results} we evaluate the performance of classical models by applying them to the synthetic flow field. 
+	In Section \ref{sec:conclusion} we evaluate the performance of classical models by applying them to the synthetic flow field. 
 	The results and concluding remarks are summarized in Section \ref{sec:conclusion}.
 	
 	
@@ -696,10 +696,7 @@ From the porous media model, streamlines were found from tracking of the flux ve
 %	Note that this assumption is in contradiction to the assumptions of the maximum-slope model.
 	Note that the convolution dataset was set up under the assumption that each voxel is a well-mixed compartment.
 	Since one assumption of the maximum-slope model is that no outflow takes place during the peak of the AIF, we cannot expect the maximum slope model to recover perfusion on a voxel basis for $C_C(x,t)$.
-	\todo{However, on a broader scale .... Add time-delay to convM}.
 
-
-	
 	\begin{figure}[H]
 		\centering
 		\begin{tabular}{c c}
@@ -739,9 +736,9 @@ From the porous media model, streamlines were found from tracking of the flux ve
 			\multirow{2}{*}{Transport equation} & MS 	& $170.09$ 	& $165.03$ 	& $158.57$	& $2.65$ \\
 			 					 	   		& bSVD  & $859.06$ 	& $768.58$ 	& $664.84$	& $1.25$ \\
 			\multirow{2}{*}{Convolution model} & MS 	& $23.20$ 	& $24.26$ 	& $25.75$ 	& $37.96$ \\
-											% & MS 	& $23.23$ 	& $24.26$ 	& $25.75$ 	& $63.53$ \\
+											% & MS 	& $23.23$ 	& $24.26$ 	& $25.75$ 	& $63.53$ \\ %results with delay
 			 					 			& bSVD  & $2.43$ 	& $4.27$ 	& $8.80$ 	& $20.72$ \\
-			 					 			% & bSVD  & $3.16$ 	& $4.53$ 	& $8.80$ 	& $54.32$ \\
+			 					 			% & bSVD  & $3.16$ 	& $4.53$ 	& $8.80$ 	& $54.32$ \\ %results with delay
 		\end{tabular}
 		\label{tab:resultsSim}
 	\end{table}
