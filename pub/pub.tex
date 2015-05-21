@@ -362,8 +362,8 @@ Consider the solute transport equation (\ref{eq:conteqlocal}), and rewrite it as
 	\frac{\partial c}{\partial t} + \frac{q}{\phi} \cdot \nabla c = \frac{(c_{so}-c)Q_{so}}{\phi }.
 	\label{eq:conteqlocal3}
 \end{equation}
-where we used \eqref{eq:syntcontsimp2} and $Q = Q_{so} + Q_{si}$.
-We follow the method of characteristics and convert from Eulerican coordinates $(x,t)$ to fixed Lagrangian coordinates $(x_0,t_0)$, which correspond to the beginning of a streamline. The parameterization parameter for the streamline emerging at $(x_0,t_0)$ is denoted by $s$. 
+for a nonzero $\phi$, and where we used \eqref{eq:syntcontsimp2} and $Q = Q_{so} + Q_{si}$.
+We follow the method of characteristics and convert from Eulerican coordinates $(x,t)$ to Lagrangian coordinates $(x_0,t)$, where $x_0$ corresponds to the beginning of a streamline for $t = t_0$. The parameterization parameter for the streamline emerging at $(x_0,t_0)$ is denoted by $s$. 
 Substituting $x = x(s)$, $t=t(s)$ and denoting $c(s):=c(x(s),t(s))$, $\Qso(s):=Q_{so}(x(s))$, $\phi(s):=\phi(x(s))$ and $c_a(s):=c_a(t(s))$  yields the following system of ODEs \cite{evans98}:
 \begin{subequations}
 	\label{eq:ODEs}
@@ -387,17 +387,30 @@ Equation \eqref{eq:ODEC}, which governs the behaviour along the streamline, has 
 	c(s) = \int_{0}^{s} e^{-(R(s)-R(v))}c_{so}(v)\frac{\Qso(v)}{\phi(v)} \diff v.
 \end{equation}
 Here $R(v)=\int_{0}^v\Qso(x(u))/\phi(x(u)) d u$.
-We can interpret $R(v)$ as the amount of contrast agent which is accumulated within the source field $\Omega_{so}$ while a particle moves through the source field.
+We can interpret $R(v)$ as the amount of contrast agent which is accumulated within the source field $\Omega_{so}$ while a particle moves through the source field.\textcolor{red}{Can we? There is no contrast involved in R(v). I think its rather accumulation of flow}
 %Since in our setting $Q_{so}(x)=\qi$ for $x \in B_\epsilon$ and $Q_{so}(x)=0$ for $x \notin B_\epsilon$,  we find that $R(v)$ is constant if $v$ is bigger then some (streamline-dependent) threshold.
 If we now assume that the source volume $\Omega_{so}$ is small, the particle is not accumulating tracer.
 \textcolor{red}{Hmm, in this case I interpret \eqref{eq:Sol} the following way: If $\Omega_{so}$ is small, it holds that $R(s) = k$ for all $s$ which are bigger than some $s_0$ (if the particle has left the source-field after timepoint $s_0$, no additional tracer is accumulated). In this case the exponential term becomes $e^{-(k-R(v))}$ for all $s>s_0$. This means that for $v>s_0$ the exponential term will become $1$ and the rest of the integral will become $0$, since $\Qso(v)=0$. Hence it holds that $c(s) = k_2$ for all $s>s_0$ and for some constant $k_2>0$. The case considered below corresponds to $\Qso(x) = Q_a$ for all $x \in \Omega$, since in this case $R(v) = Q_av$.}
-Backpropagating $C = c \phi$, emphasising the dependency on $x_0$, and further assuming that $Q_{so}$ and $\phi$ are constant within $\Omega_{so}$, and $Q_{so}$ is nonzero outside $\Omega_{so}$, results in
+
+The integral \eqref{eq:Sol} can be written as
+\begin{equation}\label{eq:Sol2}
+	c(t) = \int_{0}^{t_1} e^{-(R(t_1)-R(s))}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s.
+\end{equation}
+Later time points will not contribute since here $Q_{so} = 0$ at these locations. 
+Denote the mean transit time as $T := \phi/ Q_{so}$, and use the assumption of constant source term within $\Omega_{so}$, such that 
+\begin{equation}\label{eq:Sol3}
+	c(t) = \int_{0}^{t_1} e^{-(t_1-s)/T}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s.
+\end{equation}
+Now, let the source field $Q_{so}$ be positive everywhere within $\Omega$, such that $\Omega_{so} = \Omega$, 
+\begin{equation}\label{eq:Sol4}
+	c(t) = \int_{0}^{t} e^{-(t-s)/T}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s.
+\end{equation}
+Backpropagating $C = c \phi$, emphasising the dependency on $x_0$ results in
 \begin{equation}
 C(x_0,t) = Q_{so}(x_0) \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds
 \label{eq:Cpdeclassic}
 \end{equation}
-for the mean transit time $T := \phi(x_0) / Q_{so}(x_0)$.
-A comparison with (\ref{eq:classicalperf}) shows that these expressions are equal provided $Q_a \rightarrow Q_{so}$ and $c_{so} \rightarrow c_{a}$. Thus, we have shown that the classical model is equivalent to a (voxelwise) field model for tracer transport in accordance with the following: (i) The computed perfusion $Q_a$ is the volume flux along the streamline at the \textit{inlet}, within $\Omega_{so}$, and not within the voxel itself. (ii) The arterial input concentration $c_a$ is identical to the concentration at the source of $\Omega$. Observation (ii) is unproblematic since it is in agreement with the understanding of $c_a$. However, observation (i) implies that the computed perfusion along the streamlines will be constant, and hence, computing the voxel wise perfusion for all voxels lying on the streamlines will over-estimate the perfusion with a factor proportional with the streamline length. From this observation we can predict that applying the classical model voxel wise will over-estimate perfusion within an arbitrary domain $\Omega$. On the other hand, computing the perfusion for any cross-section perpendicular to the streamlines within $\Omega$ and taking the average, would provide the correct perfusion of the domain as a whole.
+A comparison with (\ref{eq:classicalperf}) shows that these expressions are equal provided $Q_a \rightarrow Q_{so}$ and $c_{so} \rightarrow c_{a}$. Thus, we have shown that the classical model is equivalent to a (voxelwise) field model for tracer transport in accordance with: (i) The source term must be positive everywhere in the domain, such that $\Omega_{so} = \Omega$. This is equivalent to having an arterial input which is equal for all sub-units, which is generally not correct in a real-world scenario. (ii) The source term and the porosity must be constant within entire $\Omega_{so}$. Constant porosity is reasonable to assume, but constant source term is challenging since it assumes that (i) is fulfilled.
 
 
 %Integrating over $\Omega$ on both sides of (\ref{eq:Cpdeclassic}), and defining the average concentration $\overline{C}(t):= \frac{1}{|\Omega|}\int_{\Omega}C(x_0,t)dx$, 
