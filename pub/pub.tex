@@ -355,99 +355,53 @@ Both CBV and $\phi$ describe the relative fluid volume of a control volume, and 
 	Following \cite{evans98}, equation \eqref{eq:conteqlocal} admits a unique local solution.
 
 
+
+	%--------------------------------------------------
+	% Subsection: Converting Flow to Perfusion
+	%--------------------------------------------------
 \subsection{Relating the transport equation model with the classical deconvolution model for perfusion}
-\label{sec:relating}
-Consider the solute transport equation (\ref{eq:conteqlocal}), and rewrite it as
-\begin{equation}
-	\frac{\partial c}{\partial t} + \frac{q}{\phi} \cdot \nabla c = \frac{(c_{so}-c)Q_{so}}{\phi }.
-	\label{eq:conteqlocal3}
-\end{equation}
-for a nonzero $\phi$, and where we used \eqref{eq:syntcontsimp2} and $Q = Q_{so} + Q_{si}$.
-We follow the method of characteristics and convert from Eulerican coordinates $(x,t)$ to Lagrangian coordinates $(x_0,t)$, where $x_0$ corresponds to the beginning of a streamline for $t = t_0$. The parameterization parameter for the streamline emerging at $(x_0,t_0)$ is denoted by $s$. 
-Substituting $x = x(s)$, $t=t(s)$ and denoting $c(s):=c(x(s),t(s))$, $\Qso(s):=Q_{so}(x(s))$, $\phi(s):=\phi(x(s))$ and $c_a(s):=c_a(t(s))$  yields the following system of ODEs \cite{evans98}:
-\begin{subequations}
-	\label{eq:ODEs}
-	\begin{alignat}{2}
-		c'(s) + \frac{\Qso(s)}{\phi(s)}c(s) &= \frac{c_{so}(s)\Qso(s)}{\phi(s)}, & \quad c(0) &= 0 \label{eq:ODEC} \\
-		x'(s) &= \frac{q(s)}{\phi(s)}, &x(0) &= x_0 \label{eq:ODEx}\\
-		t'(s) &= 1,     &t(0) &= t_0, \label{eq:ODEt}
-	\end{alignat}
-\end{subequations}
-The notation $c'(s)$ refers to the total derivative (material derivative) of $c$ with respect to the parameterisation $s$.
-The solution variable $c(s)$ can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and where $(x(s),t(s))$ is the wavefront at artificial time point $s$. 
-% Let the source term be non-zero within the ball $B_\epsilon$ and zero elsewhere. 
-%Since contrast-agent is only created in the source, we need to study the problem on streamlines passing through this ball.
-%In order to do this, we place a small ball with radius $\delta$ with $\delta << \epsilon$ in the middle of the source. 
-%We can now study the solution along streamlines starting at $\partial B_\delta$, the boundary of $B_\delta$ (cf. Fig. \ref{fig:SourceSink}). 
-%Letting $\delta \to 0$, we see that the streamlines connecting to $\partial B_\delta$ fill whole $\Omega$.
-%Hence we conclude that if we know the solution on $\partial B_\delta$ we know the solution everywhere in $\Omega$. 
+	\label{sec:relating}
+	Consider the solute transport equation (\ref{eq:conteqlocal}), and rewrite it as
+	\begin{equation}
+		\frac{\partial c}{\partial t} + \frac{q}{\phi} \cdot \nabla c = \frac{(c_{so}-c)Q_{so}}{\phi }.
+		\label{eq:conteqlocal3}
+	\end{equation}
+	for a nonzero $\phi$, and where we used \eqref{eq:syntcontsimp2} and $Q = Q_{so} + Q_{si}$.
+	We follow the method of characteristics and convert from Eulerian coordinates $(x,t)$ to Lagrangian coordinates $(x_0,t_0,s)$.
+	Here $(x_0,t_0)$ corresponds to the beginning of a streamline at point $x_0$ timepoint $t_0$. 
+	The parameterization parameter for the streamline emerging at $(x_0,t_0)$ is denoted by $s$. 
+	Substituting $x = x(s)$, $t=t(s)$ and denoting $c(s):=c(x(s),t(s))$, $\Qso(s):=Q_{so}(x(s))$, $\phi(s):=\phi(x(s))$ and $c_a(s):=c_a(t(s))$  yields the following system of ODEs \cite{evans98}:
+	\begin{subequations}
+		\label{eq:ODEs}
+		\begin{alignat}{2}
+			c'(s) + \frac{\Qso(s)}{\phi(s)}c(s) &= \frac{c_{so}(s)\Qso(s)}{\phi(s)}, & \quad c(0) &= 0 \label{eq:ODEC} \\
+			x'(s) &= \frac{q(s)}{\phi(s)}, &x(0) &= x_0 \label{eq:ODEx}\\
+			t'(s) &= 1,     &t(0) &= t_0, \label{eq:ODEt}
+		\end{alignat}
+	\end{subequations}
+	The notation $c'(s)$ refers to the total derivative (material derivative) of $c$ with respect to the parameterisation $s$.
+	The solution variable $c(s)$ can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and where $(x(s),t(s))$ is the wavefront at artificial time point $s$. 
 
-Equation \eqref{eq:ODEC}, which governs the behaviour along the streamline, has the general solution
-\begin{equation}\label{eq:Sol}
-	c(s) = \int_{0}^{s} e^{-(R(s)-R(v))}c_{so}(v)\frac{\Qso(v)}{\phi(v)} \diff v.
-\end{equation}
-Here $R(v)=\int_{0}^v\Qso(x(u))/\phi(x(u)) d u$.
-We can interpret $R(v)$ as the amount of contrast agent which is accumulated within the source field $\Omega_{so}$ while a particle moves through the source field.\textcolor{red}{Can we? There is no contrast involved in R(v). I think its rather accumulation of flow}
-%Since in our setting $Q_{so}(x)=\qi$ for $x \in B_\epsilon$ and $Q_{so}(x)=0$ for $x \notin B_\epsilon$,  we find that $R(v)$ is constant if $v$ is bigger then some (streamline-dependent) threshold.
-If we now assume that the source volume $\Omega_{so}$ is small, the particle is not accumulating tracer.
-\textcolor{red}{Hmm, in this case I interpret \eqref{eq:Sol} the following way: If $\Omega_{so}$ is small, it holds that $R(s) = k$ for all $s$ which are bigger than some $s_0$ (if the particle has left the source-field after timepoint $s_0$, no additional tracer is accumulated). In this case the exponential term becomes $e^{-(k-R(v))}$ for all $s>s_0$. This means that for $v>s_0$ the exponential term will become $1$ and the rest of the integral will become $0$, since $\Qso(v)=0$. Hence it holds that $c(s) = k_2$ for all $s>s_0$ and for some constant $k_2>0$. The case considered below corresponds to $\Qso(x) = Q_a$ for all $x \in \Omega$, since in this case $R(v) = Q_av$.}
+	Equation \eqref{eq:ODEC}, which governs the behaviour along the streamline, has the general solution
+	\begin{equation}\label{eq:Sol}
+		c(x(s),t(s)) = \int_{0}^{s} e^{-(R(s)-R(v))}c_{so}(v)\frac{\Qso(v)}{\phi(v)} \diff v.
+	\end{equation}
+	where $R(v)=\int_{0}^v\Qso(x(u))/\phi(x(u)) d u$.
 
-The integral \eqref{eq:Sol} can be written as
-\begin{equation}\label{eq:Sol2}
-	c(t) = \int_{0}^{t_1} e^{-(R(t_1)-R(s))}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s.
-\end{equation}
-Later time points will not contribute since here $Q_{so} = 0$ at these locations. 
-Denote the mean transit time as $T := \phi/ Q_{so}$, and use the assumption of constant source term within $\Omega_{so}$, such that 
-\begin{equation}\label{eq:Sol3}
-	c(t) = \int_{0}^{t_1} e^{-(t_1-s)/T}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s.
-\end{equation}
-Now, let the source field $Q_{so}$ be positive everywhere within $\Omega$, such that $\Omega_{so} = \Omega$, 
-\begin{equation}\label{eq:Sol4}
-	c(t) = \int_{0}^{t} e^{-(t-s)/T}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s.
-\end{equation}
-Backpropagating $C = c \phi$, and emphasising the dependency of $x_0$ results in
-\begin{equation}
-C(x_0,t) = Q_{so}(x_0) \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds
-\label{eq:Cpdeclassic}
-\end{equation}
-A comparison with (\ref{eq:classicalperf}) shows that these expressions are equal provided $Q_a \rightarrow Q_{so}$ and $c_{so} \rightarrow c_{a}$. Thus, we have shown that the classical model is equivalent to a (voxelwise) field model for tracer transport in accordance with: (i) The source term must be positive everywhere in the domain, such that $\Omega_{so} = \Omega$. This is equivalent to having an arterial input which is equal for all sub-units, which is generally not the situation in a real-world scenario. (ii) The source term and the porosity must be constant within entire $\Omega_{so}$. Constant porosity is reasonable to assume, but constant source term is challenging since it requires (i) to be fulfilled. (iii) The arterial input $c_a$ in the classical formulation must be in accordance with Lagrangian coordinates be interpreted as the arterial input experienced by a fluid particle located at $x(t)$ while propagating through the domain.
-
-
-%Integrating over $\Omega$ on both sides of (\ref{eq:Cpdeclassic}), and defining the average concentration $\overline{C}(t):= \frac{1}{|\Omega|}\int_{\Omega}C(x_0,t)dx$, 
-%\begin{equation}
-%\overline{C}(t) = \frac{1}{|\Omega|}\int_{\Omega} Q_{so}(x_0)  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
-%\label{eq:Cpdeclassicroi}
-%\end{equation}
-%Since $Q_{so}(x_0)$ is only nonzero across $B_\epsilon$ we can write
-%\begin{equation}
-%\overline{C}(t) = \frac{1}{|\Omega|}\int_{B_\epsilon} Q_{so}(x_0)  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
-%\label{eq:Cpdeclassicroitemp}
-%\end{equation}
-%For a constant source flow $\tilde{Q}_{so}$ within $B_\epsilon$, $\tilde{Q}_{so} = Q(x_0), x_0 \in B_\epsilon$, this is equivalent to
-%\begin{equation}
-%\overline{C}(t) = \frac{\tilde{Q}_{so}}{|\Omega|}\int_{B_\epsilon}  \int_{0}^t e^{-(t - s)/T}c_{so}(x_0,s) ds dx
-%\label{eq:Cpdeclassicroitemp}
-%\end{equation}
-%Further, for a content arterial input concentration $\tilde{c}_{so}(t)$ across $B_\epsilon$, $\tilde{c}_{so}(t) := c(x_0,t), x_0 \in B_\epsilon$ we can write
-%\begin{equation}
-%\overline{C}(t) = \frac{\tilde{Q}_{so} |B_\epsilon|}{|\Omega|}  \int_{0}^t e^{-(t - s)/T}\overline{c}_{so}(s) ds
-%\label{eq:Cpdeclassicroitemp}
-%\end{equation}
-%This is recognized as the total perfusion $P = \overline{Q}_{so}|B_\epsilon|/|\Omega|$, which is the total source flow divided by the total distributing domain $|\Omega|$. Hence, we can state that the averaging PDE model is consistent with
-%\begin{equation}
-%\overline{C}(t) = P \int_{0}^t e^{-(t - s)/T}\overline{c}_{so}(s) ds,
-%\label{eq:Cpdeclassicroitemp}
-%\end{equation}
-%This expression is identical to the classical model in (\ref{eq:Cconv}) for $\Omega$ as the averaging domain and by taking $c_{so}(t) = c_a(t)$.
-%
-%Thus, we have in this section formally proven that the classical model for perfusion is correct when applying $\Omega$ as the averaging domain. On the other hand, applying the same model voxel wise will lead to an over-estimation of the perfusion, with a scaling factor growing along with the streamline length.
+	We now impose the additional assumptions that $\Qso$ and $\phi$ are constant along the streamline up to timepoint $t$.
+	Following the path of a particle emerging at timepoint $t_0=0$ and using that in this case $t=s$ from \eqref{eq:ODEt}, one can see that \eqref{eq:Sol} becomes
+	\begin{equation}\label{eq:Cpdeclassic}
+		C(x(t),t) = \Qso \int_{0}^t e^{-(t - s)/T}c_{so}(s) \diff s
+	\end{equation}
+	where $T := \Qso/\phi$ and $C = c \phi$.
+	A comparison with \eqref{eq:classicalperf} shows that these expressions are equal provided $Q_a = Q_{so}$ and $c_{so} = c_{a}$.
+	We can interpret \eqref{eq:Cpdeclassic} as a so-called Lagrangian description of the the concentration of CA at a wave-front moving through a constant source-field, where at every voxel there is contribution of an arterial input.
+	Note that in contrast \eqref{eq:classicalperf} is a Eulerian description of contrast agent at a fixed point in space.
 
 
 	%--------------------------------------------------
+	% Subsection: Relating the classical Method and the Digital Phantom
 	%--------------------------------------------------
-	% Section: Relating the classical and the synthetic model
-	%--------------------------------------------------
-	%--------------------------------------------------	
 	\subsection{Relating the Classical Method and the Digital Phantom}\label{sec:relation}
 	
 	In order to test the standard models for their abilities to restore CBF and CBV, we need to convert the flux $q$ with units \si{\siq} to perfusion $\Perf$ with units \si{\siQmm}. 
@@ -813,7 +767,8 @@ From the porous media model, streamlines were found from tracking of the flux ve
 	
 	Considering the data set created from the transport equation, $C_T(x,t)$, the results presented in Table \ref{tab:resultsSim} indicate low errors or $RE \leq 2.6 \%$ of both the MS and the bSVD model for restoration of the perfusion when applied to the entire domain. Using an arterial input function valid for the region as a whole is in agreement with physical assumptions required to derive the theory for classical models. Thus, these results support the usage of classical compartment models for whole organs with only one inlet and one outlet. 
 
-However, the reconstruction of perfusion using MS and bSVD fails to a large extend with relative errors up to $859 \%$ for other block sizes that the entire domain, the error  apparently increasing for smaller block size. This observation of over-estimation indicates that classical models for reconstructing perfusion are not valid for a situation where the global arterial input is not the correct arterial input for each of the smaller computational units. These results are also supported by the analytical analysis in Section \ref{sec:relating}, stating that the computed voxel wise perfusion computed by classical deconvolution methods is the actual perfusion at the arterial input, and not in the voxel itself. The observed over-estimation of perfusion is also predicted by the theoretical analysis, stating that the perfusion will be over-estimated with a factor proportional to the length of the streamlines. 
+However, the reconstruction of perfusion using MS and bSVD fails to a large extend with relative errors up to $859 \%$ for other block sizes that the entire domain, the error  apparently increasing for smaller block size. This observation of over-estimation indicates that classical models for reconstructing perfusion are not valid for a situation where the global arterial input is not the correct arterial input for each of the smaller computational units. These results are also supported by the analytical analysis in Section \ref{sec:relating}, stating that in the continuous context classical models are describing CA propagation for the Lagrangian setting, whereas classical models are typically applied in an Eulerian setting. \textcolor{red}{I'll think about this in more detail during the weekend.}
+The observed over-estimation of perfusion is also predicted by the theoretical analysis in Sec. \ref{sec:flux2perf}, stating that the perfusion will be over-estimated with a factor proportional to the length of the streamlines. 
 %Thus, in principle, one could apply the classical methods, and scale the resulting perfusion map by the streamline length. 
 %In such situation, assumptions of the classical models are violated as the arterial input will be dispersed in unpredictable ways on the way from the inlet to the computational unit.
 
