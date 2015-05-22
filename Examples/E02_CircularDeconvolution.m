@@ -13,8 +13,8 @@ clc;
 close all;
 
 %setup which flow-calculation to use
-indicatorcalc = 'conv';
-% indicatorcalc = 'pde';
+% indicatorcalc = 'conv';
+indicatorcalc = 'PDE';
 
 
 
@@ -25,16 +25,17 @@ trueFlow = 'perfusion';
 
 
 %which results to show?
-showFlowMaps       = 1;
-showMultipleCurves = 1; %remember to setup indices idxiD and idxjD
-showSingleCurve    = 1;
-writeImage         = 1;
-saveData           = 1;
+showFlowMaps       = 0;
+showMultipleCurves = 0; %remember to setup indices idxiD and idxjD
+showSingleCurve    = 0;
+writeImage         = 0;
+saveData           = 0;
+saveSingleCurve    = 1;
 
 
 %setup area where to run the deconvolution
-idxi  = (1:64);
-idxj  = (1:64);
+idxi  = (50:50);
+idxj  = (50:50);
 
 
 %setup oscillation index OI
@@ -60,7 +61,7 @@ foldername        = './results/';
 %setup paths
 pathloadFlow = [foldername,'synt-createflowTPFA-' basenameFlow '.mat'];
 switch indicatorcalc
-    case 'pde'
+    case 'PDE'
         pathload = [foldername,'synt-createindicatorpde-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
     case 'conv'
         pathload = [foldername,'syntconv-createindicatorconv-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
@@ -154,17 +155,6 @@ close(h);
 
 
 
-%% setup integration vector
-
-%get vector for integration
-e  = timeline(2:end)-timeline(1:end-1);
-Av = spdiags(1/2*ones(k,2),[0,1],k-1,k);
-e  = e'*Av; e=e(:);
-
-
-
-
-
 
 %% show results
 
@@ -252,6 +242,52 @@ if showMultipleCurves
     title(sprintf('True C'))
     
 end
+
+%% save single curve
+
+
+if saveSingleCurve
+    
+    
+    %setup squeeze function
+    s = @(v) squeeze(v(:));    
+    
+    %position of single curve
+    pos = [50,50];
+%     pos = randi(m(1),2,1);
+    
+    %get the stuff
+    corig = s(Clow(pos(1),pos(2),:));
+    cest  = s(Cest(pos(1),pos(2),:));
+    iest  = s(s(Iest(pos(1),pos(2),:)));
+    
+    %double-check
+    tau   = timelineLow(2)-timelineLow(1);
+    ctest = conv(AIFlow,iest);
+    ctest = tau*ctest(1:k);
+
+
+    figure(3);clf;
+    plot(timelineLow,corig,timelineLow,ctest,'LineWidth',3);
+    legend('Measured C','Model Approximation of C');
+    xlabel('Time (s)')
+    ylabel('Concentration (mol/l)')
+    set(gca,'FontSize',15)
+
+    export_fig ./figs/C-and-Crec-PDE.eps -transparent
+
+    pause(1);
+    
+    figure(3);clf;
+    plot(timelineLow,iest(1:k),'LineWidth',3);
+    xlabel('Time (s)')
+    legend('I')
+    set(gca,'FontSize',15)
+
+    export_fig ./figs/Irec-PDE.eps -transparent    
+    
+end
+
 
 
 

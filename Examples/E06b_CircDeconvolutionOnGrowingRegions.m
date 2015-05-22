@@ -387,7 +387,7 @@ end
 
 %%
 
-saveSingleCurve = 1;
+saveSingleCurve = 0;
 if saveSingleCurve
     
     

@@ -29,13 +29,13 @@ trueFlow = 'perfusion';
 
 
 %which results to show?
-showFlowMaps       = 0;
-writeImage         = 1;
+showFlowMaps       = 1;
+writeImage         = 0;
 showPartition      = 0;
 
 
 %setup size of blocks to run the deconvolution on
-blockSize = 1*[1,1];
+blockSize = 10*[1,1];
 
 
 
@@ -237,6 +237,9 @@ if showFlowMaps
     caxis([0,1]);
     axis image;
     title('Relative Error in Flows |Fest-Ftrue|/Ftrue')
+    
+    medianRE = median(REMap(:));
+    fprintf('medianRE: %1.4f\n',medianRE);
 
 end
 

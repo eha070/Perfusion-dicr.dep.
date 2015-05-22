@@ -17,13 +17,14 @@ close all;
 
 
 %setup which flow-calculation to use
-% indicatorcalc = 'conv';
 indicatorcalc = 'conv';
+% indicatorcalc = 'PDE';
 
 
 %setup oscillation index OI
-OI = .0005; %for PDE;
-% OI = .001; %for CONV;
+% OI = .0005; %for PDE;
+OI = .001; %for conv;
+OI = .001; %for conv;
 
 
 %prepare downsampling of data (shorter runtime for SVD)
@@ -167,17 +168,17 @@ if saveImage
     legend('I')
     set(gca,'FontSize',15)
     
-    export_fig ./figs/Irec-conv.eps -transparent
+    export_fig ./figs/Irec.eps -transparent
     
 
     figure(3);clf;
     plot(timelinelow,Cav,timelinelow,Crec,'lineWidth',3);
     xlabel('Time (s)')
-    ylabel('Concentration (mmol/mm^3)')
+    ylabel('Concentration (mol/l)')
     legend('C','Model Approximation of C')
     set(gca,'FontSize',15)
 
-    export_fig ./figs/C-and-Crec-conv.eps -transparent
+    export_fig ./figs/C-and-Crec.eps -transparent
      
 end
     

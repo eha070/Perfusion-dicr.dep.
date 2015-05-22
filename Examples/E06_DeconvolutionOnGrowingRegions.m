@@ -17,8 +17,8 @@ close all;
 
 
 %setup which flow-calculation to use
-% indicatorcalc = 'conv';
-indicatorcalc = 'PDE';
+indicatorcalc = 'conv';
+% indicatorcalc = 'PDE';
 
 
 
@@ -36,7 +36,7 @@ showPartition      = 0;
 
 
 %setup size of blocks to run the deconvolution on
-blockSize = [5,5];
+blockSize = [1,1];
 
 
 %setup oscillation index OI

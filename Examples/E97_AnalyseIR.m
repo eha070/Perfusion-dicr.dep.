@@ -36,6 +36,7 @@ OI = .5; %play with it!
 
 % settings
 prm               = settings;
+prm.aiftype       = 'delta';
 basenameindicator = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim','aiftype','T');
 basenameFlow      = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
 foldername        = './results/';
@@ -135,7 +136,7 @@ if renewCalculation
 end
 
 
-
+return;
 %% results for a single voxel
 
 if showSingleCurve
@@ -177,9 +178,10 @@ if playground
     E        = load(pathnameGamma);    
     
     %different values for indices
-    idx = [1,1];
-    % idx = [35,50]; p0 = [1.8e-4;3.2;1];
-    % idx = [60,40]; p0 = [5e-5;6;1];
+%     idx = [1,1];
+%     idx = [35,50]; p0 = [1.8e-4;3.2;1];
+%     idx = [60,40]; p0 = [5e-5;6;1];
+    idx = randi([1,64],1,2)
 
     % get CDelta, IDelta
     CDelta = squeeze(Cmat(idx(1),idx(2),:));
@@ -201,18 +203,18 @@ if playground
 
     %do the job voxelwise
     CGamma = squeeze(E.Cmat(idx(1),idx(2),:));
-    [F,IGamma] = perfusion1c.linearDeconvolution(CGamma,timeline,OI,U,S,V);
+    [F,IGamma,Crec] = perfusion1c.linearDeconvolution(CGamma,timeline,OI,U,S,V);
 
 
     %get scaling factor
-    sfac = max(IGamma)/max(IDelta);
+    sfac = max(IGamma)/max(IDelta)
     
     %show results
     figure(1);clf;
-    plot(timeline,IGamma,timeline,IDelta*sfac)
+    plot(timeline,IGamma,timeline,IDelta)
     legend('IGamma','IDelta');
    
-    norm(IGamma-IDelta*sfac)/norm(IGamma)
+    norm(IGamma-IDelta)/norm(IGamma);
     
     % compare the integrals;
     Av = spdiags(ones(k,2),[0,1],k-1,k);

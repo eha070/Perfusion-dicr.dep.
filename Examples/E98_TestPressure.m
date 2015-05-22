@@ -80,16 +80,22 @@ GRADx = kron(D2,id(1));
 
 
 %% calculate -K/mu*\Delta u and visualize results
+p = pmat(:);
+voxelvol = hd;
+
 f = -K/mu*(LAP*p);
 f = reshape(f,m);
 
 % Convert from m^3/s/m^3 to m^3/s which are the units of Fmat
 f = f*voxelvol;
 
+%get surface for normalization. In our case it is isotropic
+Ay = h(2)*h(3);
+Ax = h(1)*h(3);
 
 %compare flow as well
-qTest{1} = voxelvol*reshape(-GRADy*p,m(1)+1,m(2));
-qTest{2} = voxelvol*reshape(-GRADx*p,m(1),m(2)+1);
+qTest{1} = reshape(GRADy*p*Ay,m(1)+1,m(2))*(-K/mu);
+qTest{2} = reshape(-GRADx*p*Ax,m(1),m(2)+1)*(-K/mu);
 
 
 

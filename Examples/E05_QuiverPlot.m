@@ -12,7 +12,6 @@
 
 
 
-clear;
 clc;
 close all;
 
@@ -22,7 +21,7 @@ vectorFieldAndSinks = 0;
 
 
 %% setup data
-
+%{
 %prepare pathnames
 prm          = settings;
 basenameFlow = perfusion1c.struct2nameIndicator(prm,'phiopt','Kopt','dim');
@@ -38,7 +37,7 @@ load(pathloadFlow);
 %setup domain
 omega = [0,1,0,1];
 m     = size(pmat);
-
+%}
 
 %% convert flow
 
@@ -62,12 +61,12 @@ if plotVectorField2D
     
     %create a a semi-circle with radius epsilon from -(n-1)/n*pi + pi/4:
     %(n-1)/n*pi + pi/4 where to start the k streamlines
-    k                 = 100; %number of streamlines
-    n                 = 4;
+    nStream           = 100; %number of streamlines
+    eStream           = 4;
     epsilon           = .03;    
-    streamStart       = -(n-1)/n*pi - pi/4;
-    streamStop        = (n-1)/n*pi - pi/4;
-    [streamx,streamy] = pol2cart(linspace(streamStart,streamStop,k),epsilon); 
+    streamStart       = -(eStream-1)/eStream*pi - pi/4;
+    streamStop        = (eStream-1)/eStream*pi - pi/4;
+    [streamx,streamy] = pol2cart(linspace(streamStart,streamStop,nStream),epsilon); 
     
 	%this will be the new center of the semi-circle
     sourcex = epsilon + streamx;
@@ -86,8 +85,8 @@ if plotVectorField2D
 %     quiver(x(:),y(:),qx(:),-qy(:),10,'color',[0,0,0])
     quiver(x(:),y(:),qx(:),-qy(:),10)
 %     streamline(x,y,qx,-qy,streamx,streamy)
-    xlabel('cm');
-    ylabel('cm');
+    xlabel('mm');
+    ylabel('mm');
     set(gca,'FontSize',40);
     
     
@@ -100,7 +99,7 @@ end
 
 if plotStreamlines3D
     %number of timepoints to simulate
-    k = 100;
+    nStream = 100;
 
     %start-coordinates for the streamlines
     xstart = .1;
@@ -122,21 +121,21 @@ if plotStreamlines3D
     stepz = 20;
 
     %get 3D-flow
-    qx3D = repmat(qx,[1,1,k]);
-    qy3D = repmat(qy,[1,1,k]);
-    qz3D = ones([m,k]);
+    qx3D = repmat(qx,[1,1,nStream]);
+    qy3D = repmat(qy,[1,1,nStream]);
+    qz3D = ones([m,nStream]);
 
     %get meshgrid to plot qcc, the cell-centered flow
     ygv   = linspace(omega(2),omega(1),m(1)); %from (0 to 1)
     xgv   = linspace(omega(3),omega(4),m(2)); %this goes from (1 to 0) (matlab, duh)
-    zgv   = linspace(0,60,k);
+    zgv   = linspace(0,60,nStream);
     [x,y,z] = meshgrid(xgv,ygv,zgv);
 
 
     %downsample the vector-fields for display
     idxX = (1:stepxy:m(2));
     idxY = (1:stepxy:m(1));
-    idxZ = (1:stepz:k);
+    idxZ = (1:stepz:nStream);
 
     qxLow = qx3D(idxY,idxX,idxZ);
     qyLow = qx3D(idxY,idxX,idxZ);
@@ -190,15 +189,15 @@ if vectorFieldAndSinks
     ySink = sinky + dy;    
 
     %setup the coordinates to start k different streamlines
-    k       = 10;    
+    nStream       = 10;    
     
     %create a a semi-circle with radius epsilon from -(n-1)/n*pi - pi/4 to
     %(n-1)/n*pi - pi/4
-    n                 = 4;
+    eStream                 = 4;
     epsilon           = .03;    
-    streamStart       = -(n-1)/n*pi - pi/4;
-    streamStop        = (n-1)/n*pi - pi/4;
-    [streamx,streamy] = pol2cart(linspace(streamStart,streamStop,k),epsilon); 
+    streamStart       = -(eStream-1)/eStream*pi - pi/4;
+    streamStop        = (eStream-1)/eStream*pi - pi/4;
+    [streamx,streamy] = pol2cart(linspace(streamStart,streamStop,nStream),epsilon); 
     
     %shift the semi-circle
     streamx = streamx + sourcex;
