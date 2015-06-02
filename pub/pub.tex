@@ -18,10 +18,10 @@
 \newcommand{\CBV}{\mathrm{CBV}}
 \newcommand{\MTT}{\mathrm{MTT}}
 \newcommand{\cout}{c_{\mathrm{v}}}
-\newcommand{\Pa}{Q_{\mathrm{a}}}
-\newcommand{\Pout}{Q_{\mathrm{v}}}
-\newcommand{\Perf}{Q}
-\newcommand{\Perfn}{P}
+\newcommand{\Pa}{P_{\mathrm{a}}}
+\newcommand{\Pout}{P_{\mathrm{v}}}
+\newcommand{\Perf}{P}
+%\newcommand{\Perfn}{P}
 \newcommand{\Flow}{F}
 
 %define SI-units, since we want to be able to easily change them
@@ -79,7 +79,8 @@
 	\section{Introduction}
 	
 	Quantitative medical measurements based on tracer kinetic models is an important field both in research and in clinical practice \cite{zierler62,axel80,zierler00}. 
-	In the present work, we focus on mathematical models for estimating blood perfusion in the brain (cerebral blood flow, CBF) from contrast-enhanced dynamic MR 	imaging data. Still, the theory on tracer dynamics covered here will also be of relevance in general perfusion studies using other image modalities.
+	In the present work, we focus on mathematical models for estimating blood perfusion in the brain (cerebral blood flow, CBF) from contrast-enhanced dynamic imaging data. 
+	%Still, the theory on tracer dynamics covered here will also be of relevance in general perfusion studies using other image modalities.
 
 	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern MR technology and voxel based analysis give rise to aspirations about detailed perfusion maps with millimeter precision.  
 	Examples of estimated parameter maps are found in i.e.  \cite{Warwick2008, Arkink2012,White2012,Feng2013,Chen2011}. The quantitative perfusion maps (and other parameter maps arising from tracer kinetic modelling) can be combined with anatomical information, and the maps have proven to be of particular value in e.g. stroke studies for localization of trauma \missingsource. 
@@ -107,7 +108,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	The rest of this paper is arranged as follows: In Section \ref{sec:classical}, we outline classical methods for perfusion estimation and discuss two widespread solution methods. 
 	In Section \ref{sec:synthetic} we describe how a synthetic flow field in the capillary system can be modelled using simple models valid within porous media. 
 	We also discuss mathematical similarities between the flow field models and the classical theory outlined in Section \ref{sec:classical}. 
-	\textcolor{red}{Some missing sections here?}
+In Section \ref{sec:NumExp} we describe the numerical implementation of the porous media model as well as the indicator dilution.
 	In Section \ref{sec:conclusion} we evaluate the performance of classical models by applying them to the synthetic flow field. 
 	The results and concluding remarks are summarized in Section \ref{sec:conclusion}.
 	
@@ -128,7 +129,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	Another model for perfusion which has been used for restoring CBF and MTT is the so-called maximum slope model (MS) \cite{miles91,klotz99}.
 	The maximum slope model only considers early time points and it has been shown to exhibit advantages over the deconvolution model especially if uptake curves are degraded in the late phase \cite{abels10}.
 	However, since it relies on point-wise estimates, application to real data is nevertheless difficult and prone to noisy measurements.
-	Also, the maximum slope model inherently assumes that no outflow takes place when the AIF peaks (see Sec. \ref{sec:ms}).
+	Also, the maximum slope model inherently assumes that no outflow takes place when the AIF peaks (see Section \ref{sec:ms}).
 	This assumption is questionable for arbitrary, maybe pathological tissue.
 	
 
@@ -184,7 +185,7 @@ This more accurately mimics the nature of blood flow in the tissue.
 	%----------------------------------------------------------	
 %	\subsection{The Convolution Model for a Well-Mixed Compartment \textcolor{red}{Haven't we used this assumption earlier?}} \label{sec:comp}
 
-Both CBV and $\phi$ describe the relative fluid volume of a control volume, and they are therefore essentially equal. For simplicity we will use the short form notation $\phi$ in the mathematical arguments following.   If we make the assumption of $\Omega_i$ as a well-mixed compartment where $C(t) = \phi\cout(t)$ for a $0 \le \phi \le 1$, equation \eqref{eq:classicgeneral} reduces to the initial value problem
+Both CBV and $\phi$ describe the relative motile fluid volume of a control volume, and they are therefore essentially equal. For simplicity we will use the short form notation $\phi$ in the mathematical arguments following.   If we make the assumption of $\Omega_i$ as a well-mixed compartment where $C(t) = \phi\cout(t)$ for a $0 \le \phi \le 1$, equation \eqref{eq:classicgeneral} reduces to the initial value problem
 	\begin{align}
 		(\phi \cout)' &= \Pa \ca - \Pa \cout, \nonumber \\
 		\cout(0)&=0,
@@ -234,11 +235,11 @@ Both CBV and $\phi$ describe the relative fluid volume of a control volume, and 
 
 	
 %	Since the CA transport itself is driven mainly by blood flow, we will describe a simple model for the blood flow through capillary tissue in Section \ref{sec:flow}.
-	Within the porous capillary system we expect the blood flow to be driven mainly by pressure differences. We therefor also set up a PDE flow modell using the  continuity equations and Darcy's law \missingsource. Traditional tracer kinetic modelling is using volume normalized fluid flow with units [\si{\siQmm}] as a quantity to describe fluid transport. 
+	Within the porous capillary system we expect the blood flow to be driven mainly by pressure differences. We therefore also set up a PDE flow model using the  continuity equations and Darcy's law \cite{Darcy56}. Traditional tracer kinetic modelling is using volume normalized fluid flow with units [\si{\siQmm}] as a quantity to describe fluid transport. 
 	However, the concept of volume normalized fluid flow is discretization dependent, and for the current flow simulations we instead use vector valued surface fluid flux $q = q(x)$ with units [\si{\siq}], in agreement with geoscience and pours media simulation theory.
 	The fluid flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
 	A model to convert vector valued flux to scalar valued perfusion with units [\si{\siQmm}] will be introduced in Section \ref{sec:flux2perf}.
-	The tracer flux is assumed to be a product of the fluid flux and the CA concentration, $c(x,t)q(x)$ [\si{\siJ}].
+%	The tracer flux is assumed to be a product of the fluid flux and the CA concentration, $c(x,t)q(x)$ [\si{\siJ}].
 	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity in the fluid flux are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
 %	A detailed description of modeling of the blood flow can be found in Section \ref{sec:flow}.
 %	Another ingredient from porous media flow is the introduction of the porosity $\phi$ \si{\siphi} for $0 \le \phi \le 1$.
@@ -386,29 +387,28 @@ Both CBV and $\phi$ describe the relative fluid volume of a control volume, and 
 		\label{eq:conteqlocal3}
 	\end{equation}
 	for a nonzero $\phi$, and where we used \eqref{eq:syntcontsimp2} and $Q = Q_{so} + Q_{si}$.
-	We follow the method of characteristics and convert from Eulerian coordinates $(x,t)$ to Lagrangian coordinates $(x_0,t_0,s)$.
-	Here $(x_0,t_0)$ corresponds to the beginning of a streamline at point $x_0$ timepoint $t_0$. 
-	The parameterization parameter for the streamline emerging at $(x_0,t_0)$ is denoted by $s$. 
-	Substituting $x = x(s)$, $t=t(s)$ and denoting $c(s):=c(x(s),t(s))$, $\Qso(s):=Q_{so}(x(s))$, $\phi(s):=\phi(x(s))$ and $c_a(s):=c_a(t(s))$  yields the following system of ODEs \cite{evans98}:
+	We follow the method of characteristics and convert from Eulerian coordinates $(x(t),t)$ to Lagrangian coordinates $(x_0,t)$.
+	Here $(x_0,t_0)$ corresponds to the beginning of a streamline at point $x_0$ and timepoint $t_0$. 
+%	The parameterization parameter for the streamline emerging at $(x_0,t_0)$ is denoted by $s$. 
+	Substituting $x = x(t)$, and denoting $c(t):=c(x(t),t)$, $\Qso(t):=Q_{so}(x(t))$, $\phi(t):=\phi(x(t))$ and $c_a(t):=c_a(t)$  yields the following system of ODEs \cite{evans98}:
 	\begin{subequations}
 		\label{eq:ODEs}
 		\begin{alignat}{2}
-			c'(s) + \frac{\Qso(s)}{\phi(s)}c(s) &= \frac{c_{so}(s)\Qso(s)}{\phi(s)}, & \quad c(0) &= 0 \label{eq:ODEC} \\
-			x'(s) &= \frac{q(s)}{\phi(s)}, &x(0) &= x_0 \label{eq:ODEx}\\
-			t'(s) &= 1,     &t(0) &= t_0, \label{eq:ODEt}
+			\frac{Dc}{Dt} + \frac{\Qso(t)}{\phi(t)}c(t) &= \frac{c_{so}(t)\Qso(t)}{\phi(t)}, & \quad c(0) &= 0 \label{eq:ODEC} \\
+			x'(t) &= \frac{q(t)}{\phi(t)}, &x(0) &= x_0 \label{eq:ODEx}\\
 		\end{alignat}
 	\end{subequations}
-	The notation $c'(s)$ refers to the total derivative (material derivative) of $c$ with respect to the parameterisation $s$.
-	The solution variable $c(s)$ can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and where $(x(s),t(s))$ is the wavefront at artificial time point $s$. 
+	The notation $Dc/Dt$ refers to the total derivative (material derivative) of $c$ with respect to the parameterisation $t$.
+	The solution variable $c(t)$ can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and where $(x(t),t)$ is the wavefront at time point $t$. 
 
 	Equation \eqref{eq:ODEC}, which governs the behaviour along the streamline, has the general solution
 	\begin{equation}\label{eq:Sol}
-		c(x(s),t(s)) = \int_{0}^{s} e^{-(R(s)-R(v))}c_{so}(v)\frac{\Qso(v)}{\phi(v)} \diff v.
+		c(x(t),t) = \int_{0}^{t} e^{-(R(t)-R(s))}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s.
 	\end{equation}
-	where $R(v)=\int_{0}^v\Qso(x(u))/\phi(x(u)) d u$.
+	where $R(s)=\int_{0}^s\Qso(x(u))/\phi(x(u)) d u$.
 
 	We now impose the additional assumptions that $\Qso$ and $\phi$ are constant along the streamline up to timepoint $t$.
-	Following the path of a particle emerging at timepoint $t_0=0$ and using that in this case $t=s$ from \eqref{eq:ODEt}, one can see that \eqref{eq:Sol} becomes
+	Following the path of a particle emerging at timepoint $t_0=0$, one can see that \eqref{eq:Sol} becomes
 	\begin{equation}\label{eq:Cpdeclassic}
 		C(x(t),t) = \Qso \int_{0}^t e^{-(t - s)/T}c_{so}(s) \diff s
 	\end{equation}
@@ -448,7 +448,7 @@ Both CBV and $\phi$ describe the relative fluid volume of a control volume, and 
 
 	\begin{figure}[H]
 	    \centering
-	    \begin{overpic}[scale=0.5]{figs/perfusion-problem.eps}
+	    \begin{overpic}[scale=0.4]{figs/perfusion-problem.eps}
 	    	\put(11,67){\color{black}$F_0$}
 			\put(49,67){\color{black}$F_0$}
 			\put(85.0,66){\color{black}$\Delta F_0$}
@@ -601,8 +601,8 @@ Based on the field modes described in Section \ref{sec:synthetic}, we non establ
 	For simplicity the domain is discretized by a regular cartesian grid of size $n \times n$ with a regular cell-spacing $h$.
 	The proposed method may be extended for non-regular grids in an analogous fashion.	
 
-	To solve \eqref{eq:flowmodel} we used the two-point flux approximation finite volume method (TPFA) \missingsource. 
-	The transport equation \eqref{eq:conteqlocal} was solved by first order upwinding \cite{Patankar80} applied to \eqref{eq:conteq}.
+%	To solve \eqref{eq:flowmodel} we used the two-point flux approximation finite volume method (TPFA) \missingsource. 
+%	The transport equation \eqref{eq:conteqlocal} was solved by first order upwinding \cite{Patankar80} applied to \eqref{eq:conteq}.
 
 	%----------------------------------------------------------
 	% Subsection: Discretization of the singe phase flow model
@@ -780,7 +780,7 @@ From the porous media model, streamlines were found from tracking of the flux ve
 	Considering the data set created from the transport equation, $C_T(x,t)$, the results presented in Table \ref{tab:resultsSim} indicate low errors or $RE \leq 2.6 \%$ of both the MS and the bSVD model for restoration of the perfusion when applied to the entire domain. Using an arterial input function valid for the region as a whole is in agreement with physical assumptions required to derive the theory for classical models. Thus, these results support the usage of classical compartment models for whole organs with only one inlet and one outlet. 
 
 However, the reconstruction of perfusion using MS and bSVD fails to a large extend with relative errors up to $859 \%$ for other block sizes that the entire domain, the error  apparently increasing for smaller block size. This observation of over-estimation indicates that classical models for reconstructing perfusion are not valid for a situation where the global arterial input is not the correct arterial input for each of the smaller computational units. These results are also supported by the analytical analysis in Section \ref{sec:relating}, stating that in the continuous context classical models are describing CA propagation for the Lagrangian setting, whereas classical models are typically applied in an Eulerian setting. %\textcolor{red}{I'll think about this in more detail during the weekend.}
-The observed over-estimation of perfusion is also predicted by the theoretical analysis in Sec. \ref{sec:flux2perf}, stating that the perfusion will be over-estimated with a factor proportional to the length of the streamlines. 
+The observed over-estimation of perfusion is also predicted by the theoretical analysis in Section \ref{sec:flux2perf}, stating that the perfusion will be over-estimated with a factor proportional to the length of the streamlines. 
 %Thus, in principle, one could apply the classical methods, and scale the resulting perfusion map by the streamline length. 
 %In such situation, assumptions of the classical models are violated as the arterial input will be dispersed in unpredictable ways on the way from the inlet to the computational unit.
 
