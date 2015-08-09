@@ -114,3 +114,27 @@ end;
 
 % %get CBV
 % CBVrec = perfusion1c.cbvEstimation(Cav,timelinelow,AIFlow);
+
+function [data] = im2vec4D(varargin)
+
+f = varargin{1};
+dim = size(f);
+dim3 = dim(1:3);
+if nargin == 1
+    roi = ones(dim3);
+else
+    roi = varargin{2};
+end;
+
+nvox = sum(roi(:));
+
+% rearrange the data into vectors n x time
+ntime = size(f,4);
+data = zeros(nvox,ntime);
+
+for i = 1 : ntime    
+    datahere = f(:,:,:,i);
+    datahere = datahere(roi == 1);
+    data(:,i) = datahere(:);
+end;
+
