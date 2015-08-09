@@ -43,7 +43,7 @@ memorySave = true;
 %% load and prepare data (caution, might take a while)
 % {
 
-clearvars -except maskMode tRes sd fsize thres
+clearvars -except maskMode tRes sd fsize thres memorySave
 
 fprintf('Loading data...');tic;
 
@@ -169,15 +169,19 @@ end
 
 %% get uptake curves and convert to concentrations
 
+fprintf('Calculating concentrations...');tic;
 %convert to concentrations
-DConc   = reshape(D,n,k);
-DConc   = bsxfun(@minus,DConc,DConc(:,1));
+D   = reshape(D,n,k);
+DConc   = bsxfun(@minus,D,D(:,1));
 DConc(DConc<0) = 0;
+fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 
+fprintf('Calculating uptake curves...');tic;
 idxMask = (mask(:)~=0);
 C       = DConc(idxMask,:);
 ncurve  = size(C,1);
+fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 % scrollView(DConc,omega,m,3);
 % return;
@@ -185,9 +189,12 @@ ncurve  = size(C,1);
 
 
 %% get aif
+fprintf('Calculating aif curves...');tic;
 idxAIF = (maskAif(:)~=0);
 aif    = DConc(idxAIF,:);
 aif    = mean(aif,1);
+fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+
 
 if memorySave
     clear('DConc');
@@ -266,7 +273,6 @@ title('AIF');
 
 %% save results
 %{
-fpath = '/Volumes/Macintosh_home/check/Documents/data/CTP-Matlab/';
 fname = sprintf('%s_%ix%ix%i_mask-%s_sd-%1.1f_thres-%1.2f.mat',dataset,m(1),m(2),m(3),maskMode,sd,thres);
 sp
 save([fpath,fname],'-v7.3');
@@ -274,7 +280,6 @@ save([fpath,fname],'-v7.3');
 
 %% save CBF for mevislab
 
-fpath = '/Volumes/Macintosh_home/check/Documents/data/CTP-Matlab/';
 fname = sprintf('%s_PK_%ix%ix%i_mask-%s_sd-%1.1f_thres-%1.2f.nii',dataset,m(1),m(2),m(3),maskMode,sd,thres);
 
 PKParameters = cat(4,CBF,CBV);
