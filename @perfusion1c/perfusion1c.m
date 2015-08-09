@@ -39,6 +39,8 @@ classdef perfusion1c
       qcc = convertFlowStagToCC(qmat);
       F = maximumSlope(C,timeline,aif);
       CBV = cbvEstimation(C,timeline,aif);
+      [F,Irec,Crec] = circularDeconvolutionThres(C,timeline,thres,U,S,V);
+      [F,phi,Irec,Crec] = fastPerfusionAnalysis(C,aif,timeline,thres);
 
    end 
       

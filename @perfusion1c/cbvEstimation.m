@@ -1,4 +1,19 @@
-function CBV = cbvEstimation(C,timeline,aif) 
+function CBV = cbvEstimation(C,timeline,aif)
+%function CBV = cbvEstimation(C,timeline,aif)
+%
+% Calculates CBV for a single tissue curve as 
+%
+%   CBV = int(C)/int(aif).
+%
+%
+% 
+% REFERENCES:
+% [1] Sourbron: Classical Models in MR Perfusion
+%
+%
+%                                          (c)Constantin Heck, 09-Aug-2015 
+%                                                http://mic.uni-luebeck.de
+% ------------------------------------------------------------------------- 
 
 
 %setup main parameters
