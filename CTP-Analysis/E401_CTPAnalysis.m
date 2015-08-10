@@ -19,40 +19,45 @@ close all;
 
 %% settings
 
-%{
-%OK parameters for 128x128
+% {
+%Parameters for 128x128x80
+dataset  = 'D2';
+m        = [128,128,80];
 maskMode = 'head';  %mask where to do the deconvolution
 tRes     = .5;          %time resolution after interpolation
 sd       = 1;           %sd for prior smoothing
-fsize    = [3,3,3];   
+fsize    = [5,5,5];   
 thres    = .04;         %global threshold for svd
+memorySave = false;
+
 %}
 
 
 
-%OK parameters for 512x512
-maskMode = 'smallBox';      %mask where to do the deconvolution
+%parameters for 512x512x320
+%{
+dataset  = 'D2';
+m        = [512,512,320];
+
+maskMode = 'bigBox';      %mask where to do the deconvolution
 tRes     = .5;          %time resolution after interpolation
 sd       = 1;           %sd for prior smoothing
 fsize    = [5,5,5];   
 thres    = .04;         %global threshold for svd
 memorySave = true;
+%}
+
+
 
 
 
 %% load and prepare data (caution, might take a while)
 % {
 
-clearvars -except maskMode tRes sd fsize thres memorySave
-
 fprintf('Loading data...');tic;
 
 %setup main variables
-dataset  = 'D2';
-% m        = [128,128,80];
-m        = [512,512,320];
-k        = 24;
-
+k  = 24;
 n  = prod(m);
 mk = [m,k];
 
@@ -70,13 +75,13 @@ fid   = fopen([fpath,fname],'r');
 timeline = fscanf(fid,'%f');
 fclose(fid);
 
-
-
-% load aif
+% load mask for aif
 fname = sprintf('%s_maskAif_%ix%ix%i.mat',dataset,m(1),m(2),m(3));
 load([fpath,fname]);
 
 fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+
+
 
 
 
@@ -117,7 +122,6 @@ end
 
 
 
-%}
 
 
 %% generate mask
@@ -126,7 +130,7 @@ end
 switch maskMode
     case 'head'
         D1   = squeeze(D(:,:,:,1));
-        mask = (D1>-150);
+        mask = (D1>-150) & (D1<1000);
         
         if memorySave
             clear('D1');
@@ -163,46 +167,57 @@ end
         
 
 
-% scrollView(D(:,:,:,1),omega,m,3,'mask',mask);
 
-
+%% show something of the input data
+%{
+scrollView(data,omega,m,3,'name','Original Data','fig',1);
+scrollView(D,omega,m,3,'name','Smoothed data','fig',2);
+scrollView(D(:,:,:,1),omega,m,3,'mask',maskAif,'name','Smoothed data with AIF','fig',3);
+scrollView(D(:,:,:,1),omega,m,3,'mask',mask,'name','Smoothed data with mask','fig',4);
+%}
 
 %% get uptake curves and convert to concentrations
 
-fprintf('Calculating concentrations...');tic;
-%convert to concentrations
-D   = reshape(D,n,k);
-DConc   = bsxfun(@minus,D,D(:,1));
-DConc(DConc<0) = 0;
-fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+%reshape D to image-first
+D       = reshape(D,n,k);
 
 
-fprintf('Calculating uptake curves...');tic;
+%get uptake curves
+fprintf('Getting uptake curves...');tic;
 idxMask = (mask(:)~=0);
-C       = DConc(idxMask,:);
-ncurve  = size(C,1);
+tC      = D(idxMask,:);
+ncurve  = size(tC,1);
 fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
-% scrollView(DConc,omega,m,3);
-% return;
+%convert to concentrations
+fprintf('Calculating concentrations...');tic;
+C      = bsxfun(@minus,tC,tC(:,1));
+C(C<0) = 0;
+fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+
 
 
 
 %% get aif
 fprintf('Calculating aif curves...');tic;
 idxAIF = (maskAif(:)~=0);
-aif    = DConc(idxAIF,:);
-aif    = mean(aif,1);
+tAif    = D(idxAIF,:);
+tAif    = mean(tAif,1);
+aif    = tAif-tAif(1);
 fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 
 if memorySave
-    clear('DConc');
+    clear('tC','tAif');
 end
 
 %% interpolation to regulary spaced timeline
 
-disp('Starting interpolation....');tic;
+%reshape D to standard sizes
+D     = reshape(D,mk);
+
+
+fprintf('Starting interpolation....');tic;
 
 %new timeline
 timelineNew = (0:tRes:timeline(end));
@@ -228,17 +243,15 @@ end
 [F,phi,Irec,Crec] = perfusion1c.fastPerfusionAnalysis(CNew,aifNew,timelineNew,thres);
 
 
-%% show CBF and CBV
+%% calculate CBF and CBV
 
 
 CBF = zeros(m);
 CBF(idxMask) = F*100*60/sfac;
-scrollView(CBF,omega,m,3,'name','CBF in ml/min/100ml','fig',1);
 
 
 CBV = zeros(m);
 CBV(idxMask) = phi*100/sfac;
-scrollView(CBV,omega,m,3,'name','CBV in percent','fig',2);
 
 
 if memorySave
@@ -250,12 +263,11 @@ end
 
 nDisp = 1; %number of curves to plot
 
-
 %setup indices and a new, longer timeline for display
 idxRand      = randperm(ncurve,nDisp);
 timelineNewL = linspace(0,2*timeline(end),2*kNew);
 
-figure(2);clf;
+figure(1);clf;
 
 subplot(1,3,1);
 plot(timelineNewL,Irec(idxRand,:)');
@@ -271,7 +283,15 @@ plot(timelineNew,aifNew);
 title('AIF');
 
 
-%% save results
+%% show CBF and CBV
+
+%{
+scrollView(CBF,omega,m,3,'name','CBF in ml/min/100ml','fig',2);
+scrollView(CBV,omega,m,3,'name','CBV in percent','fig',3);
+%}
+
+
+%% save everything as matlab file
 %{
 fname = sprintf('%s_%ix%ix%i_mask-%s_sd-%1.1f_thres-%1.2f.mat',dataset,m(1),m(2),m(3),maskMode,sd,thres);
 sp

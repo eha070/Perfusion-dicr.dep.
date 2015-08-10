@@ -35,7 +35,6 @@ end
 %% data preprocessing
 
 ncurve   = size(C,1);
-C        = C'; %reshape to uptake first
 aif      = aif(:);
 timeline = timeline(:);
 k        = numel(timeline);
@@ -64,7 +63,7 @@ end
 %do the svd
 fprintf('Starting SVD for a %i by %i matrix...',size(M,1),size(M,2)); tic;
     [U,S,V] = svd(M);
-fprintf('...finished. Elapsed time: %1.3fs.\n\n',toc);
+fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 
 %prepare inverse of S
@@ -90,31 +89,28 @@ Mreg    = U*D*V';
 
 
 %zero-padded C
-disp('Zero-padding C...'); tic;
-CHat     = [C;zeros(k,ncurve)];
-fprintf('...finished. Elapsed time: %1.3fs.\n\n',toc);
+fprintf('Zero-padding C...'); tic;
+CHat     = [C,zeros(ncurve,k)];
+fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 %recover Irec and Crec
-disp('Deconvolving...');
+fprintf('Deconvolving...');
 tic;
-Irec  = MregInv*CHat;
-fprintf('...finished. Elapsed time: %1.3fs.\n\n',toc);
+Irec  = CHat*MregInv';
+fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 %get actual F
-F    = max(Irec,[],1);
+F    = max(Irec,[],2);
 F    = F(:);
 
 
 if nargout > 2
-
-    %output transposed values
-    Irec = Irec';    
     
-    disp('Reconstructing...');
+    fprintf('Reconstructing...');
     tic;
-    Crec  = Irec'*Mreg';
-    fprintf('...finished. Elapsed time: %1.3fs.\n\n',toc);
-    Crec = Crec';
+    Crec  = Irec*Mreg';
+    fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+    
 end 
  
 
@@ -136,9 +132,9 @@ Av = spdiags(1/2*ones(k,2),[0,1],k-1,k);
 e  = e(:)'*Av; e=e(:);
 
 %calculate phi
-disp('Estimating phi...');
+fprintf('Estimating phi...');
 tic;
-phi = (e'*C)./(e'*aif(:));
+phi = (C*e)./(e'*aif(:));
 fprintf('...finished. Elapsed time: %1.3fs.\n\n',toc);
 
 
