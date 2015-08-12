@@ -1,5 +1,5 @@
-function [F,phi,Irec,Crec] = fastPerfusionAnalysis(C,aif,timeline,thres,varargin) 
-%function [F,phi,Irec,Crec] = fastPerfusionAnalysis(C,aif,timeline,thres,varargin) 
+function [F,phi,Irec,Crec,para] = fastPerfusionAnalysis(C,aif,timeline,thres,varargin) 
+%function [F,phi,Irec,Crec,para] = fastPerfusionAnalysis(C,aif,timeline,thres,varargin) 
 % Does CBV and CBF estimation in an efficient mode with a global threshold.
 %
 % INPUT:
@@ -111,7 +111,17 @@ if nargout > 2
     Crec  = Irec*Mreg';
     fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
     
+    %reconstruction for the averaged curve
+    Cmean  = mean(CHat,1);
+    Imean  = Cmean*MregInv';
+    CmeanR = Imean*Mreg';
+    Fmean  = max(Imean,[],2);
+    para = struct('Cmean',Cmean(:),'Imean',Imean(:),'CmeanR',CmeanR(:),'Fmean',Fmean);
+    
 end 
+
+
+
  
 
 

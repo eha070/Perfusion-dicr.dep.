@@ -17,16 +17,16 @@ close all;
 
 
 
-%% settings
 
-% {
+%% settings
+%{
 %Parameters for 128x128x80
 dataset  = 'D2';
 m        = [128,128,80];
 maskMode = 'head';  %mask where to do the deconvolution
 tRes     = .5;          %time resolution after interpolation
-sd       = 1;           %sd for prior smoothing
-fsize    = [5,5,5];   
+sd       = .5;           %sd for prior smoothing
+fsize    = [3,3,3];   
 thres    = .04;         %global threshold for svd
 memorySave = false;
 
@@ -35,17 +35,20 @@ memorySave = false;
 
 
 %parameters for 512x512x320
-%{
+% {
 dataset  = 'D2';
 m        = [512,512,320];
 
-maskMode = 'bigBox';      %mask where to do the deconvolution
+maskMode = 'smallBox';      %mask where to do the deconvolution
 tRes     = .5;          %time resolution after interpolation
-sd       = 1;           %sd for prior smoothing
+sd       = .5;           %sd for prior smoothing
 fsize    = [5,5,5];   
 thres    = .04;         %global threshold for svd
 memorySave = true;
 %}
+
+fpath = '/Volumes/Macintosh_home/check/Documents/data/CTP-Matlab/';
+fname = sprintf('%s_%ix%ix%ix%i_linear.nii',dataset,m(1),m(2),m(3),k);
 
 
 
@@ -62,8 +65,6 @@ n  = prod(m);
 mk = [m,k];
 
 %generate filename
-fname = sprintf('%s_%ix%ix%ix%iint16.nii',dataset,m(1),m(2),m(3),k);
-fpath = '/Volumes/Macintosh_home/check/Documents/data/CTP-Matlab/';
 
 %load data
 [data,omega,m] = loadnii_lars([fpath,fname]);
@@ -107,20 +108,23 @@ sfac     = rho*(1-HctSmall)/(1-HctLarge);
 
 %% smooth input data
 
-
-fprintf('Smoothing data...');tic;
-D = data;
-for i = 1:k
-    D(:,:,:,i) = smooth3(data(:,:,:,i),'gaussian',fsize,sd);
-    fprintf('.%1.0f%%.',i/k*100);
+if sd>0
+    fprintf('Smoothing data...');tic;
+    D = data;
+    for i = 1:k
+        D(:,:,:,i) = smooth3(data(:,:,:,i),'gaussian',fsize,sd);
+        fprintf('.%1.0f%%.',i/k*100);
+    end
+    fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+elseif sd == 0;
+    D = data;
+else
+    error('sd does not make sense');
 end
-fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 if memorySave
     clear('data');
 end
-
-
 
 
 
@@ -174,10 +178,10 @@ scrollView(data,omega,m,3,'name','Original Data','fig',1);
 scrollView(D,omega,m,3,'name','Smoothed data','fig',2);
 scrollView(D(:,:,:,1),omega,m,3,'mask',maskAif,'name','Smoothed data with AIF','fig',3);
 scrollView(D(:,:,:,1),omega,m,3,'mask',mask,'name','Smoothed data with mask','fig',4);
+return;
 %}
 
 %% get uptake curves and convert to concentrations
-
 %reshape D to image-first
 D       = reshape(D,n,k);
 
@@ -199,17 +203,21 @@ fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 
 %% get aif
-fprintf('Calculating aif curves...');tic;
-idxAIF = (maskAif(:)~=0);
-tAif    = D(idxAIF,:);
-tAif    = mean(tAif,1);
-aif    = tAif-tAif(1);
+fprintf('Calculating aif curve...');tic;
+idxAif     = (maskAif(:)~=0);
+tAif       = D(idxAif,:);
+tAif       = mean(tAif,1);
+aif        = tAif-tAif(1);
+aif(aif<0) = 0;
 fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 
 if memorySave
     clear('tC','tAif');
 end
+
+
+% figure(1);clf; plot(timeline,aif);
 
 %% interpolation to regulary spaced timeline
 
@@ -240,7 +248,7 @@ end
 
 %% do deconvolution analysis
 
-[F,phi,Irec,Crec] = perfusion1c.fastPerfusionAnalysis(CNew,aifNew,timelineNew,thres);
+[F,phi,Irec,Crec,para] = perfusion1c.fastPerfusionAnalysis(CNew,aifNew,timelineNew,thres);
 
 
 %% calculate CBF and CBV
@@ -283,9 +291,30 @@ plot(timelineNew,aifNew);
 title('AIF');
 
 
+
+
+
+
+figure(4);clf;
+set(4,'name',sprintf('Mean Curves. CBF(Cmean)=%1.3f, mean(CBF)=%1.3f',para.Fmean*100*60/sfac,mean(F)*100*60/sfac));
+subplot(1,3,1);
+plot(timelineNewL,para.Imean);
+title('IRec');
+
+subplot(1,3,2);
+plot(timelineNewL,para.CmeanR,'r',timelineNewL,para.Cmean,'b');
+title('CRec and C');
+
+
+subplot(1,3,3);
+plot(timelineNew,aifNew);
+title('AIF');
+
+
+
 %% show CBF and CBV
 
-%{
+% {
 scrollView(CBF,omega,m,3,'name','CBF in ml/min/100ml','fig',2);
 scrollView(CBV,omega,m,3,'name','CBV in percent','fig',3);
 %}

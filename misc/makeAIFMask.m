@@ -12,14 +12,14 @@
 
 
 %% show volume i
-i = 7;
+i = 10;
 D = squeeze(data(:,:,:,i));
-scrollView(D,omega,m,3,'scale','slices');
+scrollView(D,omegaM(m),m,3,'scale','slices');
 
 
 
 %% show slice
-i = 151;
+i = 39;
 close all;
 clc;
 
@@ -32,8 +32,11 @@ setGrayValueWindowFcnt
 
 %% setup 2D mask
 
+%set color axis
+ca = [-44.7822 174.704];
+
 %z slices to create the mask
-z = [151,151,152,152];
+z  = [38,39,40,41];
 
 
 
@@ -47,7 +50,6 @@ for i = z;
     
 
     figure(1);clf; colormap gray(512);
-    ca = [-111.288 325.34];
     imagesc(Di);
     axis image;
     caxis(ca);
@@ -62,4 +64,14 @@ end
    
 
 
-scrollView(W,omega,m,3);
+scrollView(D,omegaM(m),m,3,'mask',W);
+
+
+%% save data
+
+fpath   = '~/Documents/data/CTP-Matlab/';
+fname   = 'D2_maskAif_128x128x80.mat';
+
+maskAif = W;
+
+save([fpath,fname],'maskAif')
