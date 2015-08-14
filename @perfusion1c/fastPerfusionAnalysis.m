@@ -116,7 +116,7 @@ if nargout > 2
     Imean  = Cmean*MregInv';
     CmeanR = Imean*Mreg';
     Fmean  = max(Imean,[],2);
-    para = struct('Cmean',Cmean(:),'Imean',Imean(:),'CmeanR',CmeanR(:),'Fmean',Fmean);
+    para = struct('Cmean',Cmean(:),'Imean',Imean(:),'CmeanR',CmeanR(:),'Fmean',Fmean,'meanF',mean(F(:)));
     
 end 
 

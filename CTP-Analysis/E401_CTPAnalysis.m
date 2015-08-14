@@ -23,8 +23,10 @@ close all;
 %Parameters for 128x128x80
 dataset  = 'D2';
 m        = [128,128,80];
+k        = 24;
+
 maskMode = 'head';  %mask where to do the deconvolution
-tRes     = .5;          %time resolution after interpolation
+tRes     = 5;          %time resolution  in seconds after interpolation
 sd       = .5;           %sd for prior smoothing
 fsize    = [3,3,3];   
 thres    = .04;         %global threshold for svd
@@ -38,17 +40,18 @@ memorySave = false;
 % {
 dataset  = 'D2';
 m        = [512,512,320];
+k        = 24;
 
-maskMode = 'smallBox';      %mask where to do the deconvolution
-tRes     = .5;          %time resolution after interpolation
-sd       = .5;           %sd for prior smoothing
+maskMode = 'awesome';      %mask where to do the deconvolution
+tRes     = 5;          %time resolution after interpolation
+sd       = 0;           %sd for prior smoothing
 fsize    = [5,5,5];   
 thres    = .04;         %global threshold for svd
 memorySave = true;
 %}
 
 fpath = '/Volumes/Macintosh_home/check/Documents/data/CTP-Matlab/';
-fname = sprintf('%s_%ix%ix%ix%i_linear.nii',dataset,m(1),m(2),m(3),k);
+fname = sprintf('%s_%ix%ix%ix%iint16.nii',dataset,m(1),m(2),m(3),k);
 
 
 
@@ -60,7 +63,6 @@ fname = sprintf('%s_%ix%ix%ix%i_linear.nii',dataset,m(1),m(2),m(3),k);
 fprintf('Loading data...');tic;
 
 %setup main variables
-k  = 24;
 n  = prod(m);
 mk = [m,k];
 
@@ -79,12 +81,18 @@ fclose(fid);
 % load mask for aif
 fname = sprintf('%s_maskAif_%ix%ix%i.mat',dataset,m(1),m(2),m(3));
 load([fpath,fname]);
+maskAif = int16(maskAif);
 
 fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 
 
 
+
+data(:,:,:,(end-2:end)) = [];
+timeline(end-2:end) = [];
+k = numel(timeline);
+mk = [m,k];
 
 
 %% setup global correction factor for CBF and CBV. See
@@ -130,7 +138,7 @@ end
 
 %% generate mask
 
-
+fprintf('Setting up mask...');tic;
 switch maskMode
     case 'head'
         D1   = squeeze(D(:,:,:,1));
@@ -165,10 +173,18 @@ switch maskMode
         mask = zeros(m);
         mask(idxi,idxj,idxk) = 1;
         
+    case 'awesome'
+        
+        fname = sprintf('%s_%ix%ix%iint16-segm.nii',dataset,m(1),m(2),m(3));
+        tmp = loadnii_lars([fpath,fname]);
+        mask = tmp.img;
+        clear('tmp');
+        
     otherwise
         error('maskMode unknown');
 end
-        
+fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+
 
 
 
@@ -211,9 +227,11 @@ aif        = tAif-tAif(1);
 aif(aif<0) = 0;
 fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
+%reshape D to standard sizes
+D = reshape(D,mk);
 
 if memorySave
-    clear('tC','tAif');
+    clear('tC','tAif','D');
 end
 
 
@@ -221,8 +239,7 @@ end
 
 %% interpolation to regulary spaced timeline
 
-%reshape D to standard sizes
-D     = reshape(D,mk);
+
 
 
 fprintf('Starting interpolation....');tic;
@@ -230,19 +247,17 @@ fprintf('Starting interpolation....');tic;
 %new timeline
 timelineNew = (0:tRes:timeline(end));
 kNew        = numel(timelineNew);
+T           = getLinearInterMatrix1D(timeline,timelineNew);
 
-%setup aiflc
-aifNew = interp1(timeline,aif,timelineNew,'linear');
-
-%setup C
-CNew   = interp1(timeline,C',timelineNew,'linear');
-CNew   = CNew';
+%setup interpolated curves
+aifNew = T*aif(:);
+CNew   = C*T';
 
 fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 
 if memorySave
-    clear('C');
+    clear('C','aif');
 end
 
 
@@ -296,7 +311,7 @@ title('AIF');
 
 
 figure(4);clf;
-set(4,'name',sprintf('Mean Curves. CBF(Cmean)=%1.3f, mean(CBF)=%1.3f',para.Fmean*100*60/sfac,mean(F)*100*60/sfac));
+set(4,'name',sprintf('Mean Curves. CBF(Cmean)=%1.3f, mean(CBF)=%1.3f',para.Fmean*100*60/sfac,para.meanF*100*60/sfac));
 subplot(1,3,1);
 plot(timelineNewL,para.Imean);
 title('IRec');
