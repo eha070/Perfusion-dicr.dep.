@@ -687,7 +687,7 @@ From the porous media model, streamlines were found from tracking of the flux ve
 		\label{fig:tissuecomp}
 	\end{figure}
 	
-	\subsection{Reconstruction of Perfusion by classical Models}
+	\subsection{Reconstruction of Perfusion by classical Models}\label{sec:RecPhantom}
 
 %	%--------------------------------------------------
 %	%--------------------------------------------------
@@ -762,9 +762,39 @@ From the porous media model, streamlines were found from tracking of the flux ve
 				 \includegraphics[width = .45\textwidth]{./figs/C-and-Crec-conv.eps} & \includegraphics[width = .45\textwidth]{./figs/Irec-conv.eps} \\			 
 				 \multicolumn{2}{ c }{(c) Inside the capillary bed, $C_C(x,t)$ at $(i,j)=(50,50)$} \\				 				 
 			\end{tabular}
-		\caption{Deconvolution by bSVD. First row: Results of bSVD applied to the map $C_T(x,t)$ generated with the transport equation \eqref{eq:conteq} using block-size (64,64) (i.e. entire domain). Second row: Results of bSVD applied to a single voxel of $C_T(x,t)$ in the inside of the domain. Third row: Results of bSVD applied to a single voxel of the convolution data $C_C(x,t)$ in the inside of the domain. In all cases the model restored the measured concentration curves almost perfectly. Left to right: Reconstructed concentration $C(t)$ (left) and the impuls-response function I(t) (right).}			
+		\caption{Deconvolution by bSVD. First row: Results of bSVD applied to the map $C_T(x,t)$ generated with the transport equation \eqref{eq:conteq} using block-size (64,64) (i.e. entire domain). Second row: Results of bSVD applied to a single voxel of $C_T(x,t)$ in the inside of the domain. 56 row: Results of bSVD applied to a single voxel of the convolution data $C_C(x,t)$ in the inside of the domain. In all cases the model restored the measured concentration curves almost perfectly. Left to right: Reconstructed concentration $C(t)$ (left) and the impuls-response function $I(t)$ (right).}			
 		\label{fig:deconvResults}
 	\end{figure}
+	
+	
+	
+	%--------------------------------------------------
+	%--------------------------------------------------
+	% Subsection: Results on Real Data
+	%--------------------------------------------------
+	%--------------------------------------------------	
+	\section{Results on Real Data}\label{sec:RealData}
+ 	Experimental results from Sec. \ref{sec:RecPhantom} are indicating that an application of the deconvolution model to patches of tissues violating the model assumptions would lead to overestimation of blood-flow as compared to the overall flow within the the volume of interest.
+	In order to validate this guess, we applied the deconvolution model to a clinically acquired human perfusion CT dataset of a 56 years old male male admitted at the University Hospital of Nijmegen with suspicion of stroke.
+	The perfusion scan was obtained using a Toshiba Aquilon ONE scanner, pixel-size $\SI{0.43}{\milli\meter}\times\SI{0.43}{\milli\meter}$, slice thickness $\SI{0.5}{\milli\meter}$, contrast agent \SI{50}{\milli\liter} Xentix 300, total scan-time \SI{114}{\second}, time resolution ranging from \SI{2.1}{\second} in the early- to \SI{30}{\second} in the late phase of CA uptake.
+	The Arterial Input Function was manually selected in the middle cerebral artery.
+	Since we expected to see local overestimation effects mainly for small voxel sizes, the data was processed at full resolution ($512\times512\times320$). 
+	However, in order to deal with noise effects it was necessary to apply a prior gaussian smoothing with standard deviation of $1$ voxel.	
+	Concentrations were estimated from the CT Signal assuming a spatially independent proportionality constant.
+	CBF was then estimated voxel-wise using the bSVD model, yielding an average CBF of \SI{64.357}{\siPml}.
+	After that, we estimated the perfusion for the whole volume of interest by averaging the concentration values first and then performing the bSVD, yielding a total CBF of \SI{24.791}{\siPml}.
+	Results are depicted in Fig. \ref{fig:RealData}
+	
+	
+	
+	\begin{figure}[H]\label{fig:RealData}
+		\begin{tabular}{p{.3\textwidth} p{.3\textwidth} p{.3\textwidth} }
+		 \includegraphics[width = .3\textwidth]{./figs/real_AIF.pdf} & \includegraphics[width = .3\textwidth]{./figs/real_axial160.pdf} & \includegraphics[width = .3\textwidth]{./figs/real_meanC.pdf} \\
+		 (a) Arterial input function & (b) One slice of the voxel-wise CBF reconstruction.  & (c) mean concentration curve for the whole volume of interest and reconstruction.
+		\end{tabular}
+		\caption{Figure with results from the real-data experiments (see Sec. \ref{sec:RealData} for details on the data). All concentrations are given including an unknown proportionality factor. The AIF shown in (a) was manually selected from the MCA. In (b) one slice of the voxel-wise CBF-reconstruction for a 3D volume of interest is shown, showing large local over-estimation of CBF. In (c) the mean-concentration curve for the complete 3D volume of interest and it's approximation by bSVD is shown. Mean CBF was \SI{64.357}{\siPml} and CBF resulting from average concentrations for the volume of interest was \SI{24.791}{\siPml}.}
+	\end{figure}
+	
 
 	
 	
@@ -775,12 +805,13 @@ From the porous media model, streamlines were found from tracking of the flux ve
 	%--------------------------------------------------	
 	\section{Discussion}\label{sec:conclusion}
 	
-	Accurate measurements of CBV, CBF and MTT within the brain can provide crucial information used in clinical decision making. Originally, the classical 1C models providing these parameters were developed for larger ROIs, and their validity for usage in field models has not properly been established. In this work we have developed a digital phantom for simulating blood flow within a slab of the capillary system. From the obtained flux field, we generate a perfusion map that was used to create two data sets of propagating concentration agent. The first data set was created as the solution of a linear transport equation, where every voxel acts as an arterial input to its neighbours. The other data set is based on a forward convolution model, where every voxel is exposed to the same arterial input function. This modelling setup with two distinct forward modells has the property of isolating  possible errors caused by the numerical instability of the deconvolution methods.% The latter data set was mainly used to validate the , while the first data set was meant to represent a realistic data set as it can be obtained from a MR examination.
+	Accurate measurements of CBV, CBF and MTT within the brain can provide crucial information used in clinical decision making. Originally, the classical 1C models providing these parameters were developed for larger ROIs, and their validity for usage in field models has not properly been established. In this work we have developed a digital phantom for simulating blood flow within a slab of the capillary system. From the obtained flux field, we generate a perfusion map that was used to create two data sets of propagating concentration agent. The first data set was created as the solution of a linear transport equation, where every voxel acts as an arterial input to its neighbors. The other data set is based on a forward convolution model, where every voxel is exposed to the same arterial input function. This modeling setup with two distinct forward models has the property of isolating  possible errors caused by the numerical instability of the deconvolution methods.% The latter data set was mainly used to validate the , while the first data set was meant to represent a realistic data set as it can be obtained from a MR examination.
 	
 	Considering the data set created from the transport equation, $C_T(x,t)$, the results presented in Table \ref{tab:resultsSim} indicate low errors or $RE \leq 2.6 \%$ of both the MS and the bSVD model for restoration of the perfusion when applied to the entire domain. Using an arterial input function valid for the region as a whole is in agreement with physical assumptions required to derive the theory for classical models. Thus, these results support the usage of classical compartment models for whole organs with only one inlet and one outlet. 
 
 However, the reconstruction of perfusion using MS and bSVD fails to a large extend with relative errors up to $859 \%$ for other block sizes that the entire domain, the error  apparently increasing for smaller block size. This observation of over-estimation indicates that classical models for reconstructing perfusion are not valid for a situation where the global arterial input is not the correct arterial input for each of the smaller computational units. These results are also supported by the analytical analysis in Section \ref{sec:relating}, stating that in the continuous context classical models are describing CA propagation for the Lagrangian setting, whereas classical models are typically applied in an Eulerian setting. %\textcolor{red}{I'll think about this in more detail during the weekend.}
 The observed over-estimation of perfusion is also predicted by the theoretical analysis in Section \ref{sec:flux2perf}, stating that the perfusion will be over-estimated with a factor proportional to the length of the streamlines. 
+All these results are supported by the real-data experiments, where we showed local overestimation of perfusion for small voxel-sizes as compared to an averaging of concentrations for the whole volume of interest.
 %Thus, in principle, one could apply the classical methods, and scale the resulting perfusion map by the streamline length. 
 %In such situation, assumptions of the classical models are violated as the arterial input will be dispersed in unpredictable ways on the way from the inlet to the computational unit.
 
