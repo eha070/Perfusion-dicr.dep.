@@ -40,7 +40,7 @@ classdef perfusion1c
       F = maximumSlope(C,timeline,aif);
       CBV = cbvEstimation(C,timeline,aif);
       [F,Irec,Crec] = circularDeconvolutionThres(C,timeline,thres,U,S,V);
-      [F,phi,Irec,Crec,para] = fastPerfusionAnalysis(C,aif,timeline,thres);
+      [F,phi,Irec,Crec,para] = fastPerfusionAnalysis(C,aif,timeline,thres,varargin);
 
    end 
       

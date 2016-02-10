@@ -149,7 +149,6 @@ if makelenmat
     switch streamlines
 
         case 'lenmatC'
-            
             %flow: Go from stag to cc
             qcc = perfusion1c.convertFlowStagToCC(qmat);
             qy  = qcc{1};
@@ -160,7 +159,6 @@ if makelenmat
             xgv   = linspace(omega(3),omega(4),m(2)); %this goes from (1 to 0) (matlab, duh)
             [x,y] = meshgrid(xgv,ygv);
 
-
             %seed-points
             coord = zeros(n,2);
             for i = 1:m(1);
@@ -170,12 +168,9 @@ if makelenmat
                 end
             end
 
-
             %get the streamlines
             quiver(x(:),y(:),qx(:),-qy(:),10)
             fh = streamline(x,y,qx,-qy,coord(:,2),coord(:,1),[.01,100000]); %streamlines upstream
-
-
 
             %get the lengths of the streamlines
             l = zeros(n,1);
@@ -187,13 +182,10 @@ if makelenmat
                 l(i) = sum(sqrt(resx.^2+resy.^2));
 
             end
-
             lenmat = reshape(l,m);
             lenmat = flipud(lenmat);
-
         case 'lenmatE'
             lenmat = perfusion1c.arclength(qmat,Fmat,h);
-
     end
     
     save('tmp.mat','lenmat')
@@ -226,11 +218,7 @@ CBF = qabs./lenmat;
 %get CBV
 CBV = phimat;
             
-    
-
-
-    CBF = perfmat;
-
+ 
 
 
 

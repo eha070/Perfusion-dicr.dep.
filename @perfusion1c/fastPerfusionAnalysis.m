@@ -34,6 +34,7 @@ end
 
 %% data preprocessing
 
+C        = reshape(C,[],numel(timeline));
 ncurve   = size(C,1);
 aif      = aif(:);
 timeline = timeline(:);
@@ -56,7 +57,7 @@ switch mode
     case 'sSVD'
         M = perfusion1c.getLinearConvolutionMatrix(aif,deltaT);
     otherwise
-        error('mode is inknown');
+        error('mode is unknown');
 end
      
 
@@ -82,16 +83,19 @@ Dinv      = diag(dinv,0);
 d(idx)    = 0;
 D         = diag(d,0);
 
-
 %setup regularized M and its inverse
 MregInv = V*Dinv*U';
 Mreg    = U*D*V';
 
-
 %zero-padded C
-fprintf('Zero-padding C...'); tic;
-CHat     = [C,zeros(ncurve,k)];
-fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+switch mode
+    case 'bcSVD'
+        fprintf('Zero-padding C...'); tic;
+        CHat     = [C,zeros(ncurve,k)];
+        fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
+    case 'sSVD'
+        CHat     = C;
+end
 
 %recover Irec and Crec
 fprintf('Deconvolving...');
