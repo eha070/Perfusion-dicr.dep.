@@ -17,10 +17,11 @@ clear
 %what to show
 dynamicFlow      = 1;
 setupPDE         = 1;
-setupConvolution = 1;
+setupConvolution = 0;
 downsampling     = 1;
 makelenmat       = 1;
 streamlines      = 'lenmatE';
+saveDataSmall    = 1;
 
 %configuration
 % aif = 'delta';
@@ -188,7 +189,6 @@ if makelenmat
             lenmat = perfusion1c.arclength(qmat,Fmat,h);
     end
     
-    save('tmp.mat','lenmat')
     
     
 else
@@ -219,6 +219,21 @@ CBF = qabs./lenmat;
 CBV = phimat;
             
  
+
+%% save some data
+if saveDataSmall
+    
+    %downsample the data to approx 1sec time resolution
+    step     = round(tSamp/dt);
+    Cmat     = Cmat(:,:,:,1:step:end);
+    timeline = timeline(1:step:end);
+    aifval   = aifval(1:step:end);
+    k        = numel(timeline);
+    
+    save('smallDataSet.mat','Cmat','timeline','aifval','k','n','Hd','qmat');
+    return;
+    
+end
 
 
 

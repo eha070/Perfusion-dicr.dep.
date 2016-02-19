@@ -25,7 +25,7 @@ trueFlow = 'perfusion';
 
 
 %which results to show?
-showFlowMaps       = 0;
+showFlowMaps       = 1;
 showMultipleCurves = 0; %remember to setup indices idxiD and idxjD
 showSingleCurve    = 1;
 writeImage         = 0;
@@ -35,7 +35,7 @@ saveSingleCurve    = 0;
 
 
 %setup threshold
-thres = 1e-5; %probably needs to be tuned
+thres = 1e-1; %probably needs to be tuned
 
 
 
@@ -98,7 +98,7 @@ mk      = [m,k]; %...
 idxsamp      = (1:step:k);
 Clow         = squeeze(Cmat(:,:,idxsamp));
 timelineLow  = timeline(idxsamp);
-timelineHigh = linspace(timelineLow(1),timelineLow(end),2*k);
+timelineHigh = linspace(timelineLow(1),2*timelineLow(end),2*k);
 AIFlow       = AIF(idxsamp);
 
 klow    = numel(idxsamp);
@@ -113,6 +113,8 @@ mklow   = [m,klow];
 CBFest = reshape(CBFest,m);
 Iest   = reshape(Iest,[m,2*klow]);
 Cest   = reshape(Cest,[m,2*klow]);
+
+
 
 
 %% show results

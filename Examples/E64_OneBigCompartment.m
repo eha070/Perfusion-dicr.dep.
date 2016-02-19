@@ -17,8 +17,8 @@ close all;
 
 
 %setup oscillation index OI
-% OI = .0001; %for PDE;
-OI = .1;
+OI = .0001; %for PDE;
+% OI = .1;
 
 
 
@@ -26,7 +26,6 @@ OI = .1;
 
 Cav = reshape(Cmat,n,k);
 Cav = mean(Cav,1)';
-
 
 
 %% setup area where to run the deconvolution
