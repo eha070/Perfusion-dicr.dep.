@@ -35,7 +35,7 @@ aif = 'gamma';
 m        = [64,64,1];       %matrix size
 omega    = [0,10,0,10,0,1]; %domain in mm
 Tmax     = 90;              %max time in seconds
-dt       = 0.002;          %time resolution of simulation
+dt       = 0.0005;          %time resolution of simulation
 tSamp    = .1;              %sampling rate (in seconds)
 
 

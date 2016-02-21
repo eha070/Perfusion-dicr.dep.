@@ -2,9 +2,9 @@
 %                    E09_DeconvolutionLocalAIFTest
 % 
 % Do a deconvolution for one voxel with upstream voxels as AIF.
-% The following model is assumed:
+% The following forward model is assumed:
 %
-%  Ci = CBFi (R * AIF)
+%  Ci = CBFi \cdot (R * AIF)
 %
 % where * denotes convolution, CBFi and R are to be determined. 
 % The AIF is chosen as 
@@ -42,11 +42,11 @@ close all;
 
 
 %setup oscillation index OI
-OI = .0002; %for PDE;
+OI = .0003; %for PDE;
 % OI = .1;
 
 %setup idx of voxel where the deconvolution is to be performed
-idx = [35,35];
+idx = [3,3];
 
 
 
@@ -56,8 +56,8 @@ idx = [35,35];
 CLoc    = squeeze(Cmat(idx(1),idx(2),:));
 
 %get aif
-aifLoci = squeeze(Cmat(idx(1),idx(2)-1,:))./phimat(idx(1),idx(2));
-aifLocj = squeeze(Cmat(idx(1)-1,idx(2),:))./phimat(idx(1),idx(2));
+aifLoci = squeeze(Cmat(idx(1),idx(2)-1,:))./phimat(idx(1),idx(2)-1);
+aifLocj = squeeze(Cmat(idx(1)-1,idx(2),:))./phimat(idx(1)-1,idx(2));
 aifLoc  = (aifLoci + aifLocj)./2;
 
 
@@ -73,6 +73,7 @@ fprintf('...done. Elapsed time: %1.3fs\n',toc);
 
 %do the deconvolution
 [CBFrec,Irec,Crec] = perfusion1c.linearDeconvolution(CLoc,timeline,OI,U,S,V);
+CBVrec             = perfusion1c.cbvEstimation(CLoc,timeline,aifLoc);
 
 
 %% show results
@@ -83,7 +84,6 @@ figure(1);clf;
 subplot(1,3,1);
 plot(timeline,aifLoc,timeline,CLoc,'lineWidth',3);
 legend('aifLoc','CLoc')
-title(ti);
 
 subplot(1,3,2);
 plot(timeline,Irec,'lineWidth',3);
@@ -98,11 +98,11 @@ title(ti);
 
 
 
-%% setup true flow
+%% setup true flow and true CBV
 
-%qmat is given absolute with units [mm^3/s].
+%qmat is given as absolute value with units [mm^3/s].
 %It needs to be converted to perfusion [mm^3/s/mm^3]
-%divide by voxel-volume
+%We hence divide by voxel-volume
 CBFtr = (qmat{1}(idx(1),idx(2)) + qmat{2}(idx(1),idx(2)))./(2*hd);
 CBVtr = CBV(idx(1),idx(2));
 
@@ -110,12 +110,10 @@ CBVtr = CBV(idx(1),idx(2));
 %% median errors
 
 RECirc = abs(CBFrec-CBFtr)./CBFtr*100;
-REMS   = abs(CBFrecMS-CBFtr)./CBFtr*100;
-RECBV  = abs(CBVrec-CBVtr)./CBVtr*100;
 
+fprintf('CBFtr=%1.2f, \t CBFrec=%1.2f [ml/min/100ml]\n',CBFtr*100*60,CBFrec*100*60);
+fprintf('CBVtr=%1.2f, \t CBVrec=%1.2f [ml/100ml]\n',CBVtr*100,CBVrec*100);
 fprintf('RE in Lin: \t RE=%1.2f%% \n',RECirc);
-fprintf('RE in MS: \t RE=%1.2f%% \n',REMS);
-fprintf('RE in CBV: \t RE=%1.2e%% \n',RECBV);
 
 
 %% 

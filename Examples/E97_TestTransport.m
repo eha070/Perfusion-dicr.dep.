@@ -21,18 +21,20 @@ clc
 basenameflow = perfusion1c.providenameflow(prm.phiopt,prm.Kopt,prm.dim);
 pathload = ['results/synt-createflowTPFA-' basenameflow '.mat'];
 D = load(pathload);
-
-%get pressure
-p = reshape(D.pmat,[],1);
-q = D.qmat;
+pathload = './results/synt-createindicatorpde-phi-flat-K-flat-dim-64-aif-delta-T-90-red-25.mat';
+E = load(pathload);
 
 %get physiological dimensions
 m        = prm.dim(1:2);
 h        = prm.h;
 voxelvol = prod(prm.h);
 
-K        = D.Kmat(1,1,1,1);
-mu       = prm.mu;
+%get Cmat, qmat and phimat
+C   = E.Cmat;
+AIF = reshape(E.aifval,[],1);
+
+
+
 
 %% build laplacian
 

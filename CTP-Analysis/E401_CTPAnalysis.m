@@ -42,11 +42,11 @@ dataset  = 'D2';
 m        = [512,512,320];
 k        = 24;
 
-maskMode = 'awesome';      %mask where to do the deconvolution
+maskMode = 'awesome';  %mask where to do the deconvolution
 tRes     = 5;          %time resolution after interpolation
-sd       = 0;           %sd for prior smoothing
+sd       = 1.5;          %sd for prior smoothing
 fsize    = [5,5,5];   
-thres    = .04;         %global threshold for svd
+thres    = .04;        %global threshold for svd
 memorySave = true;
 %}
 
@@ -307,9 +307,6 @@ title('AIF');
 
 
 
-
-
-
 figure(4);clf;
 set(4,'name',sprintf('Mean Curves. CBF(Cmean)=%1.3f, mean(CBF)=%1.3f',para.Fmean*100*60/sfac,para.meanF*100*60/sfac));
 subplot(1,3,1);
@@ -348,3 +345,44 @@ fname = sprintf('%s_PK_%ix%ix%i_mask-%s_sd-%1.1f_thres-%1.2f.nii',dataset,m(1),m
 
 PKParameters = cat(4,CBF,CBV);
 savenii_lars(PKParameters,omega,m,[fpath,fname],'First: CBF in ml/min/100ml, Second: CBV in percent');
+
+
+return;
+%% graphics paper
+
+
+%plot Cmean vs CMean R
+figure(5);clf;
+plot(timelineNewL,para.Cmean,'b',timelineNewL,para.CmeanR,'r','LineWidth',3);
+xlabel('time (s)');
+ylabel('concentration');
+legend('mean concentration','approximation by bSVD');
+set(gca,'FontSize',16)
+% export_fig('real_meanC.pdf','-transparent',5);
+
+%% plot AIF
+figure(5);clf;
+plot(timelineNew,aifNew,'LineWidth',3);
+xlabel('time (s)');
+ylabel('concentration');
+legend('AIF');
+set(gca,'FontSize',16)
+% export_fig('real_AIF.pdf','-transparent',5);
+
+
+%% plot CBF
+scrollView(CBF,omega,m,3,'cmap','parula(512)','scale','slices');
+caxis(ca);
+
+%%
+
+Si = squeeze(CBF(:,:,160));
+
+figure(5);clf;
+colormap('parula(512)');
+imagesc(Si);
+axis image;
+axis off;
+caxis([0,100]);
+colorbar('south','color','white')
+export_fig('real_axial160.pdf','-transparent',5);
