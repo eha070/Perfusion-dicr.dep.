@@ -1,9 +1,48 @@
 function [pmat,flowmat] = syntTPFA(Kmat,Fmat,prm)
-
-
-% Here we make the code from Aarnes, Gimse and Lie for incompressible
-% single phase flow: "An introduction to the Numerivs of Flow in Porous
-% Media using Matlab"
+%function [pmat,flowmat] = syntTPFA(Kmat,Fmat,prm)
+%
+%INPUT:
+% Kmat - cell-centered diagonal tensor [mm^2]
+% Fmat - cell-centered absolute in-/outflow in mm^3/s
+% prm  - parameters with fields
+%        dim - dimension
+%        h   - voxel-sizes [mm]
+%        mu  - viscosity  [Pa*s]
+%
+%OUTPUT:
+% pmat    - pressure map [Pa]. Note that this is only defined up to a 
+%           constant.
+% flowmat - map with absolute flow [mm^3/s].
+%
+%
+%MOTIVATION FOR TPFA:
+%We want to avoid differntiation across voxels and write the flux between 
+%voxel 1 and 2 as (see figure below for layout):
+%
+%   F = -|gamma_12|*lambda_1*(p12-p1)/(dx/2) = -2*c*lambda_1*(p12-p1)
+%   F = -|gamma_12|*lambda_2*(p2-p12)/(dx/2) = -2*c*lambda_2*(p2-p12)
+%
+% where c:=(|gamma_12|/dx) and we impose continuity in flux and pressure 
+%(cf. [1]). Substituting p12 = p2 + F/(c*lambda_2) we obtain
+%
+% F = 2*|gamma_12|/dx*(lambda_1*lambda_2)/(lambda_1+lambda_2)*(p1-p2)
+%
+%
+% FIGURE: 
+% |------|------|    |----------|----------|      |------|  |
+% | p1  p12  p2 |    | lambda_1 | lambda_2 |      |      | dy
+% |------|------|    |----------|----------|      |------|  |
+%                                                  <-dx->
+%    Pressure                 K/mu                 Spatial layout.
+%    (cell-centered)       (cell-centered)         In 2D gamma_12 = dy 
+%                                                  In 3D gamma_12 = dy*dz 
+%
+%
+%
+%[1] http://link.springer.com/article/10.1007%2Fs10596-007-9067-5
+%[2] We make the code from Aarnes, Gimse and Lie for incompressible
+%    single phase flow: "An introduction to the Numerivs of Flow in Porous
+%    Media using Matlab"
 
 
 % dimension of problem
@@ -36,6 +75,7 @@ L = Kmat.^(-1);
 %         delta x_i(lambda_i,ij^-1 + lambda_j,ij^-1)
 %
 % since delta x_i = delta x_j
+%
 
 % the term 2*|gamma|/h
 tr = zeros(ndim,1);
@@ -94,6 +134,8 @@ pmat = reshape(p,dim(1),dim(2),dim(3));
 % flowmat{2}(:,2:dim(2),:) = (pmat(:,1:dim(2)-1,:) - pmat(:,2:dim(2),:)).*trmat{2}(:,2:dim(2),:);
 % flowmat{3}(:,:,2:dim(3)) = (pmat(:,:,1:dim(3)-1) - pmat(:,:,2:dim(3))).*trmat{3}(:,:,2:dim(3));
 
+%setup flowmat. Note that the values will be absolute, as the
+%transmissibilities include the voxel-surface (see explanation above).
 flowmat{1} = zeros(dim(1)+1,dim(2),dim(3));
 flowmat{1}(2:end-1,:,:) = -(pmat(2:end,:,:) - pmat(1:end-1,:,:)).*trmat{1}(2:end-1,:,:);
 flowmat{2} = zeros(dim(1),dim(2)+1,dim(3));
