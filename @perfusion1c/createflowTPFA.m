@@ -15,8 +15,8 @@ if isequal(prm.Kopt,'flat')
     % K = (1/24)*pi*n.*r.^4;
     % K = 5e-6*ones(dim);
     
-    % Units in m^2
-    K = 5e-6*ones(dim)*1e-6;
+    % Units in mm^2
+    K = 5e-6*ones(dim);
     Kmat(:,:,:,1) = K;
     Kmat(:,:,:,2) = K;
     Kmat(:,:,:,3) = K;
@@ -150,7 +150,7 @@ disp(msg);
 % Fmat{2}
 % pause
 
-makelenmat = 0;
+makelenmat = 1;
 if makelenmat == 1
     msg = ['Making and saving lenmat'];
     disp(msg);
@@ -160,7 +160,7 @@ end;
 
 % find the streamlines
 D = load('lenmat.mat');
-if ~isequal(D.prm.dim,prm.dim) || ~isequal(D.prm.physsdim,prm.physdim)
+if ~isequal(D.prm.dim,prm.dim) || ~isequal(D.prm.physdim,prm.physdim)
     msg = ['Making and saving lenmat'];
     disp(msg);
     lenmat = perfusion1c.arclength(qmat,Fmat,prm.h);
