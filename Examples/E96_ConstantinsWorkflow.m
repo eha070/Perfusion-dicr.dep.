@@ -15,13 +15,13 @@ clear
 
 
 %what to show
-dynamicFlow      = 1;
+dynamicFlow      = 0;
 setupPDE         = 1;
 setupConvolution = 0;
-downsampling     = 1;
-makelenmat       = 1;
+downsampling     = 0;
+makelenmat       = 0;
 streamlines      = 'lenmatE';
-saveDataSmall    = 1;
+downsampleData   = 1;
 
 %configuration
 % aif = 'delta';
@@ -221,7 +221,7 @@ CBV = phimat;
  
 
 %% save some data
-if saveDataSmall
+if downsampleData
     
     %downsample the data to approx 1sec time resolution
     step     = round(tSamp/dt);
@@ -230,8 +230,7 @@ if saveDataSmall
     aifval   = aifval(1:step:end);
     k        = numel(timeline);
     
-    save('smallDataSet.mat','Cmat','timeline','aifval','k','n','Hd','qmat');
-    return;
+%     save('smallDataSet.mat','Cmat','timeline','aifval','k','n','Hd','qmat');
     
 end
 
