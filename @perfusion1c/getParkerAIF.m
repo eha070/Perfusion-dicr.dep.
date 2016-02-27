@@ -1,7 +1,7 @@
 function varargout = getParkerAIF(timeline,varargin)
 %function varargout = ParkerAIF(timeline,varargin)
 %   INPUT:
-%   timeline - timepoints to evaluate the AIF
+%   timeline - timepoints to evaluate the AIF (min).
 %
 %   VARARGIN:
 %   p           - parametervector, p \in \R^{10}. Default: p from Parker's paper.

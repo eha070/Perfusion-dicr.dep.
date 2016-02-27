@@ -38,15 +38,28 @@
 
 clc;
 close all;
-
+load smallDataSet
 
 
 %setup oscillation index OI
-OI = .0003; %for PDE;
-% OI = .1;
+% OI = .0002; %for PDE;
+OI = .1;
 
 %setup idx of voxel where the deconvolution is to be performed
-idx = [3,3];
+idx = [32,32];
+
+
+
+%% setup true flow and true CBV
+
+%qmat is given as absolute value with units [mm^3/s].
+%It needs to be converted to perfusion [mm^3/s/mm^3]
+%We hence divide by voxel-volume
+q1 = qmat{1}(idx(1),idx(2));
+q2 = qmat{2}(idx(1),idx(2));
+
+CBFtr = (q1 + q2);
+CBVtr = phimat(idx(1),idx(2));
 
 
 
@@ -56,9 +69,9 @@ idx = [3,3];
 CLoc    = squeeze(Cmat(idx(1),idx(2),:));
 
 %get aif
-aifLoci = squeeze(Cmat(idx(1),idx(2)-1,:))./phimat(idx(1),idx(2)-1);
-aifLocj = squeeze(Cmat(idx(1)-1,idx(2),:))./phimat(idx(1)-1,idx(2));
-aifLoc  = (aifLoci + aifLocj)./2;
+c1 = squeeze(Cmat(idx(1),idx(2)-1,:))./phimat(idx(1),idx(2)-1);
+c2 = squeeze(Cmat(idx(1)-1,idx(2),:))./phimat(idx(1)-1,idx(2));
+aifLoc  = (q1.*c1 + q2.*c2)./(q1+q2); %weighting by amount of flow (q1 and q2)
 
 
 %% setup area where to run the deconvolution
@@ -82,12 +95,12 @@ CBVrec             = perfusion1c.cbvEstimation(CLoc,timeline,aifLoc);
 figure(1);clf;
 
 subplot(1,3,1);
-plot(timeline,aifLoc,timeline,CLoc,'lineWidth',3);
-legend('aifLoc','CLoc')
+plot(timeline,aifLoc,timeline,CLoc,timeline,aifval,'lineWidth',3);
+legend('aifLoc','CLoc','aifval')
 
 subplot(1,3,2);
 plot(timeline,Irec,'lineWidth',3);
-ti = sprintf('Impuls-Response Function: CBF=%1.4f',CBFrec*100*60);
+ti = sprintf('Impuls-Response Function\nCBFrec=%1.4f, CBFtr=%1.4f',CBFrec*100*60,CBFtr*100*60);
 title(ti);
 
 subplot(1,3,3);
@@ -96,15 +109,6 @@ legend('true C','recovered C');
 ti = sprintf('Reconstruction');
 title(ti);
 
-
-
-%% setup true flow and true CBV
-
-%qmat is given as absolute value with units [mm^3/s].
-%It needs to be converted to perfusion [mm^3/s/mm^3]
-%We hence divide by voxel-volume
-CBFtr = (qmat{1}(idx(1),idx(2)) + qmat{2}(idx(1),idx(2)))./(2*hd);
-CBVtr = CBV(idx(1),idx(2));
 
 
 %% median errors

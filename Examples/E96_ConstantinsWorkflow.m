@@ -21,7 +21,9 @@ setupConvolution = 0;
 downsampling     = 0;
 makelenmat       = 0;
 streamlines      = 'lenmatE';
-downsampleData   = 1;
+downsampleData   = 0;
+saveData         = 1;
+
 
 %configuration
 % aif = 'delta';
@@ -35,7 +37,7 @@ aif = 'gamma';
 m        = [64,64,1];       %matrix size
 omega    = [0,10,0,10,0,1]; %domain in mm
 Tmax     = 90;              %max time in seconds
-dt       = 0.0005;          %time resolution of simulation
+dt       = 0.001;          %time resolution of simulation
 tSamp    = .1;              %sampling rate (in seconds)
 
 
@@ -54,7 +56,7 @@ mk       = [m,k];
 cso  = [1,1,1];
 csi  = [64,64,1];
 F    = 50/100/60*Hd; %absolute in-/outflow in mm^3/s
-K    = 5e-6;         %Units in mm^2
+K    = 5e-6;         %Permeability: Units in mm^2
 mu   = 5*1e-3;       %viscosity is approx 5 cP = 5e-3 Pa*s
 
 
@@ -63,7 +65,7 @@ mu   = 5*1e-3;       %viscosity is approx 5 cP = 5e-3 Pa*s
 %Following a source (see publication) the av. capillary radius is about 3microns
 %{
 r0   = 3e-3;         %in mm
-vCap = r0^2*pi*h(1); %average volume of capillary vessel
+vCap = r0^2*pi*h(1); %average volume of capillary vessels
 CBV  = 0.05;         %in percent
 n0   = hd*CBV/vCap;
 K    = 1/24*pi*n0*r0^4;
@@ -188,12 +190,11 @@ if makelenmat
         case 'lenmatE'
             lenmat = perfusion1c.arclength(qmat,Fmat,h);
     end
-    
-    
+
     
 else
     
-    load('tmp.mat','lenmat');
+    load('lenmat.mat','lenmat');
 
     
 end
@@ -221,16 +222,25 @@ CBV = phimat;
  
 
 %% save some data
+if saveData
+    
+    %save large data
+    save('largeDataSet.mat','Cmat','timeline','aifval','k','n','Hd','qmat','prm','phimat','Fmat','-v7.3');
+    
+end
+
+
+
 if downsampleData
     
-    %downsample the data to approx 1sec time resolution
+    %downsample the data to approx tSamp time resolution
     step     = round(tSamp/dt);
     Cmat     = Cmat(:,:,:,1:step:end);
     timeline = timeline(1:step:end);
     aifval   = aifval(1:step:end);
     k        = numel(timeline);
     
-%     save('smallDataSet.mat','Cmat','timeline','aifval','k','n','Hd','qmat');
+    save('smallDataSet.mat','Cmat','timeline','aifval','k','n','Hd','qmat','prm','phimat','Fmat');
     
 end
 

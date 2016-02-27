@@ -1,4 +1,10 @@
 function [aifval] = createaif(aiftype,timeline)
+%function [aifval] = createaif(aiftype,timeline)
+%
+% INPUT:
+% aiftype  - 'gamma', 'parker', 'delta'
+% timeline - timeline in seconds
+%
 
 
 % Define an AIF curve

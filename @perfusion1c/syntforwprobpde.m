@@ -1,4 +1,19 @@
 function [Cmat] = syntforwprobpde(phimat,flowmat,Fmat,aifval,prm)
+%function [Cmat] = syntforwprobpde(phimat,flowmat,Fmat,aifval,prm)
+%
+% INPUT:
+%   phimat - Cell-centered porosity [fractions]
+%  flowmat - Absolute flow (staggered) [mm^3/s]
+%            Positive values of flowmat mean that flow goes from
+%            - top   -> bottom
+%            - left  -> right
+%            - front -> back
+%    Fmat  - inflow (cell-centered) [mm^3/s]
+%  aifval  - arterial input function [mmol/mm^3]
+%
+%
+% OUTPUT
+% Cmat - simulated values [mmol/mm^3]
 
 dim = size(phimat);
 if numel(dim) == 2
@@ -40,13 +55,14 @@ time = 0;
 for i = 2 : ntime    
     time = time + dt(i);
    
-    cmath = cmat(:,:,:,i-1);
+    %setup source-inflow for current timepoint
     Fmat = Fmatini;
-    
     for j = 1 : size(cso,1)
         Fmat(cso(j,1),cso(j,2),cso(j,3)) = Fmat(cso(j,1),cso(j,2),cso(j,3))*aifval(i-1);
     end;
     
+    %setup source-outflow for current timepoint
+    cmath = cmat(:,:,:,i-1);
     for j = 1 : size(csi,1)
         Fmat(csi(j,1),csi(j,2),csi(j,3)) = Fmat(csi(j,1),csi(j,2),csi(j,3))*cmath(csi(j,1),csi(j,2),csi(j,3));
     end;
@@ -56,101 +72,86 @@ for i = 2 : ntime
     sumflux = zeros(dim);
         
     %
-    % Flow into voxel x direction
+    % Flow INTO voxels, i direction
     %
-
-    % the face area
-    % dA = h(2)*h(3);
     
-    % NB the flux flowmat is already multiplied by the voxel area so
-    % therefore we set dA = 1 always
-%     dA = h(2)*h(3);
-    dA = 1;
-
     % flow from top
-    a = flowmat{1}(1:end-1,:,:);
+    a   = flowmat{1}(1:end-1,:,:);
     ind = a > 0;
-    % tracer comes from top
-    cj = perfusion1c.transim(cmath,-1,0,0);
-    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind)*dA;
+    cj  = perfusion1c.transim(cmath,-1,0,0);
+    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind);
     % flow from bottom
-    a = flowmat{1}(2:end,:,:);
+    a   = flowmat{1}(2:end,:,:);
     ind = a < 0;
-    cj = perfusion1c.transim(cmath,1,0,0);
-    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind)*dA;
+    cj  = perfusion1c.transim(cmath,1,0,0);
+    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind);
 
     %
-    % Flow into voxel y direction
+    % Flow INTO voxels, j direction
     %
 
-    % the face area
-%     dA = h(1)*h(3);
-    dA = 1; %CONSTANTIN
-    
     % flow from left
-    a = flowmat{2}(:,1:end-1,:);
+    a   = flowmat{2}(:,1:end-1,:);
     ind = a > 0;
-    cj = perfusion1c.transim(cmath,0,-1,0);
-    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind)*dA;
-    % flow from bottom
-    a = flowmat{2}(:,2:end,:);
+    cj  = perfusion1c.transim(cmath,0,-1,0);
+    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind);
+    % flow from right
+    a   = flowmat{2}(:,2:end,:);
     ind = a < 0;
-    cj = perfusion1c.transim(cmath,0,1,0);
-    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind)*dA;
+    cj  = perfusion1c.transim(cmath,0,1,0);
+    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind);
 
     %
-    % Flow out from voxel x direction
+    % Flow OUT from voxels, i direction
     %
-    cj = cmath;
-    
-    % the face area
-%     dA = h(2)*h(3);
-    dA = 1; %CONSTANTIN
     
     % flow towards top
-    a = flowmat{1}(1:end-1,:,:);
+    a   = flowmat{1}(1:end-1,:,:);
     ind = a < 0;
-    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cj(ind)*dA;
+    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cmath(ind);
     % flow towards bottom
-    a = flowmat{1}(2:end,:,:);
+    a   = flowmat{1}(2:end,:,:);
     ind = a > 0;
-    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cj(ind)*dA;
+    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cmath(ind);
 
     %
-    % Flow out from voxel y direction
+    % Flow OUT from voxels, j direction
     %
-
-    % the face area
-%     dA = h(2)*h(3);
-    dA = 1; %CONSTANTIN
-
-
 
     % flow towards left
-    a = flowmat{2}(:,1:end-1,:);
+    a   = flowmat{2}(:,1:end-1,:);
     ind = a < 0;
-    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cj(ind)*dA;
+    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cmath(ind);
     % flow towards right
-    a = flowmat{2}(:,2:end,:);
+    a   = flowmat{2}(:,2:end,:);
     ind = a > 0;
-    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cj(ind)*dA;
+    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cmath(ind);
 
-    % sum of fluxes
+    % sum flows results from flux-fields
     fluxterm = Fmat + sumflux;
 
-    % adding up
-    del = dt(i)*fluxterm./(phimat*voxelvol);
-
+    % adding up.
+    % remember: dC/dt = fluxterm*appropriateUnits
+    % where the fluxterm has units mmol/s
+    del = dt(i)*fluxterm./(phimat*voxelvol); 
     a = cmat(:,:,:,i-1) + del;
+    if nnz(a<0)
+        warning('Some concentrations are below 0, going to keyboard.');
+        keyboard
+    end
     a(a < 0) = 0;
+    
     cmat(:,:,:,i) = a;
     
-    % to plot
-    Chere = cmat(:,:,:,i);
-    
-    
+    % plotting
     if round(i/500) == i/500        
-        figure(1);imagesc(Chere,lim);colormap(gray);axis image;drawnow
+        ci = cmat(:,:,:,i);
+        figure(1);
+            imagesc(ci,lim);
+            colormap(gray); 
+            axis image; 
+            caxis(lim)
+            drawnow
     end;
     
 end;

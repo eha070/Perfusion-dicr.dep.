@@ -153,3 +153,19 @@ subplot(2,3,6);
 imagesc((qTest{2} - q{2})./qTest{2});
 axis image;
 title('(qTest{2} - q{2})./qTest{2}')
+
+return;
+%% check if inflow=outflow
+
+res = zeros(m);
+for i = 1:m(1);
+    for j = 1:m(2);
+        in  = q{1}(i,j)   + q{2}(i,j);
+        out = q{1}(i+1,j) + q{2}(i,j+1);
+        res(i,j) = in-out;
+    end
+end
+
+figure(1);clf;
+imagesc(res);
+axis image;
