@@ -21,8 +21,8 @@ prm.aiftype = 'gamma';
 % prm.aiftype = 'parker';
 % prm.aiftype = 'delta';
 
-% physical dimension in meter
-prm.physdim = [10,10,1]*1e-3;
+% physical dimension in mm
+prm.physdim = [10,10,1];
 prm.physvol = prod(prm.physdim);
 
 % dimension of problem
@@ -99,17 +99,17 @@ qin = 50;
 qin = qin/100;
 
 % Multiply by volume of our slab to get the total flow into the region to
-% get m^3/min
+% get mm^3/min
 qin = qin*prm.physvol;
 
-% Divide by 60 to get per second: m^3/sec
+% Divide by 60 to get per second: mm^3/sec
 qin = qin/60;
 
 % this value gives a perfusion of around 50ml/min/100ml!!! Thats why we use
 % it.
 % qin = 0.0007;
 
-% Fmat = int_Omega_i Q(x) dx where Q = [m^3/s/m^3], so Fmat = [m^3/s],
+% Fmat = int_Omega_i Q(x) dx where Q = [mm^3/s/mm^3], so Fmat = [mm^3/s],
 % the absolute inflow
 Fmat = zeros(dim);
 qout = -qin;

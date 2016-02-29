@@ -17,8 +17,8 @@ close all;
 
 
 %setup which flow-calculation to use
-indicatorcalc = 'conv';
-% indicatorcalc = 'PDE';
+% indicatorcalc = 'conv';
+indicatorcalc = 'PDE';
 
 
 
@@ -109,7 +109,7 @@ end
 clearvars E D;
 
 
-return;
+% return;
 
 %% prepare data
 %prepare sizes

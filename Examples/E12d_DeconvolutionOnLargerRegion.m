@@ -32,9 +32,9 @@ load smallDataSet
 %% main variables
 
 idx  = [32,32]; %center voxel
-wi   = 3;
-he   = 3;
-OI   = 2e-4;
+wi   = 2;
+he   = 2;
+OI   = 5e-4;
 
 %% some basic variables
 mk = size(Cmat);
@@ -82,7 +82,7 @@ FOut = sum(FBot) + sum(FRight);
 %perfusion
 hd   = prod(prm.h);
 vol  = nnz(mask)*hd;
-FRef = FIn/vol;
+FRef = FIn/vol; 
 
 
 fprintf('FIn=%1.4f, FOut=%1.4f, (F-FOut)/F = %1.4f\n',FIn,FOut,(FIn-FOut)/FIn);
@@ -90,9 +90,9 @@ fprintf('FIn=%1.4f, FOut=%1.4f, (F-FOut)/F = %1.4f\n',FIn,FOut,(FIn-FOut)/FIn);
 %% get AIF
 
 %get concentrations
-c    = bsxfun(@rdivide,Cmat,phimat);
-cTop  = squeeze(c(topRow,idxj,1,:));
-cLeft = squeeze(c(idxi,leftCol,1,:));
+c     = bsxfun(@rdivide,Cmat,phimat);
+cTop  = reshape(c(topRow,idxj,1,:),[],k);
+cLeft = reshape(c(idxi,leftCol,1,:),[],k);
 
 %get aifs
 aifTop  = sum(bsxfun(@times,cTop,FTop(:)),1);

@@ -14,7 +14,7 @@
 %                                                http://mic.uni-luebeck.de
 % ------------------------------------------------------------------------- 
 
-clear;
+% clear;
 clc;
 close all;
 
@@ -68,6 +68,9 @@ CAna     = CAnaH(1:step:end);
 aif      = aifH(1:step:end);
 I        = IH(1:step:end);
 
+%% get data curve
+CData = squeeze(Cmat(idx(1),idx(2),1,:));
+
 
 %% recover flow by deconvolution
 
@@ -78,7 +81,7 @@ tic; fprintf('Starting SVD...');
 fprintf('finished: %1.2fs\n',toc);
 
 %do deconvolution
-[FRec,IRec,CRec] = perfusion1c.linearDeconvolution(CAna,timeline,OI,U,S,V);
+[FRec,IRec,CRec] = perfusion1c.linearDeconvolution(CData,timeline,OI,U,S,V);
 
 %% show results
 if showDeconv
