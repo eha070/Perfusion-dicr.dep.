@@ -10,7 +10,7 @@
 %       C(t) = F_Ref*\int_0^t aif(t)*exp(-F_Ref/phi*(t-s)) ds 
 % where F_Ref = F/hd;
 %
-% Then recovers F by deconvolving F.
+% Then recovers F by deconvolving C with the AIF.
 % 
 %                                      (c)Constantin Sandmann, 27-Feb-2016 
 %                                                http://mic.uni-luebeck.de
@@ -22,21 +22,31 @@ showDeconv    = 1;
 
 %% setup main variables
 
-%setup main constants
-F   = 50/60; %flow in ml^3/s/ml
-hd  = 100;   %voxel volume in ml
-phi = 0.05;  %porosity in ml/ml
+%THESE PARAMETERS WORK
+phi  = 0.05;  %porosity in ml/ml
+F    = 50/60; %flow in ml^3/s
+hd   = 100;   %voxel volume in ml
+OI   = .0003;
+res  = 1e-1; %sampling period
+tMax = 90;
+nSmp = 1e5;
+
+% %APPROXIMATE PARAMTERS FROM EXAMPLES
+% phi  = 0.05;  %porosity in ml/ml
+% F    = 0.02; %flow in ml^3/s
+% hd   = 0.02;   %voxel volume in ml
+% OI   = 0.003;
+% res  = 1e-2;
+% tMax = 90;
+% nSmp = 1e5;
 
 
 %main input parameters
-timeline = linspace(0,90,1001)';
+timeline = linspace(0,tMax,nSmp)';
 aif      = perfusion1c.getGammaAIF(timeline/60);
 dt       = timeline(2)-timeline(1);
 k        = numel(timeline);
 
-
-%oscillation index
-OI = .003;
 
 %% solution by discretization
 
@@ -44,22 +54,22 @@ c = zeros(k,1);
 C = zeros(k,1);
 for i = 1:k-1
     
-    incr = F*(aif(i) - c(i));
+    incr = F/hd*(aif(i) - c(i)); %increment in mmol/ml/s
     
-    C(i+1) = C(i) + dt*(incr/hd);
+    C(i+1) = C(i) + dt*incr;
     c(i+1) = C(i+1)/phi;
     
 end
 
 CDisc = C;
 %% analytic solution
-F_Norm = F/hd;
+FNorm = F/hd;
 
 %setup impuls-response function I
-I = F_Norm*exp(-F_Norm/phi*timeline);
+I = FNorm*exp(-FNorm/phi*timeline);
 
 %setup convolution
-C     = conv(I,aif)*dt;
+C    = conv(I,aif)*dt;
 CAna = C(1:k);
 
 
@@ -67,7 +77,7 @@ CAna = C(1:k);
 %% test deconvolution
 
 %downsampling
-step        = round(1/dt);
+step        = round(res/dt);
 timelineMod = timeline(1:step:end);
 CMod        = CDisc(1:step:end);
 aifMod      = aif(1:step:end);
@@ -78,14 +88,12 @@ dtMod       = timelineMod(2)-timelineMod(1);
 A       = perfusion1c.getLinearConvolutionMatrix(aifMod,dtMod);
 [U,S,V] = svd(A);
 
-%do deconvolution
+%% do deconvolution
 [FRec,IRec,CRec] = perfusion1c.linearDeconvolution(CMod,timelineMod,OI,U,S,V);
 
-%setup true F
-FTrue = F;
+% show results
 
-
-%% show results
+FTrue = FNorm;
 
 if showDiscVsAna
     figure(1);clf;
@@ -96,16 +104,17 @@ end
 
 if showDeconv
     figure(2);clf;
-    set(1,'name','Deconvolution Results');
+    set(2,'name','Deconvolution Results');
     
     subplot(1,2,1);
     plot(timelineMod,CMod,timelineMod,CRec);
-    legend('C_Disc','CRec');    
+    legend('CDisc','CRec');    
     title('C');
     
+    subplot(1,2,2);
     plot(timelineMod,IMod,timelineMod,IRec);
     legend('I','IRec');
-    ti = sprintf('F=%1.4f, FTr=%1.4f',F,FTrue);
+    ti = sprintf('FRec=%1.4f, FTrue=%1.4f',FRec,FTrue);
     title(ti);
 
 end
