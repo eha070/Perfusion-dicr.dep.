@@ -21,8 +21,8 @@ setupConvolution = 0;
 downsampling     = 0;
 makelenmat       = 0;
 streamlines      = 'lenmatE';
-downsampleData   = 0;
-saveData         = 1;
+downsampleData   = 1;
+saveData         = 0;
 
 
 %configuration
