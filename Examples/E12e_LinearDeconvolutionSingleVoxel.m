@@ -19,9 +19,8 @@ clc;
 close all;
 
 showDeconv    = 1;
-showC         = 0;
 aifMode       = 'global';
-idx           = [1,1];
+idx           = [31,1];
 
 OI            = 1e-2;
 
@@ -30,44 +29,22 @@ OI            = 1e-2;
 load smallDataSet
 
 %setup timeline
-timelineH = linspace(0,90,1e5);
-kH        = numel(timelineH);
-dtH       = timelineH(2)-timelineH(1);
-hd        = prod(prm.h);   %voxel volume in mm^3
+k        = numel(timeline);
+dt       = timeline(2)-timeline(1);
+hd       = prod(prm.h);   %voxel volume in mm^3
 
+%% Ground-Truth Flow
 
 %setup voxel flow
-q1  = qmat{1}(idx(1),idx(2));
-q2  = qmat{2}(idx(1),idx(2));
-F   = (q1 + q2); %flow in mm^3/s
+q1    = qmat{1}(idx(1),idx(2));
+q2    = qmat{2}(idx(1),idx(2));
+F     = (q1 + q2); %flow in mm^3/s
+FTrue = (F + abs(Fmat(idx(1),idx(2))))/hd;
 
-%setup voxel CBV
+%setup voxel porosity
 phi = phimat(idx(1),idx(2));
 
-%setup local AIF
-c1    = squeeze(Cmat(idx(1),idx(2)-1,:))./phimat(idx(1),idx(2)-1);
-c2    = squeeze(Cmat(idx(1)-1,idx(2),:))./phimat(idx(1)-1,idx(2));
-aifH  = (q1.*c1 + q2.*c2)./(q1+q2); %weighting by amount of flow (q1 and q2)
-aifH  = interp1(timeline,aifH,timelineH);
 
-
-%% analytic solution from data
-FTrue = F/hd;
-
-%setup impuls-response function I
-IH = FTrue*exp(-FTrue/phi*timelineH);
-
-%setup convolution
-C     = conv(IH,aifH)*dtH;
-CAnaH = C(1:kH)';
-
-
-%% downsampling to data-grid
-dt       = timeline(2)-timeline(1);
-step     = round(dt/dtH);
-timeline = timelineH(1:step:end);
-CAna     = CAnaH(1:step:end);
-I        = IH(1:step:end);
 
 %% get data curve
 CData = squeeze(Cmat(idx(1),idx(2),1,:));
@@ -77,9 +54,11 @@ CData = squeeze(Cmat(idx(1),idx(2),1,:));
 
 switch aifMode
     case 'local'
-        aif = aifH(1:step:end);
+        c1  = squeeze(Cmat(idx(1),idx(2)-1,:))./phimat(idx(1),idx(2)-1);
+        c2  = squeeze(Cmat(idx(1)-1,idx(2),:))./phimat(idx(1)-1,idx(2));
+        aif = (q1.*c1 + q2.*c2)./(q1+q2); %weighting by amount of flow (q1 and q2)
     case 'global'
-        aif  = perfusion1c.getGammaAIF(timeline/60)*1e-6;
+        aif  = aifval;
 end
 
 
@@ -92,32 +71,22 @@ tic; fprintf('Starting SVD...');
 fprintf('finished: %1.2fs\n',toc);
 
 %do deconvolution
-[FRec,IRec,CRec] = perfusion1c.linearDeconvolution(CAna,timeline,OI,U,S,V);
+[FRec,IRec,CRec] = perfusion1c.linearDeconvolution(CData,timeline,OI,U,S,V);
 
 %% show results
-
-if showC
-    figure(1);clf;
-    set(1,'name','Comparison of Cs');
-    
-    plot(timeline,CData,timeline,CAna);
-    legend('CData','CAna');
-end
-
-
 
 if showDeconv
     figure(2);clf;
     set(2,'name','Deconvolution Results');
     
     subplot(1,2,1);
-    plot(timeline,CAna,timeline,CRec);
+    plot(timeline,CData,timeline,CRec);
     legend('CDisc','CRec');    
     title('C');
     
     subplot(1,2,2);
-    plot(timeline,I,timeline,IRec);
-    legend('I','IRec');
+    plot(timeline,IRec);
+    legend('IRec');
     ti = sprintf('FRec=%1.4f, FTrue=%1.4f',FRec,FTrue);
     title(ti);
 
