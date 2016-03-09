@@ -636,9 +636,7 @@ Now, let $\phi$ be the porosity of the tissue, which is the relative distributio
 	%We will now describe the construction of the digital phantom in detail.	
 	
 	
-		%--------------------------------------------------
-	% Subsection: Relating the traditional Method and the Digital Phantom
-	%--------------------------------------------------
+
 %	\subsection{Relating the Traditional Method and the Digital Phantom}\label{sec:relation}
 %	
 %	In order to test the standard models for their abilities to restore CBF and CBV, we need to convert the flux $q$ with units \si{\siq} to perfusion $\Perf$ with units \si{\siQmm}. 
@@ -764,48 +762,108 @@ Now, let $\phi$ be the porosity of the tissue, which is the relative distributio
 	Equation \eqref{eq:conteqlocal} is a linear transport equation in $c(x,t)$. 
 	Following \cite{evans98}, equation \eqref{eq:conteqlocal} admits a unique local solution.
 
-
-
 	%--------------------------------------------------
-	% Subsection: Converting Flow to Perfusion
+	% Subsection: Relating New Model with Old Model
 	%--------------------------------------------------
-\subsection{Relating the transport equation model with the traditional deconvolution model for perfusion}
-	\label{sec:relating}
-	Consider the solute transport equation (\ref{eq:conteqlocal}), and rewrite it as
-	\begin{equation}
-		\frac{\partial c}{\partial t} + \frac{q}{\phi} \cdot \nabla c = \frac{(c_{so}-c)Q_{so}}{\phi }.
-		\label{eq:conteqlocal3}
+\subsection{Relating the transport equation model with the traditional deconvolution model for perfusion}\label{sec:NewAndOld}
+	In this section we will describe how the transport equation model is related to the traditional deconvolution model.
+	More specifically, we will show that in the transport model each voxel can be described by a traditional model with arterial input determined by the adjacent upstream voxels.
+	Additionally, we will consider the effects of deconvolving a voxel curve $C_i$ of the transport model with the global arterial input function $\ca$. 
+	We will show that in this case the resulting residue function will depend on the perfusion of all upstream voxels.
+	Note that this effect makes the application of standard deconvolution techniques difficult in coupled systems.
+	
+	
+	To see this, let us consider the continuity equation for one voxel \eqref{eq:conteq}.
+	For sake of simplicity let us assume that $Q_{\mathrm{so},i} = Q_{\mathrm{si},i} = 0$.
+	Note that it is possible to extend the following approach also to voxels where $Q_{\mathrm{so},i} \neq 0$ or $Q_{\mathrm{si},i} \neq 0$.
+	We will now reformulate \eqref{eq:conteq} as a traditional one-dimensional equation for a well-mixed compartment.
+	First, let us define the areas of inflow and outflow over the boundary by $S_{\mathrm{in}} := \{ x \in \partial \Omega_i: \ q_i(x) \cdot n(x) < 0 \}$ and $S_{\mathrm{out}}:= \{ x \in \partial \Omega_i: \ q_i(x) \cdot n(x) > 0 \}$ respectively.
+	Let us define the concentration of CA at the inflow as the weighted sum
+	\begin{equation}\label{eq:cin}
+	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}c_i(t)(q_i \cdot n) \diffint s}{\int_{S_{\mathrm{in}}} q_i \cdot n \diffint s}
 	\end{equation}
-	for a nonzero $\phi$, and where we used \eqref{eq:syntcontsimp2} and $Q = Q_{so} + Q_{si}$.
-	We follow the method of characteristics and convert from Eulerian coordinates $(x(t),t)$ to Lagrangian coordinates $(x_0,t)$.
-	Here $(x_0,t_0)$ corresponds to the beginning of a streamline at point $x_0$ and timepoint $t_0$. 
-%	The parameterization parameter for the streamline emerging at $(x_0,t_0)$ is denoted by $s$. 
-	Substituting $x = x(t)$, and denoting $c(t):=c(x(t),t)$, $\Qso(t):=Q_{so}(x(t))$, $\phi(t):=\phi(x(t))$ and $c_a(t):=c_a(t)$  yields the following system of ODEs \cite{evans98}:
-	\begin{subequations}
-		\label{eq:ODEs}
-		\begin{alignat}{2}
-			\frac{Dc}{Dt} + \frac{\Qso(t)}{\phi(t)}c(t) &= \frac{c_{so}(t)\Qso(t)}{\phi(t)}, & \quad c(0) &= 0 \label{eq:ODEC} \\
-			x'(t) &= \frac{q(t)}{\phi(t)}, &x(0) &= x_0 \label{eq:ODEx}\\
-		\end{alignat}
-	\end{subequations}
-	The notation $Dc/Dt$ refers to the total derivative (material derivative) of $c$ with respect to the parameterisation $t$.
-	The solution variable $c(t)$ can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and where $(x(t),t)$ is the wavefront at time point $t$. 
-
-	Equation \eqref{eq:ODEC}, which governs the behaviour along the streamline, has the general solution
-	\begin{equation}\label{eq:Sol}
-		c(x(t),t) = \int_{0}^{t} e^{-(R(t)-R(s))}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s
+	Likewise we define the concentration of CA at the outflow as
+	\[
+	 	c_{\mathrm{out}}(t):= \frac{\int_{S_{\mathrm{out}}}c_i(t)(q_i \cdot n) \diffint s}{\int_{S_{\mathrm{out}}} q_i \cdot n \diffint s}.
+	\]
+	We now define the perfusion of the voxel $\Omega_i$ as follows:
+	\[
+		P_{\mathrm{in}} :=\frac{-1}{\mathrm{Vol}( \Omega_i)}\int_{S_{\mathrm{in}}} q_i \cdot n \diffint s, \quad P_{\mathrm{out}}:= \frac{1}{\mathrm{Vol}( \Omega_i)} \int_{S_{\mathrm{out}}} q_i \cdot n \diffint s
+	\]
+	Since by assumption the flow-field $q$ is divergence-free, it holds that $P_{\mathrm{in}}=P_{\mathrm{out}}$ and hence equation \eqref{eq:conteq} can be reformulated as
+	\[
+		(\phi_i c_i)'(t)  = P_{\mathrm{in}} (c_\mathrm{in}(t)  - c_\mathrm{out}(t)).
+	\]
+	Note that in the discretization described in Section~\ref{sec:transport} it is assumed that the CA concentration at the outflow $S_\mathrm{out}$ equals the concentration within the voxel.
+	In this case it follows that
+	\begin{equation}\label{eq:voxelcurve}
+		C_i(t) = (I_i*c_{\mathrm{in}})(t) = P_{\mathrm{in}} \int_0^t e^{- P_{\mathrm{in}}/\phi_i(t-s)}c_\mathrm{in}(s)\diffint s.
 	\end{equation}
-	where $R(s)=\int_{0}^s\Qso(x(u))/\phi(x(u)) d u$.
-
-	We now impose the additional assumptions that $\Qso$ and $\phi$ are constant along the streamline up to timepoint $t$.
-	Following the path of a particle emerging at timepoint $t_0=0$, one can see that \eqref{eq:Sol} becomes
-	\begin{equation}\label{eq:Cpdeclassic}
-		C(x(t),t) = \Qso \int_{0}^t e^{-(t - s)/T}c_{so}(s) \diff s
+	where $I_i:=P_{\mathrm{in}}\mathrm{exp}(- P_{\mathrm{in}}/\phi_i(t-s))$ and $c_{\mathrm{in}}$ is determined by \eqref{eq:cin} and the adjacent upstream voxels.
+	Figure~\ref{fig:VoxelComp} a) shows the comparison of a voxel-curve of the 2D phantom and the simulated curve using \eqref{eq:voxelcurve}.
+		
+	As a direct consequence it follows by recursion, that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impuls-response functions of all upstream voxels, i.e.
+	\[
+		c_i(t) = ((I_1*\dots *I_l)*\ca)(t).
+	\]
+	where $I_j(s):=p_i\mathrm{exp}(- p_i(s))$ and $p_i=P_i/\phi_i$.
+	Following \cite{Kordecki97,Akkouchi08}, the convolution of exponential functions with pairwise different parameters $p_i$ is given by
+	\begin{equation}\label{eq:IAna}
+		(I_1*\dots *I_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is},
 	\end{equation}
-	where $T := \Qso/\phi$ and $C = c \phi$.
-	A comparison with \eqref{eq:traditionalperf} shows that these expressions are equal provided $Q_a = Q_{so}$ and $c_{so} = c_{a}$.
-	We can interpret \eqref{eq:Cpdeclassic} as a so-called Lagrangian description of the the concentration of CA at a wave-front moving through a constant source-field, where at every voxel there is contribution of an arterial input.
-	Note in contrast, that \eqref{eq:traditionalperf} is typically interpreted as an Eulerian description of contrast agent concentration at a fixed point in space.
+	see \cite{Akkouchi08} for the case $p_i=p_j$ for some $i,j$.
+	
+	
+	\begin{figure}
+		\begin{tabular}{p{.45\textwidth }}
+			\includegraphics[width=.45\textwidth]{./figs/ConvVsPDE.pdf} \\
+			a) Tissue curve at location [32,35]. Simulation using \eqref{eq:voxelcurve} (blue) and transport model (red).\\
+			 \includegraphics[width=.45\textwidth]{./figs/ConvVsPDE.pdf} \\
+		\end{tabular}
+		\caption{a) Tissue curve of the 2D phantom at location [32,35]. Simulation using \eqref{eq:voxelcurve} with $P_i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels in blue and simulation using the transport model in red. Curves are coinciding perfectly. Note that the perfusion is unrealisticly high. b) Impuls response functions at location [1,20] for the global arterial input function. The analytic function given by \eqref{eq:IAna} is displayed in blue, the function recovered by deconvolution is displayed in red. As outlined in Section~\ref{sec:NewAndOld} both functions are coinciding perfectly. Note that the recovered impuls-response function depends on the perfusion of all upstream voxels and not only the adjacent voxels.}
+	\end{figure}
+	
+	
+	%--------------------------------------------------
+	% Subsection: Relating New Model with Old Model
+	%--------------------------------------------------
+% \subsection{Relating the transport equation model with the traditional deconvolution model for perfusion}
+% 	\label{sec:relating}
+% 	Consider the solute transport equation (\ref{eq:conteqlocal}), and rewrite it as
+% 	\begin{equation}
+% 		\frac{\partial c}{\partial t} + \frac{q}{\phi} \cdot \nabla c = \frac{(c_{so}-c)Q_{so}}{\phi }.
+% 		\label{eq:conteqlocal3}
+% 	\end{equation}
+% 	for a nonzero $\phi$, and where we used \eqref{eq:syntcontsimp2} and $Q = Q_{so} + Q_{si}$.
+% 	We follow the method of characteristics and convert from Eulerian coordinates $(x(t),t)$ to Lagrangian coordinates $(x_0,t)$.
+% 	Here $(x_0,t_0)$ corresponds to the beginning of a streamline at point $x_0$ and timepoint $t_0$.
+% %	The parameterization parameter for the streamline emerging at $(x_0,t_0)$ is denoted by $s$.
+% 	Substituting $x = x(t)$, and denoting $c(t):=c(x(t),t)$, $\Qso(t):=Q_{so}(x(t))$, $\phi(t):=\phi(x(t))$ and $c_a(t):=c_a(t)$  yields the following system of ODEs \cite{evans98}:
+% 	\begin{subequations}
+% 		\label{eq:ODEs}
+% 		\begin{alignat}{2}
+% 			\frac{Dc}{Dt} + \frac{\Qso(t)}{\phi(t)}c(t) &= \frac{c_{so}(t)\Qso(t)}{\phi(t)}, & \quad c(0) &= 0 \label{eq:ODEC} \\
+% 			x'(t) &= \frac{q(t)}{\phi(t)}, &x(0) &= x_0 \label{eq:ODEx}\\
+% 		\end{alignat}
+% 	\end{subequations}
+% 	The notation $Dc/Dt$ refers to the total derivative (material derivative) of $c$ with respect to the parameterisation $t$.
+% 	The solution variable $c(t)$ can be regarded the concentration curve of a particle which originated at $(x_0,t_0)$ and where $(x(t),t)$ is the wavefront at time point $t$.
+%
+% 	Equation \eqref{eq:ODEC}, which governs the behaviour along the streamline, has the general solution
+% 	\begin{equation}\label{eq:Sol}
+% 		c(x(t),t) = \int_{0}^{t} e^{-(R(t)-R(s))}c_{so}(s)\frac{\Qso(s)}{\phi(s)} \diff s
+% 	\end{equation}
+% 	where $R(s)=\int_{0}^s\Qso(x(u))/\phi(x(u)) d u$.
+%
+% 	We now impose the additional assumptions that $\Qso$ and $\phi$ are constant along the streamline up to timepoint $t$.
+% 	Following the path of a particle emerging at timepoint $t_0=0$, one can see that \eqref{eq:Sol} becomes
+% 	\begin{equation}\label{eq:Cpdeclassic}
+% 		C(x(t),t) = \Qso \int_{0}^t e^{-(t - s)/T}c_{so}(s) \diff s
+% 	\end{equation}
+% 	where $T := \Qso/\phi$ and $C = c \phi$.
+% 	A comparison with \eqref{eq:traditionalperf} shows that these expressions are equal provided $Q_a = Q_{so}$ and $c_{so} = c_{a}$.
+% 	We can interpret \eqref{eq:Cpdeclassic} as a so-called Lagrangian description of the the concentration of CA at a wave-front moving through a constant source-field, where at every voxel there is contribution of an arterial input.
+% 	Note in contrast, that \eqref{eq:traditionalperf} is typically interpreted as an Eulerian description of contrast agent concentration at a fixed point in space.
 
 
 	%--------------------------------------------------
