@@ -783,17 +783,17 @@ Now, let $\phi$ be the porosity of the tissue, which is the relative distributio
 	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}c_i(t)(q_i \cdot n) \diffint s}{\int_{S_{\mathrm{in}}} q_i \cdot n \diffint s}
 	\end{equation}
 	Likewise we define the concentration of CA at the outflow as
-	\[
+	\begin{equation}
 	 	c_{\mathrm{out}}(t):= \frac{\int_{S_{\mathrm{out}}}c_i(t)(q_i \cdot n) \diffint s}{\int_{S_{\mathrm{out}}} q_i \cdot n \diffint s}.
-	\]
+	\end{equation}
 	We now define the perfusion of the voxel $\Omega_i$ as follows:
-	\[
+	\begin{equation}
 		P_{\mathrm{in}} :=\frac{-1}{\mathrm{Vol}( \Omega_i)}\int_{S_{\mathrm{in}}} q_i \cdot n \diffint s, \quad P_{\mathrm{out}}:= \frac{1}{\mathrm{Vol}( \Omega_i)} \int_{S_{\mathrm{out}}} q_i \cdot n \diffint s
-	\]
+	\end{equation}
 	Since by assumption the flow-field $q$ is divergence-free, it holds that $P_{\mathrm{in}}=P_{\mathrm{out}}$ and hence equation \eqref{eq:conteq} can be reformulated as
-	\[
+	\begin{equation}
 		(\phi_i c_i)'(t)  = P_{\mathrm{in}} (c_\mathrm{in}(t)  - c_\mathrm{out}(t)).
-	\]
+	\end{equation}
 	Note that in the discretization described in Section~\ref{sec:transport} it is assumed that the CA concentration at the outflow $S_\mathrm{out}$ equals the concentration within the voxel.
 	In this case it follows that
 	\begin{equation}\label{eq:voxelcurve}
