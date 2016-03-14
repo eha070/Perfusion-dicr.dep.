@@ -818,7 +818,7 @@ Now, let $\phi$ be the porosity of the tissue, which is the relative distributio
 		\begin{tabular}{p{.45\textwidth }}
 			\includegraphics[width=.45\textwidth]{./figs/ConvVsPDE.pdf} \\
 			a) Tissue curve at location [32,35]. Simulation using \eqref{eq:voxelcurve} (blue) and transport model (red).\\
-			 \includegraphics[width=.45\textwidth]{./figs/ConvVsPDE.pdf} \\
+			 \includegraphics[width=.45\textwidth]{./figs/IDecVsIAna.pdf} \\
 		\end{tabular}
 		\caption{a) Tissue curve of the 2D phantom at location [32,35]. Simulation using \eqref{eq:voxelcurve} with $P_i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels in blue. The simulation using the transport model is given in red. Curves are coinciding perfectly. Note that the perfusion is unrealisticly high since normalization is performed with respect to the volume of one voxel. b) Impuls response functions at location [1,20] for the global arterial input function. The analytic function given by \eqref{eq:IAna} is displayed in blue, the function recovered by deconvolution is displayed in red. As outlined in Section~\ref{sec:NewAndOld} both functions are coinciding perfectly. Note that the recovered impuls-response function depends on the perfusion of all upstream voxels and not only the adjacent voxels.}
 	\end{figure}
