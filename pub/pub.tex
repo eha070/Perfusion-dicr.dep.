@@ -399,7 +399,7 @@
 
 %% set author information etc
 \title{Why perfusion measurements will eventually fail}
-\author{Constantin Heck, Erik A. Hanson, Alexander Malyshev,  Arvid Lundervold, Jan Modersitzki, Erlend Hodneland }
+\author{Constantin Sandmann, Erik A. Hanson, Alexander Malyshev,  Arvid Lundervold, Jan Modersitzki, Erlend Hodneland }
 \date{\today}
 
 
@@ -460,7 +460,15 @@
 %	\tableofcontents
 
 	\begin{abstract}
-		The usage of one-compartment (1C) models within perfusion imaging for estimation of cerebral blood flow (perfusion), cerebral blood volume and mean transit times is widespread. The traditional 1C models were originally developed for large regions of interest (ROIs) where the arterial input function is a valid tracer source function for the entire domain. In this paper we discuss the validity  of traditional 1C models voxelwise and for smaller block-sizes where the arterial input function is dispersed for a majority of the computational sub-units.  Based on the same simple physical assumptions as for the traditional 1C models, we establish a theoretical framework for perfusion modelling within a capillary field.  We also  generate a digital phantom for capillary blood flow in order to investigate whether the traditional 1C models are applicable to various types of sub-division of the imaged organ. Both our analytical and experimental results support the usage of traditional 1C models for entire organs, but also indicate that the application of these models to smaller block-sizes  may violate physical assumptions on which the models are based.
+		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread.
+		In this paper we show limits of traditional models to recover perfusion in coupled systems.
+		A novel, continuous model for contrast-agent propagation in the capillary system is introduced which is based on the modeling of porous media.
+		It is shown that the proposed model can also be regarded as a coupling of traditional one-compartment models.
+		We demonstrate that traditional models are accurately recovering the perfusion if applied to the full system.
+		However, it is shown analytically and experimentally that results of traditional models are not meaningful if applied only to parts of the system and will result in overestimation of perfusion.
+		Evidence of real patient data is provided which indicates, that this effect might also be observed in real-life applications.
+		As a remedy, we propose to evaluate perfusion in coupled systems along the streamlines.		
+		%The usage of traditional one-compartment models within perfusion imaging for estimation of cerebral blood flow (perfusion), cerebral blood volume and mean transit times is widespread. The traditional 1C models were originally developed for large regions of interest (ROIs) where the arterial input function is a valid tracer source function for the entire domain. In this paper we discuss the validity  of traditional 1C models voxelwise and for smaller block-sizes where the arterial input function is dispersed for a majority of the computational sub-units.  Based on the same simple physical assumptions as for the traditional 1C models, we establish a theoretical framework for perfusion modelling within a capillary field.  We also  generate a digital phantom for capillary blood flow in order to investigate whether the traditional 1C models are applicable to various types of sub-division of the imaged organ. Both our analytical and experimental results support the usage of traditional 1C models for entire organs, but also indicate that the application of these models to smaller block-sizes  may violate physical assumptions on which the models are based.
 	\end{abstract}
 
 	%--------------------------------------------------
