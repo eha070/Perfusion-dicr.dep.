@@ -1226,6 +1226,18 @@ From the porous media model using  \eqref{eq:flowmodel} and \eqref{eq:conteqloca
 		\label{fig:deconvResults}
 	\end{figure*}
 	
+	\subsection{Reconstruction of perfusion within a multi-compartment synthetic data set}\label{sec:RecPhantom}	
+	
+	\begin{figure}[H]
+	    \centering
+	    \begin{overpic}[scale=0.8,grid=on]{figs/3D-grid.eps}
+	    	\put(50,15.5){\color{black}Arterial blood}
+	    	\put(50,9.5){\color{black}Capillary system}
+	    	\put(50,3.5){\color{black}Venous system}				
+		\end{overpic}
+	    \caption{Perfusion modelled as a three layer problem. Arterial blood is entering from the source (black cube) into the arterial system (red), perfuses through the capillary layer (orange), eventually being collected in the venous system (blue) and removed from the system via the sink (black cube).}
+	    \label{fig:perfusion-problem}
+	\end{figure}
 	
 	
 	%--------------------------------------------------
