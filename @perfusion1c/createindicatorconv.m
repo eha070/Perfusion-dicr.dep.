@@ -8,23 +8,27 @@ function [] = createindicatorconv(prmin)
 [prm,Fmat] = settings;
 prm = perfusion1c.mergestruct(prm,prmin);
 
-stepred = prm.stepred;
+% stepred = prm.stepred;
 
 % basename flow
 basenameflow = perfusion1c.providenameflow(prm.phiopt,prm.Kopt,prm.dim);
 
 % load flow and pressure field
-pathload = ['results/synt-createflowTPFA-' basenameflow '.mat'];
+pathload = [prm.resultfolder '/synt-createflowTPFA-' basenameflow '.mat'];
 msg = ['Loading ' pathload];
 disp(msg);
 D = load(pathload);
-
 perfmat = D.perfmat;
 phimat = D.phimat;
 
+% collapse the 3D data into a 2D slice
+if isequal(prm.experiment,'3D-flow')   
+   phimat = mean(phimat,3);
+end
+
 % Reduced data: aif curve, timeline and the concentration map to find TTP
 basenameindicator = perfusion1c.providenameindicator(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T);
-pathload = ['results/synt-createindicatorpde-' basenameindicator '.mat'];
+pathload = [prm.resultfolder '/synt-createindicatorpde-' basenameindicator '.mat'];
 msg = ['Loading ' pathload];
 disp(msg);
 E = load(pathload);
@@ -147,7 +151,7 @@ if savpaper
     end;
     
     H = perfusion1c.panelstruct(A,0.01,700,'lim',clim);
-    pathsave = ['figs' '/' 'syntconv-' mfilename '-' basenameindicator '-panel.eps'];
+    pathsave = ['figs-' prm.resultfolder  '/' 'syntconv-' mfilename '-' basenameindicator '-panel.eps'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(H,pathsave,'-deps')
@@ -156,7 +160,7 @@ if savpaper
 end
 
 if savdata
-    pathsave = ['results/syntconv-' mfilename '-' basenameindicator  '.mat'];
+    pathsave = [prm.resultfolder '/syntconv-' mfilename '-' basenameindicator  '.mat'];
     msg = ['Saving ' pathsave];
     disp(msg);
     save(pathsave,'aifval','delay','Cmat','prm','-v7.3')

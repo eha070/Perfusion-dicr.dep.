@@ -2,17 +2,17 @@ function [pmat,flowmat] = syntTPFA(Kmat,Fmat,prm)
 %function [pmat,flowmat] = syntTPFA(Kmat,Fmat,prm)
 %
 %INPUT:
-% Kmat - cell-centered diagonal tensor [mm^2]
-% Fmat - cell-centered absolute in-/outflow in mm^3/s
+% Kmat - cell-centered diagonal tensor [m^2]
+% Fmat - cell-centered absolute in-/outflow  [m^3/s]
 % prm  - parameters with fields
 %        dim - dimension
-%        h   - voxel-sizes [mm]
+%        h   - voxel-sizes [m]
 %        mu  - viscosity  [Pa*s]
 %
 %OUTPUT:
 % pmat    - pressure map [Pa]. Note that this is only defined up to a 
 %           constant.
-% flowmat - map with absolute flow [mm^3/s].
+% flowmat - map with absolute flow [m^3/s].
 %
 %
 %MOTIVATION FOR TPFA:
@@ -41,7 +41,7 @@ function [pmat,flowmat] = syntTPFA(Kmat,Fmat,prm)
 %
 %[1] http://link.springer.com/article/10.1007%2Fs10596-007-9067-5
 %[2] We make the code from Aarnes, Gimse and Lie for incompressible
-%    single phase flow: "An introduction to the Numerivs of Flow in Porous
+%    single phase flow: "An introduction to the Numerics of Flow in Porous
 %    Media using Matlab"
 
 
@@ -74,7 +74,8 @@ L = Kmat.^(-1);
 % t_ij = -------------------------------------------
 %         delta x_i(lambda_i,ij^-1 + lambda_j,ij^-1)
 %
-% since delta x_i = delta x_j
+% since delta x_i = delta x_j. This is the distance from cell center to the
+% face in both directions, which is equal for a cartesian grid
 %
 
 % the term 2*|gamma|/h

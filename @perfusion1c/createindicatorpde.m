@@ -3,12 +3,12 @@ function [] = createindicatorpde(prmin)
 
 % settings
 [prm,Fmat] = settings;
+
 prm = perfusion1c.mergestruct(prm,prmin);
 
 % basename
 basenameflow = perfusion1c.providenameflow(prm.phiopt,prm.Kopt,prm.dim);
-
-pathload = ['results/synt-createflowTPFA-' basenameflow '.mat'];
+pathload = [prm.resultfolder '/synt-createflowTPFA-' basenameflow '.mat'];
 msg = ['Loading ' pathload];
 disp(msg);
 D = load(pathload);
@@ -31,7 +31,7 @@ if savmov
     step = 1/prm.dt;
 
     % delete figs/synthetic-forwprob/*
-    pathsave = ['figs' '/' 'synt-' mfilename '-' basenameindicator '.avi'];
+    pathsave = ['figs-' prm.resultfolder '/' 'synt-' mfilename '-' basenameindicator '.avi'];
     mat2movie(Cmat,pathsave,1,10,lim,step)
     
 end;
@@ -47,10 +47,12 @@ if savpaper
     c = starti;
     timeplot = zeros(16,1);
     C = 0;
+    dim = size(Cmat);
+    mid = round(dim(3)/2);
     for i = 1 : 4
         for j = 1 : 4            
             C = C + 1;
-            A{i,j} = Cmat(:,:,:,c);
+            A{i,j} = Cmat(:,:,mid,c);
             clim{i,j} = lim*D.phimat(1,1);
             timeplot(C) = prm.timeline(c);
             c = c + step;
@@ -58,7 +60,7 @@ if savpaper
     end;
     timeplot
     H = perfusion1c.panelstruct(A,0.01,700,'lim',clim);
-    pathsave = ['figs' '/' 'synt-' mfilename '-'  basenameindicator '-panel.eps'];
+    pathsave = ['figs-' prm.resultfolder  '/' 'synt-' mfilename '-'  basenameindicator '-panel.eps'];
     
     print(H,pathsave,'-deps')
     
@@ -66,7 +68,7 @@ if savpaper
 end
 
 if savdata
-    pathsave = ['results/synt-' mfilename '-' basenameindicator '.mat'];
+    pathsave = [prm.resultfolder '/synt-' mfilename '-' basenameindicator '.mat'];
     msg = ['Saving ' pathsave];
     disp(msg);
     save(pathsave,'aifval','Cmat','prm','-v7.3')

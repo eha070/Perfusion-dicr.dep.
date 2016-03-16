@@ -13,18 +13,21 @@ basenameflow = perfusion1c.providenameflow(prm.phiopt,prm.Kopt,prm.dim);
 % indicator basename
 basenameindicator = perfusion1c.providenameindicator(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T);
 
+% load true field
+pathload = [prm.resultfolder '/synt-createflowTPFA-' basenameflow '.mat'];
+msg = ['Loading ' pathload];
+disp(msg);
+D = load(pathload);
+perfmatnt = D.perfmatn;
+phimatt = D.phimat;
     
+if isequal(prm.experiment,'3D-flow')
+   phimatt = mean(phimatt,3);
+end;
+
 if isequal(prm.reconflowdata,'synt')
-
-    % load true field
-    pathload = ['results/synt-createflowTPFA-' basenameflow '.mat'];
-    msg = ['Loading ' pathload];
-    disp(msg);
-    D = load(pathload);
-    perfmatnt = D.perfmatn;
-    phimatt = D.phimat;
-
-    pathload = ['results/' prm.reconflowdata '-createindicatorpde-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
+        
+    pathload = [prm.resultfolder '/' prm.reconflowdata '-createindicatorpde-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
     D = load(pathload);
     msg = ['Loading ' pathload];
     disp(msg);
@@ -33,17 +36,13 @@ if isequal(prm.reconflowdata,'synt')
     aifval = D.aifval;
     h = prm.h;
     
+   if isequal(prm.experiment,'3D-flow')
+       Cmat = mean(Cmat,3);
+   end;
+
 elseif isequal(prm.reconflowdata,'syntconv')
     
-    % load true field
-    pathload = ['results/synt-createflowTPFA-' basenameflow '.mat'];
-    msg = ['Loading ' pathload];
-    disp(msg);
-    D = load(pathload);
-    perfmatnt = D.perfmatn;
-    phimatt = D.phimat;
-
-    pathload = ['results/' prm.reconflowdata '-createindicatorconv-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
+    pathload = [prm.resultfolder '/' prm.reconflowdata '-createindicatorconv-' basenameindicator '-red-' int2str(prm.stepred) '.mat'];
     D = load(pathload);
     msg = ['Loading ' pathload];
     disp(msg);
@@ -90,7 +89,7 @@ if savpaper == 1
     val = 100*(perfmatnt - perfmatn)./perfmatnt;
     imagesc(val);colormap(gray);axis off;colorbar;axis image;
     brighten(-0.5)
-    pathsave = ['figs/' prm.reconflowdata  '-' mfilename  '-method-'  prm.reconflowcode  '-' basenamerecon '-perfn'];
+    pathsave = ['figs-' prm.resultfolder '/' prm.reconflowdata  '-' mfilename  '-method-'  prm.reconflowcode  '-' basenamerecon '-perfn'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(gcf,pathsave,'-deps')
@@ -98,7 +97,7 @@ if savpaper == 1
     try
         h2 = figure(2);
         imagesc(D.delay);colormap(gray);axis off;colorbar;axis image;
-        pathsave = ['figs/' prm.reconflowdata  '-' mfilename  '-method-'  prm.reconflowcode  '-' basenamerecon  '-delay'];
+        pathsave = ['figs-' prm.resultfolder '/' prm.reconflowdata  '-' mfilename  '-method-'  prm.reconflowcode  '-' basenamerecon  '-delay'];
         msg = ['Saving ' pathsave];
         disp(msg);
         print(gcf,pathsave,'-deps')
@@ -106,10 +105,11 @@ if savpaper == 1
         close(h2);
     end;
     figure(3)
+    whos
     val = 100*(phimat - phimatt)./phimatt;
     imagesc(val);colormap(gray);axis off;colorbar;axis image;
     brighten(-0.5)
-    pathsave = ['figs/' prm.reconflowdata '-' mfilename '-method-'  prm.reconflowcode  '-' basenamerecon  '-porosity'];
+    pathsave = ['figs-' prm.resultfolder '/' prm.reconflowdata '-' mfilename '-method-'  prm.reconflowcode  '-' basenamerecon  '-porosity'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(gcf,pathsave,'-deps')
@@ -118,7 +118,7 @@ end;
 
 if savdata == 1
     % save results
-    pathsave = ['results/' prm.reconflowdata '-' mfilename  '-method-'  prm.reconflowcode  '-' basenamerecon  '.mat'];
+    pathsave = [prm.resultfolder '/' prm.reconflowdata '-' mfilename  '-method-'  prm.reconflowcode  '-' basenamerecon  '.mat'];
     msg = ['Saving ' pathsave];
     disp(msg);
     save(pathsave,'roi','h','timeline','qmat','perfmat','perfmatn','phimat');

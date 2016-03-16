@@ -7,7 +7,7 @@ dim = prm.dim;
 
 
 % Given diagonal permeability tensor K as ones everywhere
-% value of K in the range of 1e-6
+% value of K in the range of 1e-6mm^2
 if isequal(prm.Kopt,'flat')
     % K = 5e-6*ones(dim);
     % n = 50*ones(dim);
@@ -15,11 +15,18 @@ if isequal(prm.Kopt,'flat')
     % K = (1/24)*pi*n.*r.^4;
     % K = 5e-6*ones(dim);
     
-    % Units in mm^2
-    K = 5e-6*ones(dim);
+    % Units in m^2
+    K = 0.1e-12*ones(dim);
     Kmat(:,:,:,1) = K;
     Kmat(:,:,:,2) = K;
     Kmat(:,:,:,3) = K;
+    if isequal(prm.experiment,'3D-flow')
+        % Make less permeable in the middle slice, corresponding to the
+        % capillary system
+        for i = 1 : numel(prm.capslice)
+            Kmat(:,:,prm.capslice(i),:) =  Kmat(:,:,prm.capslice(i),:)/100;    
+        end;
+    end;
     
 elseif isequal(prm.Kopt,'rand')
     
@@ -135,127 +142,189 @@ msg = ['Flux in: ' num2str(qin)];
 disp(msg);
 
 mid = round(dim(1)/2);
-a = qmat{1}(mid,:);
-qslice = sum(a);
+a = qmat{1}(mid,:,:);
+qslice = sum(a(:));
 msg = ['Flux x slice: ' num2str(qslice)];
 disp(msg);
 
 mid = round(dim(2)/2);
-a = qmat{2}(:,mid);
-qslice = sum(a);
+a = qmat{2}(:,mid,:);
+qslice = sum(a(:));
 msg = ['Flux y slice: ' num2str(qslice)];
+disp(msg);
+
+mid = round(dim(3)/2);
+a = qmat{3}(:,:,mid);
+qslice = sum(a(:));
+msg = ['Flux z slice: ' num2str(qslice)];
 disp(msg);
 
 % Fmat{1}
 % Fmat{2}
 % pause
 
-makelenmat = 1;
-if makelenmat == 1
-    msg = ['Making and saving lenmat'];
-    disp(msg);
-    lenmat = perfusion1c.arclength(qmat,Fmat,prm.h);
-    save lenmat.mat lenmat prm;
-end;
+if isequal(prm.experiment,'3D-flow')
 
-% find the streamlines
-D = load('lenmat.mat');
-if ~isequal(D.prm.dim,prm.dim) || ~isequal(D.prm.physdim,prm.physdim)
-    msg = ['Making and saving lenmat'];
-    disp(msg);
-    lenmat = perfusion1c.arclength(qmat,Fmat,prm.h);
-    save lenmat.mat lenmat prm;
+    % Find perfusion of the 3D example
+    [perfmat,perfmatn] = flux2perf3D(qmat,prm);
+    
 else
-    msg = ['Loading lenmat'];
+    makelenmat = 1;
+    pathlenmat = [prm.resultfolder '/' 'lenmat.mat'];
+    if makelenmat == 1
+        msg = ['Making and saving lenmat'];
+        disp(msg);
+        lenmat = perfusion1c.arclength(qmat,Fmat,prm.h);    
+        save(pathlenmat,'lenmat','prm');    
+    end;
+
+    % find the streamlines
+    D = load(pathlenmat);
+    if ~isequal(D.prm.dim,prm.dim) || ~isequal(D.prm.physdim,prm.physdim)
+        msg = ['Making and saving lenmat'];
+        disp(msg);
+        lenmat = perfusion1c.arclength(qmat,Fmat,prm.h);
+        save(pathlenmat,'lenmat','prm');    
+    else
+        msg = ['Loading lenmat'];
+        disp(msg);
+        lenmat = D.lenmat;
+    end;
+    % convert flux to perfusion
+    [perfmat,perfmatn] = perfusion1c.flux2perf(qmat,lenmat,Fmat,prm.h);
+
+    % test the inflow and the estimated perfusion values to see that they agree
+    % with each other
+    totperf = sum(perfmat(:))*prm.voxelvol;
+    msg = ['Total (unnormalized) perfusion (m^3/s): ' num2str(totperf)];
     disp(msg);
-    lenmat = D.lenmat;
-end;
-% convert flux to perfusion
-[perfmat,perfmatn] = perfusion1c.flux2perf(qmat,lenmat,Fmat,prm.h);
+    msg = ['Mean (normalized) perfusion (ml/min/100ml): ' num2str(mean(perfmatn(:)))];
+    disp(msg);
+end
+% Show pressure and flux
+% showall(pmat,qmat{1},qmat{2})
+% qmat
+% showall(qmat{3})
 
-% test the inflow and the estimated perfusion values to see that they agree
-% with each other
-totperf = sum(perfmat(:))*prm.voxelvol;
-msg = ['Total (unnormalized) perfusion (m^3/s): ' num2str(totperf)];
-disp(msg);
-msg = ['Mean (normalized) perfusion (ml/min/100ml): ' num2str(mean(perfmatn(:)))];
-disp(msg);
-
-% show(pmat,3);colorbar
-% show(perfmat,4);colorbar
-% show(perfmatn,5);colorbar
+% show(pmat,1);colorbar;title('Pressure');
+% show(qmat{1},2);colorbar;title('Flux x')
+% show(qmat{2},3);colorbar;title('Flux y')
+% show(qmat{3},4);colorbar;title('Flux z')
+% show(perfmat,4);colorbar;title('Perfusion')
+% show(perfmatn,5);colorbar;title('Normalized perfusion')
 
 
-savpaper = 0;
+savpaper = 1;
 savdata = 1;
+plane = round(dim(3)/2);
 basename = perfusion1c.providenameflow(prm.phiopt,prm.Kopt,prm.dim);
 if savpaper
     h = figure(1);
-    imagesc(Kmat(:,:,:,1));colormap(gray);axis off;colorbar;axis image;
-    pathsave = ['figs' '/synt-' mfilename '-' basename '-K.eps'];
+    imagesc(Kmat(:,:,plane,1));colormap(gray);axis off;colorbar;axis image;
+    pathsave = ['figs-' prm.resultfolder  '/synt-' mfilename '-' basename '-K.eps'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(h,pathsave,'-deps')
 
     h = figure(2);
-    imagesc(pmat);axis off;colormap(gray);colorbar;axis image;
-    pathsave = ['figs' '/synt-' mfilename '-' basename '-p.eps'];
+    imagesc(pmat(:,:,plane));axis off;colormap(gray);colorbar;axis image;
+    pathsave = ['figs-' prm.resultfolder '/synt-' mfilename '-' basename '-p.eps'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(h,pathsave,'-deps')
 
     h = figure(3);
-    imagesc(phimat);axis off;colorbar;axis image;colormap(gray);
-    pathsave = ['figs' '/synt-' mfilename '-' basename '-phi.eps'];
+    imagesc(phimat(:,:,plane));axis off;colorbar;axis image;colormap(gray);
+    pathsave = ['figs-' prm.resultfolder  '/synt-' mfilename '-' basename '-phi.eps'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(h,pathsave,'-deps')
 
     h = figure(4);
-    imagesc(qmat{1});colormap(gray);axis off;colorbar;axis image;
-    brighten(0.7);
-    pathsave = ['figs' '/synt-' mfilename '-' basename '-fluxx.eps'];
+    imagesc(qmat{1}(:,:,plane));colormap(gray);axis off;colorbar;axis image;
+    % brighten(0.7);
+    pathsave = ['figs-' prm.resultfolder '/synt-' mfilename '-' basename '-flowx.eps'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(h,pathsave,'-deps')
 
     h = figure(5);
-    imagesc(qmat{2});colormap(gray);axis off;colorbar;axis image;
-    brighten(0.7);
-    pathsave = ['figs' '/synt-' mfilename '-' basename '-fluxy.eps'];
+    imagesc(qmat{2}(:,:,plane));colormap(gray);axis off;colorbar;axis image;
+    % brighten(0.7);
+    pathsave = ['figs-' prm.resultfolder '/synt-' mfilename '-' basename '-flowy.eps'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(h,pathsave,'-deps')
 
+    try
+        h = figure(5);
+        imagesc(qmat{3}(:,:,plane));colormap(gray);axis off;colorbar;axis image;
+        % brighten(0.7);
+        pathsave = ['figs-' prm.resultfolder '/synt-' mfilename '-' basename '-flowz.eps'];
+        msg = ['Saving ' pathsave];
+        disp(msg);
+        print(h,pathsave,'-deps')
+    catch
+        
+    end;
+    
     h = figure(6);
     imagesc(perfmat);colormap(gray);axis off;colorbar;axis image;
     brighten(0.7);
-    pathsave = ['figs' '/synt-' mfilename '-' basename '-perf.eps'];
+    pathsave = ['figs-' prm.resultfolder '/synt-' mfilename '-' basename '-perf.eps'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(h,pathsave,'-deps')
 
     h = figure(7);
-    imagesc(perfmatn,[0,300]);colormap(gray);axis off;colorbar;axis image;
+    imagesc(perfmatn);colormap(gray);axis off;colorbar;axis image;
     brighten(0.7);
-    pathsave = ['figs' '/synt-' mfilename '-' basename '-perfn.eps'];
+    pathsave = ['figs-' prm.resultfolder '/synt-' mfilename '-' basename '-perfn.eps'];
     msg = ['Saving ' pathsave];
     disp(msg);
     print(h,pathsave,'-deps')
     
-    h = figure(8);
-    imagesc(lenmat);colormap(gray);axis off;colorbar;axis image;
-    pathsave = ['figs' '/synt-' mfilename '-' basename '-lenmat.eps'];
-    msg = ['Saving ' pathsave];
-    disp(msg);
-    print(h,pathsave,'-deps')
-
+    if exist('lenmat','var')
+        h = figure(8);
+        imagesc(lenmat);colormap(gray);axis off;colorbar;axis image;
+        pathsave = ['figs-' prm.resultfolder '/synt-' mfilename '-' basename '-lenmat.eps'];
+        msg = ['Saving ' pathsave];
+        disp(msg);
+        print(h,pathsave,'-deps')
+    end;
 end;
 
 if savdata
-    pathsave = ['results/synt-' mfilename '-' basename '.mat'];
+    pathsave = [prm.resultfolder '/synt-' mfilename '-' basename '.mat'];
     msg = ['Saving ' pathsave];
     disp(msg);
     save(pathsave,'pmat','qmat','perfmat','perfmatn','phimat','Fmat','prm','Kmat','-v7.3')
+%     save(pathsave,'pmat','qmat','phimat','Fmat','prm','Kmat','-v7.3')    
 end;
+
+%-------------------------------------
+
+function [perfmat,perfmatn] = flux2perf3D(qmat,prm)
+
+% The perfusion is the transfer of blood from arteries to the capillaries,
+% which is all flow (m^3/s) in the z direction across the first capillary
+% slice, divided by the total volume across the network, becoming m^3/s/m^3
+perfmat = qmat{3}(:,:,prm.capslice(1))/(prm.voxelvol*3);
+
+% Transfer to m^3/min/m^3 which is the same as ml/min/ml
+perfmatn = perfmat*60;
+
+% Transfer to ml/min/100ml
+perfmatn = perfmatn*100;
+
+% % Make perfusion into a 3D field again, to make it match dimension wise
+% for i = 1 : prm.dim(3)
+%     perfmat(:,:,i) = perfmat(:,:,1);
+%     perfmatn(:,:,i) = perfmatn(:,:,1);
+% end;
+
+msg = ['Sum of measured perfusion: ' num2str(mean(perfmatn(:))) ' ml/min/100ml'];
+disp(msg);
+msg = ['This shall be the same as input: ' num2str(prm.perfusionin) ' ml/min/100ml'];
+disp(msg);
 

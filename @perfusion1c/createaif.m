@@ -5,6 +5,8 @@ function [aifval] = createaif(aiftype,timeline)
 % aiftype  - 'gamma', 'parker', 'delta'
 % timeline - timeline in seconds
 %
+% OUTPUT:
+% Tracer concentration in mMol/m^3
 
 
 % Define an AIF curve
@@ -19,9 +21,10 @@ elseif isequal(aiftype,'delta')
     aifval(ind) = 1e6;
 end;
 
-% The Parker AIF is 1mMol/liter = 1mMol/1000ml = 1e-3mMol/ml = 1e-6mMol/mm^3
-aifval = aifval*1e-6;
+% The Parker AIF is 1mMol/liter = 1000*mMol/m^3
+aifval = aifval*1e3;
 aifval = (aifval(:))';
+
 
 % aifval = delta(timeline-prm.aifpeak,prm.aifwidth);
 % aifval = scale(aifval,0,1); 

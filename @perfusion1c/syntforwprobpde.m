@@ -3,17 +3,17 @@ function [Cmat] = syntforwprobpde(phimat,flowmat,Fmat,aifval,prm)
 %
 % INPUT:
 %   phimat - Cell-centered porosity [fractions]
-%  flowmat - Absolute flow (staggered) [mm^3/s]
+%  flowmat - Absolute flow (staggered) [m^3/s]
 %            Positive values of flowmat mean that flow goes from
 %            - top   -> bottom
 %            - left  -> right
 %            - front -> back
-%    Fmat  - inflow (cell-centered) [mm^3/s]
-%  aifval  - arterial input function [mmol/mm^3]
+%    Fmat  - inflow (cell-centered) [m^3/s]
+%  aifval  - arterial input function [mmol/m^3]
 %
 %
 % OUTPUT
-% Cmat - simulated values [mmol/mm^3]
+% Cmat - simulated values [mmol/m^3]
 
 dim = size(phimat);
 if numel(dim) == 2
@@ -102,6 +102,21 @@ for i = 2 : ntime
     sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind);
 
     %
+    % Flow INTO voxels, k direction
+    %
+
+    % flow from top
+    a   = flowmat{3}(:,:,1:end-1);
+    ind = a > 0;
+    cj  = perfusion1c.transim(cmath,0,0,-1);
+    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind);
+    % flow from bottom
+    a   = flowmat{3}(:,:,2:end);
+    ind = a < 0;
+    cj  = perfusion1c.transim(cmath,0,0,1);
+    sumflux(ind) = sumflux(ind) + abs(a(ind)).*cj(ind);
+    
+    %
     % Flow OUT from voxels, i direction
     %
     
@@ -127,6 +142,19 @@ for i = 2 : ntime
     ind = a > 0;
     sumflux(ind) = sumflux(ind) - abs(a(ind)).*cmath(ind);
 
+    %
+    % Flow OUT from voxels, j direction
+    %
+
+    % flow towards top
+    a   = flowmat{3}(:,:,1:end-1);
+    ind = a < 0;
+    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cmath(ind);
+    % flow towards bottom
+    a   = flowmat{3}(:,:,2:end);
+    ind = a > 0;
+    sumflux(ind) = sumflux(ind) - abs(a(ind)).*cmath(ind);
+
     % sum flows results from flux-fields
     fluxterm = Fmat + sumflux;
 
@@ -145,12 +173,12 @@ for i = 2 : ntime
     
     % plotting
     if round(i/500) == i/500        
-        ci = cmat(:,:,:,i);
+        mid = round(dim(3)/2);
+        ci = cmat(:,:,mid,i);
         figure(1);
             imagesc(ci,lim);
-            colormap(gray); 
-            axis image; 
-            caxis(lim)
+            colormap(gray);            
+            axis image;             
             drawnow
     end;
     

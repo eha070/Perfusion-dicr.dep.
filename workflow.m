@@ -38,37 +38,40 @@ end;
 clear prmin;
 % aiftype = {'parker','gamma'};
 aiftype = {'gamma'};
-stepred = [25,100,500];
+stepred = [100,500];
 for i = 1 : numel(aiftype)
     for j = 1 : numel(stepred)
         prm.aiftype = aiftype{i};
         
         basenameindicator = perfusion1c.providenameindicator(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T);
-        pathload = ['results/synt-createindicatorpde' '-' basenameindicator '.mat'];                
+        pathload = [prm.resultfolder '/synt-createindicatorpde' '-' basenameindicator '.mat'];                
+        perfusion1c.reducetimesteps(pathload,stepred(j));        
+        
+        basenameindicator = perfusion1c.providenameindicator(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T);
+        pathload = [prm.resultfolder '/syntconv-createindicatorconv' '-' basenameindicator '.mat'];                
         perfusion1c.reducetimesteps(pathload,stepred(j));
         
-        % {
-        basenameindicator = perfusion1c.providenameindicator(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T);
-        pathload = ['results/syntconv-createindicatorconv' '-' basenameindicator '.mat'];                
-        perfusion1c.reducetimesteps(pathload,stepred(j));
-        %}
         
     end;
 end;
 
-return;
+
 %%
 
 %
 % Recognize the flow using classical methods
 %
 
-% the options to run over
-aiftype = {'parker','gamma'};
-% deconvmethod = {'circSVD'};
-stepred = [25,100,500];
-datatype = {'synt','syntconv'};
+[prm,Fmat] = settings;
 
+% the options to run over
+% aiftype = {'parker','gamma'};
+aiftype = {'gamma'};
+% deconvmethod = prm.reconflowdeconvmethod;
+deconvmethod = {'circSVD'};
+% stepred = [25,100,500];
+stepred = [100,500];
+datatype = {'synt','syntconv'};
 
 clear prmin;
 for i = 1 : numel(aiftype)
@@ -92,19 +95,20 @@ end;
 %
 
 % the optionts to run over
-aiftype = {'parker','gamma'};
+% aiftype = {'parker','gamma'};
+aiftype = {'gamma'};
 deconvmethod = {'circSVD'};
-stepred= [100,500];
+stepred = [100,500];
 datatype = {'synt','syntconv'};
 
 % load true perfusion
 [prm,Fmat] = settings;
 basenameflow = perfusion1c.providenameflow(prm.phiopt,prm.Kopt,prm.dim);
-pathload = ['results/synt-createflowTPFA-' basenameflow '.mat'];
+pathload = [prm.resultfolder '/synt-createflowTPFA-' basenameflow '.mat'];
 msg = ['Loading true solution ' pathload];
 disp(msg);
 true = load(pathload);
-
+true.phimat = mean(true.phimat,3);
 
 clear A;
 clear header
@@ -122,7 +126,7 @@ for l = 1 : numel(datatype)
                 prm.stepred = stepred(k);
 
                 basenamerecon = perfusion1c.providenamerecon(prm.phiopt,prm.Kopt,prm.dim,prm.aiftype,prm.T,prm.reconflowdeconvmethod,prm.stepred);
-                pathload = ['results/' datatype{l} '-reconflow'  '-method-'  prm.reconflowcode  '-' basenamerecon  '.mat'];
+                pathload = [prm.resultfolder '/' datatype{l} '-reconflow'  '-method-'  prm.reconflowcode  '-' basenamerecon  '.mat'];
                 msg = ['Loading ' pathload];
                 disp(msg);
                 recon = load(pathload);
@@ -130,7 +134,7 @@ for l = 1 : numel(datatype)
                 val = 100*(recon.perfmatn - true.perfmatn)./true.perfmatn;
                 val = abs(val);
                 A.(datatype{l})(1,c) = mean(val(:));
-                    
+
                 val = 100*(recon.phimat - true.phimat)./true.phimat;
                 val = abs(val);
                 A.(datatype{l})(2,c) = mean(val(:));
@@ -143,16 +147,17 @@ end;
 p = 30;
 for l = 1 : numel(datatype)
     A.(datatype{l}) = perfusion1c.mat2celldirect(A.(datatype{l}));
-    desc = {'';'Perfusion';'Porosity'};
-    pathsave = ['stat-' datatype{l} '.txt'];
+    desc = {upper('Shown is percentage deviation from reference values');'Parameter';'Perfusion';'Porosity'};
+    pathsave = [prm.resultfolder '/' 'stat-' datatype{l} '.txt'];
     msg = ['Saving ' pathsave];
     disp(msg);
     fid = fopen(pathsave,'wt');
-    B = [header;A.(datatype{l})];
+    headeroverall = cell(size(header)); 
+    B = [headeroverall;header;A.(datatype{l})];
     B = [desc,B];
     printcell(fid,B,p);
     fclose(fid);
-    pathsave = ['stat-' datatype{l} '.tex'];
+    pathsave = [ prm.resultfolder '/' 'stat-' datatype{l} '.tex'];
     msg = ['Saving ' pathsave];
     disp(msg);    
     perfusion1c.cell2tex(B,pathsave,2);
