@@ -462,14 +462,7 @@
 %	\tableofcontents
 
 	\begin{abstract}
-		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread.
-		In this paper we show limits of traditional models to recover perfusion in coupled systems.
-		We introduce a novel, continuous model for contrast-agent propagation in pure capillary tissue, which is based on the modeling of porous media.
-		We show that the proposed model can also be regarded as a coupling of traditional one-compartment models.
-		It is demonstrated that traditional models (deconvolution, maximum slope) are accurately recovering the perfusion if applied to the full system.
-		However, it is shown analytically and experimentally that results of traditional models are not meaningful if applied only to parts of the system and will result in overestimation of perfusion.
-		Evidence of real patient data is provided which indicates, that this effect might also be observed in real-life applications.
-		As a remedy, we propose to define perfusion in coupled systems along the streamlines.
+		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread. In this paper we show limits of traditional models to recover perfusion in coupled systems. Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. We show that the proposed model can be understood as a coupled set of traditional one-compartment models. It is furthermore demonstrated that traditional models (deconvolution, maximum slope) are accurately recovering the perfusion if applied to the full system. However, it is shown both analytically and experimentally that results of traditional models are not meaningful if applied only to smaller portions of the system, and will result in overestimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed in real-life applications.  As a remedy, we propose to define perfusion mathematically in coupled systems as laminar flow along the streamlines.
 	\end{abstract}
 
 	%--------------------------------------------------
@@ -479,40 +472,42 @@
 	%--------------------------------------------------
 	\section{Introduction}
 	
-	Quantitative measurement of hemodynamic medical parameters based on tracer kinetic modeling is widespread both in research and in clinical practice \cite{sourbron13,zierler00,sourbron13}. 
-	In the present work, we focus on mathematical models to estimate the parameters blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV) and mean transit time (MTT) of the brain from contrast-enhanced dynamic imaging data. 
+	Quantitative measurements of hemodynamic medical parameters based on tracer kinetic modeling are widespread both in research and in clinical practice \cite{sourbron13}. 
+	In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from contrast-enhanced dynamic image data. 
 
-	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern MR technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision.  
+	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision.  
 	Examples of estimated parameter maps are found in i.e. \cite{Feng2013,Chen2011}. 
-	The quantitative perfusion maps, and other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information, and the maps have proven to be of particular value in e.g. stroke studies for localization of trauma. 
+	Quantitative perfusion maps, as well as other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information, and the maps have proven to be of particular value in e.g. stroke studies for localization of trauma. 
 	Among the physiological parameters obtainable from tracer kinetic models, CBF has proven to be particularly difficult to reliably describe on a voxel-basis \cite{kudo10}.
 	Causes for these limitations in perfusion estimations are issues in the numerical implementation \cite{kudo10}, but might also depend on over-simplified dynamic models, which were originally designed to describe larger volumes of interest \cite{zierler00}.	
  	Even though voxel wise perfusion measurements are difficult to establish, examples of perfusion maps are extensively reported in the literature \cite{Feng2013,Chen2011}.
 	
-	There have been several approaches to introduce continuous modeling in modeling of perfusion.
-	In \cite{calamante03} dispersion of the arterial input function is simulated using Navier-Stokes equations.
-	It is shown that neglecting to account for these effects can have adverse impact on perfusion measurement.
-	More recently, a mathematical theory for voxelwise perfusion has been introduced in \cite{sourbron14} as an alternative to the traditional region of interest based models.
+	There have been several approaches to clarify the concept of perfusion in a continuous sense.
+	In \cite{calamante03}, dispersion of the arterial input function was simulated using Navier-Stokes equations.
+	It was shown that neglecting to account for dispersion can have adverse impact on perfusion measurements.
+	More recently, a mathematical theory for voxelwise perfusion was introduced in \cite{sourbron14} as an alternative to the traditional region of interest (ROI) based models.
 	However, evaluation of the proposed modeling is still pending.
 	
-	In this work we will further narrow the bounds of validity of traditional perfusion models.
-	Specifically we will show how perfusion results from traditional models need to be interpreted, if they were obtained from a coupled system where one volume is feeding the other.
-	We do this by simulating a tissue patch with one inlet, one outlet and a highly developed capillary system in between.
-	A directional flow-field for this patch is set up according to Darcy's law from porous media \cite{Darcy56}, assuming that blood flow is mainly driven by pressure differences.	
-	After that, contrast agent propagation in this patch is simulated using standard transport equations from porous media, cf. Section~\ref{sec:transport}.
-	Details on the simulation can be found in Section~\ref{sec:synthetic}.	
-	In Section~\ref{sec:NewAndOld} we will show that the resulting 3D system can indeed be equivalently described by a coupling of multiple traditional one-compartment models.
+	In this work we focus on the validity of traditional perfusion models.
+	% Specifically, we demonstrate one approach for interpretation of tradition perfusion models, as if they were obtained from a coupled system where one volume is feeding the direct neighbors.
+	We do this by simulating a tissue patch with one inlet, one outlet, and a highly developed capillary system in between.
+	A directional flow field for the patch is set up according to Darcy's law from porous media flow \cite{Darcy56}, assuming that blood flow is mainly driven by pressure differences.	
+	After that, contrast agent propagation in this patch is simulated using standard transport equations.%, cf. Section~\ref{sec:transport}.
+	% Details on the simulation can be found in Section~\ref{sec:synthetic}.	
+	As a result, we show that the resulting 3D system can be equivalently described by a coupled set of multiple traditional one-compartment models, in line with the physical environment where each control volume is feeding the direct neighbors.
 
 	We then proceed to demonstrate that traditional models like deconvolution or maximum slope are able to recover the perfusion accurately if applied to the whole system.
-	In applying the traditional models to recover perfusion only in parts of the full system, we find that local perfusion in coupled systems is not straight-forward to define.
-	In order to cope with this issue, two possible definitions of voxel-wise perfusion are presented: A straight-forward definition $\Perfv$ which is closely connected to the concept of local arterial input functions and a tailored definition for continuous models $\Perfs$.
+	However, when applying the traditional models to isolated parts of the full system, we find that local perfusion in coupled systems is not straight-forward to define.
+	In order to cope with this issue, two possible definitions of voxel-wise perfusion are presented: A definition $\Perfv$ which is closely connected to the concept of local arterial input functions and a tailored definition for continuous models $\Perfs$.
 	
-	We then show that perfusion results from traditional models tend to overestimate $\Perfs$ and to underestimate $\Perfv$ if they are applied only to parts of the full system.
-	In Section~\ref{sec:NewAndOld} analytic results are given which show that the the recovered perfusion depends on all upstream flow and not only on the local value.
-	In Section~\ref{sec:RealData} we show evidence which indicates that an overestimation of perfusion due to coupling might also be found in real data.
+	Our results show that perfusion results from traditional models tend to overestimate $\Perfs$ and to underestimate $\Perfv$ if they are applied only to parts of the full system.
+	% In Section~\ref{sec:NewAndOld} 
+	Analytic results are given, which show that the recovered perfusion depends on all upstream flow and not only on the local value.
+	%In Section~\ref{sec:RealData} we 
+	We also show results indicating that overestimation of perfusion due to coupling might also be found in real data.
 	
-	We conclude that results indicate that if the spatial resolutions of scanners improve, traditional models will fail to accurately describe the blood-flow and establishes the need for continuous models as e.g. proposed in \cite{sourbron13}.
-	We will further elaborate on the implications of this in Section~\ref{sec:conclusion}.
+In light of expected improvements in spatial resolution of medical scanners, traditional models will increasingly fail to accurately measure blood-flow when applied to patches of the capillary system. Instead, this establishes the need for continuous models as e.g. proposed in \cite{sourbron14}.
+	% We will further elaborate on the implications of this in Section~\ref{sec:conclusion}.
 	
 	
 	%--------------------------------------------------
@@ -522,24 +517,24 @@
 	%--------------------------------------------------
 	\section{Traditional Models for perfusion} \label{sec:traditional}
 
-	In this section we describe the pharmacokinetic model, which we will later refer to as the \emph{traditional} model.
-	We will start by presenting the continuity equation for tracer kinetic modeling \eqref{eq:classicgeneral} which is basic to most models for CBF estimation.
-	To simplify the very general model \eqref{eq:classicgeneral}, we will then present two different additional assumptions, which lead to the most common models for CBF estimation: Namely the maximum slope model and the deconvolution model.
-	Note that an excellent and more detailed coverage of the proposed models can be found in \cite{sourbron13,klotz99}.
+	In this section we describe  the convolution- and the maximum slope model, two widely used one-compartment pharmacokinetic models for measurements of CBF and CBV. These models were chosen for investigating the behaviour of traditional indicator dilution theory at finer scales. For the remaining, they are referred to as \emph{traditional} models.
+	%We will start by presenting the continuity equation for tracer kinetic modeling \eqref{eq:classicgeneral} which is basic to most models for CBF estimation.
+	%To simplify the very general model \eqref{eq:classicgeneral}, we will then present two different additional assumptions, which lead to the most common models for CBF estimation: Namely the maximum slope model and the deconvolution model.
+	%Note that an excellent and more detailed coverage of the proposed models can be found in \cite{sourbron13,klotz99}.
 	
-	Let $\Omega_i$ be a control volume with one inlet and one outlet and let $C(t)$ denote the average CA concentration within $\Omega_i$ at timepoint $t$.
+	Let $\Omega_i$ be an arbitrary control volume with one inlet and one outlet, and let $C(t)$ denote the average CA concentration within $\Omega_i$ at timepoint $t$.
 	The traditional model assumes that the change of concentration at timepoint $t$ can be described by the ordinary differential equation $C'(t) = \Pa\ca(t) - \Pout\cout(t)$. 
-	Here $\ca,\cout$ are the CA plasma concentrations at the inlet and outlet of $\Omega_i$, and $\Pa,\Pout$ is the corresponding perfusion at these locations.
-	Assuming incompressibility of flow leads to $\Pa = \Pout$ and hence we obtain the general form
+	Here $\ca,\cout$ are the CA plasma concentrations at the inlet and outlet of $\Omega_i$, and $\Pa,\Pout$ are the corresponding perfusion values at these locations.
+	Assuming incompressible flow leads to $\Pa = \Pout$ and hence we obtain the general form
 	\begin{equation}
 		C'(t) = \Pa\left(\ca(t) - \cout(t)\right).
 		\label{eq:classicgeneral}
 	\end{equation}	
-	In the following we will assume that the CA plasma concentration $\ca$ at the inlet is known.
+	In the following it is assumed that the plasma tracer concentration $\ca$ at the inlet is known.
 	In clinical practice this can be implemented by measuring $\ca$ directly in a feeding artery \cite{ostergaard96}.
-	However, note that if different volumes of interest are feeding each other, this assumption might not be correct and might lead to errors in the recovered flow.
-	We will elaborate on consequences of this in Section~\ref{sec:NewAndOld} and Section~\ref{sec:synthetic}.
-	Since $\cout$ is usually unknown, additional assumptions need to be made if one wants to reconstruct $\Pa$ from a given tissue curve $C$.
+	%However, note that if different volumes of interest are feeding each other, this assumption might not be correct and might lead to errors in the recovered flow.
+	% We will elaborate on consequences of this in Section~\ref{sec:NewAndOld} and Section~\ref{sec:synthetic}.
+	Since $\cout$ is usually unknown, additional assumptions need to be made if one wants to reconstruct $\Pa$ from a given tissue curve $C$. The convolution model and the maximum slope (MS) model diverge in further assumptions.
 	
 	
 
@@ -554,7 +549,7 @@
 		\cout(t) = (h*\ca)(t) := \int_0^t \ca(s) h(t-s) \diffint s.
 	\end{equation}
 	Combining this with \eqref{eq:classicgeneral} yields $C'(t) = \Pa\ca(t)-\Pa (h*\ca)(t)$.
-	Integrating this equation and using basic properties of the convolution one obtains a general solution
+	Integrating this equation and using basic properties of the convolution one obtains the general solution
 	\begin{equation}
 		C(t) = (I*\ca)(t).
 		\label{eq:conv}
@@ -597,8 +592,8 @@
 	% Subsection: The Maximum Slope Model
 	%----------------------------------------------------------
 	\subsection{The Maximum Slope Model}\label{sec:ms}	
-	In the MS model it is assumed that at the beginning when $\ca$ peaks, only a negligible amount of CA is leaving the system (cf. \cite{klotz99}).
-	For this time interval equation \eqref{eq:classicgeneral} reduces to 
+	In the MS model it is assumed that when $\ca$ has its maximum, only a negligible amount of CA is leaving the system \cite{klotz99}.
+	For this time interval, \eqref{eq:classicgeneral} reduces to 
 	\begin{equation}
 		C'(t) = \Pa\ca(t),
 	\end{equation}
@@ -617,29 +612,28 @@
 	%--------------------------------------------------	
 	\section{A Synthetic Model for Capillary Flow}\label{sec:synthetic}
 	
-	Structurally, the assumptions for the convolution model as well as the maximum slope model presented in Section \ref{sec:traditional} are similar.
-	The validity of both methods rely on a ROI having only one inlet and one outlet and that transition times are prescribed by some probability distribution.
+	% Structurally, the assumptions for the convolution model as well as the maximum slope model presented in Section \ref{sec:traditional} are similar.
+	The validity of the traditional methods rely on a ROI having only one inlet and one outlet, and that transition times are prescribed by some probability distribution.
 	In fact, the assumption of one inlet and one outlet  may easily be violated when we locally describe CA propagation through a larger area with a highly developed capillary system.
 	For this type of model system we expect instead a set of coupled equations where each voxel can be regarded as an inlet for surrounding voxels.
-	Hence, in order to make a realistic synthetic model for capillary flow, we decided to describe the CA propagation as a spatially coupled transport process, i.e. using partial differential equations (PDE) for transport. This PDE field model is used in the validation of the traditional methods for perfusion estimation. 
+	Hence, in order to make a realistic synthetic model for capillary flow, we decided to describe the CA propagation as a spatially coupled transport process, i.e. using partial differential equations (PDE) for transport. This PDE model is used for validation of the traditional models. 
 	
-	We start by introducing the modeling of a directional flow field in the simulated patch in Section~\ref{sec:flow}.
-	Within the porous capillary system we expect the blood flow to be driven mainly by pressure differences. 
-	We therefore set up a PDE flow model using the continuity equation as well Darcy's law \cite{Darcy56}.
-	Additional parameters represented in the model were blood viscosity and a possibly anisotropic permeability.
-	However, for sake of argument permeability was assumed to be isotropic and constant.
-	A major difference of the described flow-model model and traditional tracer kinetic modeling is the normalization of the flow field.
-	Traditional tracer kinetic modeling is using volume normalized fluid flow with units [\si{\siQmm}], referred to as perfusion, as a quantity to describe fluid transport. 
-	However, we will show in Section~\ref{sec:flux2perf} that the concept of perfusion is discretization dependent. 
-	For the current flow simulations we instead used vector valued surface fluid flux $q = q(x)$ with units [\si{\siq}], in agreement with geoscience and porous media simulation theory.
+	%We start by introducing the modeling of a directional flow field in the simulated patch in Section~\ref{sec:flow}.
+	Assuming stationary, incompressible flow at low Reynold numbers within the capillary system \cite{Cho2011}, the flow can be described by Darcy's law \cite{Darcy56}. For simplicity, we also assume an isotropic porous media.
+	% Additional parameters represented in the model were blood viscosity and a possibly anisotropic permeability.
+	% However, for sake of argument permeability was assumed to be isotropic and constant.
+	A major difference between the described flow-model model and traditional tracer kinetic modeling is the normalization of the flow field within the traditional models,
+using volume normalized fluid flow with units [\si{\siQmm}], referred to as perfusion, as a quantity to describe fluid transport. 
+	% However, we will show in Section~\ref{sec:flux2perf} that the concept of perfusion is discretization dependent. 
+	However, to avoid a discretization dependent flow field, for the PDE model we instead use vector valued surface fluid flux $q = q(x)$ with units [\si{\siq}], in agreement with geoscience and porous media simulation theory.
 	The fluid flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
-	A model to convert vector valued flux to scalar valued perfusion with units [\si{\siQmm}] will be introduced in Section \ref{sec:flux2perf}.
+	% A model to convert vector valued flux to scalar valued perfusion with units [\si{\siQmm}] will be introduced in Section \ref{sec:flux2perf}.
 	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity in the fluid flux are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
 	
-	Having obtained a 3D directional flow field, we proceed to simulate contrast agent propagation proportional to the flow using linear transport equations, cf. Section~\ref{sec:traditional}.
-	In the modeling of the transport we account for fractional blood volume as well as conservation of contrast agent mass.
-	Since we assume that contrast agent propagates along the capillaries, we decided to neglect effects by diffusion.
-	Note that modeling of the transport is in line with standard porous media theory \cite{Aarnes2007}.
+	%Having obtained a 3D directional flow field, we proceed to simulate contrast agent propagation proportional to the flow using linear transport equations, cf. Section~\ref{sec:traditional}.
+	%In the modeling of the transport we account for fractional blood volume as well as conservation of contrast agent mass.
+	%Since we assume that contrast agent propagates along the capillaries, we decided to neglect effects by diffusion.
+	%Note that modeling of the transport is in line with standard porous media theory \cite{Aarnes2007}.
 	
 	
 	
@@ -650,7 +644,8 @@
 	%--------------------------------------------------
 	\subsection{Modelling Capillary Blood Flow}\label{sec:flow}
 	
-	We will here set up a framework for modeling the blood flow as a fluid flow through a porous medium. For the time being, we will not consider the contrast agent concentrations, but rather the flow of fluid in general.
+	%We will here set up a framework for modeling the blood flow as a fluid flow through a porous medium. 
+	For the time being we will not consider contrast agent concentrations, but only the fluid flow in general.
 	The fluid density $\rho$ [\si{\sirho}] is denoted by $\rho = \rho(x,t)$.
 	The flux $q$ as well as the porosity $\phi$ [\si{\simm}/\si{\simm}] are assumed to be stationary and hence independent of time.
 	Fluid entering and leaving the system is described by a source- and sink term $\tilde{Q} = \tilde{Q}(x)$ [\si{\siQtilde}]. 
