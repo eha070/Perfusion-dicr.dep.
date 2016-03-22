@@ -47,10 +47,10 @@ end;
 % prm.dim = [4,4,1];
 dim = prm.dim;
 
-% voxel size in mm
+% voxel size
 prm.h = prm.physdim./prm.dim;
 
-% voxel volume in ml
+% voxel volume
 prm.voxelvol = prod(prm.h);
 
 % viscosity blood in Pa*s
