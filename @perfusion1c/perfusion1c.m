@@ -6,10 +6,13 @@ classdef perfusion1c
       [prm,Qmat] = settings;
       [pmat,qmat] = syntTPFA(Kmat,Qmat,prm);
       [perfmat,perfmatn] = flux2perf(qmat,lenim,Qmat,h);
+      [perfmat,lenmat]   = flux2perfCMS(qmat,m,h,varargin);
       basenameflow = providenameflow(phiopt,Kopt,dim);
       basenameindicator = providenameindicator(phiopt,Kopt,dim,aiftype,T);
       basenamerecon = providenamerecon(phiopt,Kopt,dim,aiftype,T,deconvmethod,red);
       createindicatorpde(prm);
+      T = getLinearInterMatrix1D(x,xq,varargin);
+      lperfmat = localPerfusion(qmat,Fmat,h);
       Cmat = syntforwprobpde(phimat,qmat,Qmat,aifval,prm);
       aifval = createaif(aiftype,timeline);
       reducetimesteps(pathload,stepred);
