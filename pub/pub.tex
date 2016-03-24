@@ -868,6 +868,7 @@ These results show that the PDE model and the convolution model are equal if the
 	%Since the total flow over each disk is constant, we can define the perfusion for each voxel by the traditional model, obtaining a perfusion value which is constant along the streamline.
 	%To obtain a truly local perfusion, we will let the radii of the disks go to zero.
 	
+	
 	More precisely, let us consider an arbitrary streamline $S \subseteq \Omega \subseteq \R^3$ of length $l>0$ and parametrization $s:[0,l] \to S$.
 	We start by calculating the total flow over a small 2-D disc perpendicular to the streamline.
 	Let $y \in S$ be an arbitrary location along the streamline. 
@@ -906,6 +907,8 @@ These results show that the PDE model and the convolution model are equal if the
 	\end{equation}
 	where we changed to the parameterized version of $V(r)$.
 	Equation \eqref{eq:flux2perf} is independent of the spatial location $y$ along the streamline and an explicit formula for converting flux into perfusion, showing that the perfusion scales with the streamline length $l$, as well as with the geometry of the domain, represented by the radii $r(s)$.
+	
+
 	
 
 	%--------------------------------------------------
