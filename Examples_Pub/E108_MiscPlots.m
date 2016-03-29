@@ -23,7 +23,6 @@ clear;
 plotqmat      = 0;
 plotPerfmat   = 0;
 plotLperfmat  = 1;
-plotPressure  = 0;
 
 
 %% setup data
@@ -89,25 +88,6 @@ if plotPerfmat
 
 end
 
-
-%% display pressure
-
-if plotPressure
-    
-    pmat = pmat-min(pmat(:));
-    figure(3);clf;
-    surf(xgv,ygv,pmat);
-    axis equal
-    xlabel('mm');
-    ylabel('mm');    
-    zlabel('Pa');    
-    set(gca,'YDir','normal','FontSize',15)
-    view(-17,30)    
-    daspect([1 1 2e2]);
-
-    export_fig pmat.pdf -transparent
-
-end
 
 
 
