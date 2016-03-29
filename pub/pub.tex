@@ -791,8 +791,8 @@ In traditional models normalization is performed with respect to the volume and 
 	In this case it follows that \eqref{eq:singlevoxel} reduces to the standard equation for a well-mixed compartment $(\phi c_i)'(t) = P_{\mathrm{in}} (c_\mathrm{in}(t) - c_i(t))$ 
 	with solution
 	\begin{equation}\label{eq:voxelcurve}
-		C_i(t) = (I_i*c_{\mathrm{in}})(t)
-			\text{ for } I_i(t)=P_{\mathrm{in}}e^{- P_{\mathrm{in}}/\phi_it}.
+		C_i(t) = \phi_i(I_i*c_{\mathrm{in}})(t)
+			\text{ for } J_i(t)=P_{\mathrm{in}}/\phi_ie^{- P_{\mathrm{in}}/\phi_it}.
 	\end{equation}
 	Here arterial input $c_{\mathrm{in}}$ is determined by \eqref{eq:cin}, which recursively depends on all upstream voxels until the global arterial input is reached.
 	%and all adjacent upstream voxels.
@@ -802,16 +802,16 @@ In traditional models normalization is performed with respect to the volume and 
 		
 	As a direct consequence it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impuls-response functions of all upstream voxels $1,\hdots,l$, i.e.
 	\begin{equation}
-		C_i(t) = \phi_i((I_1*\dots *I_l)*\ca)(t).
+		C_i(t) = \phi_i((J_1*\dots *J_l)*\ca)(t).
 		\label{eq:C_recur}
 	\end{equation}
-	where $I_j(s):=p_i\mathrm{exp}(- p_i(s))$ and $p_i=P_i/\phi_i$.
+	where $J_j(s):=p_i\mathrm{exp}(- p_i(s))$ and $p_i=P_i/\phi_i$.
 	Following \cite{Kordecki97}, the convolution of exponential functions with pairwise different parameters $p_i$ is given by
 	\begin{equation}\label{eq:IAna}
-		(I_1*\dots *I_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is}.
+		(J_1*\dots *J_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is}.
 	\end{equation}
 	See \cite{Kordecki97} for the case $p_i=p_j$ for some $i,j$.
-	This relationship was also confirmed experimentally: Figure~\ref{fig:VoxelComp} (right) shows the impulse response function determined by \eqref{eq:IAna} and the impulse response function obtained from deconvolving a tissue curve $I_i$ of the continuous model with the global arterial input function.
+	This relationship was also confirmed experimentally: Figure~\ref{fig:VoxelComp} (right) shows the impulse response function determined by \eqref{eq:IAna} and the impulse response function obtained from deconvolving a tissue curve $J_i$ of the continuous model with the global arterial input function.
 	The two curves coincide almost perfectly.
 	
 These results show that the PDE model and the convolution model are equal if the convolution model is applied with the correct, local arterial input. 
@@ -886,7 +886,7 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	We will not consider a tube with constant radius, but one with spatially varying radii $r:s \to \R^+$.
 	The total volume of such a tube surrounding the streamline is given by
 	\begin{equation}
-		V(r) = \int_0^l \pi (r(s))^2 \diffint s.
+		V(r) = \int_0^l r(s)^2 \pi \diffint s.
 	\end{equation}
 	Define the radius $R(y)$ as a function of cartesian coordinates $R(y(s))=r(s)$, $R:\Omega \rightarrow \mathbb{R}^+$, where $y$ is mapping from the parameterization $s$ to cartesian coordinates $y: s \rightarrow \Omega$. We define the perfusion at an arbitrary point $y = y(s)$ as
 	\begin{equation}
@@ -908,7 +908,7 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	where $\zeta \in (0,z)$ and simplifications are due to $R(y) = 1/\sqrt{\vert q(y)} \vert$ and $\nu:=q(y)/\vert q(y) \vert$.
 	It follows that
 	\begin{equation}\label{eq:flux2perf}
-		P= \Big(\int_0^l (r(s))^2 \diffint s\Big)^{-1}
+		P= \Big(\int_0^l r(s)^2 \diffint s\Big)^{-1}
 	\end{equation}
 	where we changed to the parameterized version of $V(r)$.
 	Equation \eqref{eq:flux2perf} is independent of the spatial location $y$ along the streamline and an explicit formula for converting flux into perfusion, showing that the perfusion scales with the streamline length $l$, as well as with the geometry of the domain, represented by the radii $r(s)$.
@@ -923,34 +923,56 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	
 	It is known from literature on traditional models for perfusion that CBV for the entire compartment can be expressed as
 	\begin{equation}
-		\phi = \frac{\int_0^\infty C(t) dt}{\int_0^\infty c_a(t) dt}.
+		\phi = \frac{\int_0^\infty C(t) \diffint t}{\int_0^\infty c_a(t) \diffint t}.
 		\label{eq:CBV}
 	\end{equation}
 	where $C(t)$ are the tracer concentration with respect to a well mixed compartment and $c_a(t)$ is the tracer plasma concentration of the arterial input.
 	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. We will now proof that \eqref{eq:CBV} is nevertheless valid.
 	
-	Returning to the local definition of fluid tracer concentration as $c(x,t)$, the PDE in \eqref{eq:conteqlocal} is consistent with
+	Let us consider the recursive expression \eqref{eq:C_recur} for the contrast agent concentration, namely
 	\begin{equation}
-		\phi\frac{\partial c}{\partial t}  = - q \cdot \nabla c.
-		\label{eq:1cmodel}
+		C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
 	\end{equation}
-	for locations $x$ where $Q(x) = 0$.
-	Integrating from $t_0$ to $t_1$ results in the model
+	Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that
 	\begin{equation}
-		\phi [c(x,t_1) - c(x,t_0)]  = - \int_{t_0}^{t_1}q \cdot  \nabla c \diffint t.
+		\int_{-\infty}^\infty J_i(s) \diffint s = 1.
 	\end{equation}
-	Approaching the limit $t_0 = 0, t_1 = \infty$, using the boundary conditions $c(x,0) = c(x,\infty) = 0$ and defining $E(x):= \int_0^\infty c(x,t) \diffint t$ leads to
+	This relationship allows us to estimate the integral over $J_i*\ca$ as follows:
+	\begin{align}
+		&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
+		&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
+		&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
+	\end{align}
+	where the second step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the third step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
+	Combining this result recursively with \eqref{eq:C_recur} yields:
 	\begin{equation}
-		0 = q \cdot \nabla  E(x).
-		\label{eq:streamlinezero}
+		\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
 	\end{equation}
-	We can interpret this equation such that $q$ is tangent to the level-sets of the function $E(x)$, which means that $E(x)$ is constant along the streamlines of the fluid flow.
-	Since at the beginning of the streamline it holds by construction that $c(x_0,t) = \ca(t)$ and since $C(x,t) = \phi(x) c(x,t)$ it follows that 	
-	\begin{equation}
-		\phi(x) =  \frac{ \int_{0}^{\infty} C(x,t) \diffint t }{\int_{0}^{\infty} \ca(t) \diffint t}.
-		\label{eq:phi}
-	\end{equation}
-	Note that equation \eqref{eq:phi} coincides with the traditional formula \eqref{eq:CBV} for $\phi$.
+	and hence the \eqref{eq:CBV} follows.
+	
+	
+	% Returning to the local definition of fluid tracer concentration as $c(x,t)$, the PDE in \eqref{eq:conteqlocal} is consistent with
+	% \begin{equation}
+	% 	\phi\frac{\partial c}{\partial t}  = - q \cdot \nabla c.
+	% 	\label{eq:1cmodel}
+	% \end{equation}
+	% for locations $x$ where $Q(x) = 0$.
+	% Integrating from $t_0$ to $t_1$ results in the model
+	% \begin{equation}
+	% 	\phi [c(x,t_1) - c(x,t_0)]  = - \int_{t_0}^{t_1}q \cdot  \nabla c \diffint t.
+	% \end{equation}
+	% Approaching the limit $t_0 = 0, t_1 = \infty$, using the boundary conditions $c(x,0) = c(x,\infty) = 0$ and defining $E(x):= \int_0^\infty c(x,t) \diffint t$ leads to
+	% \begin{equation}
+	% 	0 = q \cdot \nabla  E(x).
+	% 	\label{eq:streamlinezero}
+	% \end{equation}
+	% We can interpret this equation such that $q$ is tangent to the level-sets of the function $E(x)$, which means that $E(x)$ is constant along the streamlines of the fluid flow.
+	% Since at the beginning of the streamline it holds by construction that $c(x_0,t) = \ca(t)$ and since $C(x,t) = \phi(x) c(x,t)$ it follows that
+	% \begin{equation}
+	% 	\phi(x) =  \frac{ \int_{0}^{\infty} C(x,t) \diffint t }{\int_{0}^{\infty} \ca(t) \diffint t}.
+	% 	\label{eq:phi}
+	% \end{equation}
+	% Note that equation \eqref{eq:phi} coincides with the traditional formula \eqref{eq:CBV} for $\phi$.
 	
 	
 	%--------------------------------------------------
