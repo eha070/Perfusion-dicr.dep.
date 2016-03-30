@@ -787,8 +787,8 @@ In traditional models normalization is performed with respect to the volume and 
 	\begin{equation}\label{eq:singlevoxel}
 		(\phi c_i)'(t)  = P_{\mathrm{in}} (c_\mathrm{in}(t)  - c_\mathrm{out}(t)).
 	\end{equation}
-	Note that in the discretization described in Section~\ref{sec:transport} it is assumed that the CA concentration at the outflow $S_\mathrm{out}$ equals the concentration within the voxel and that the concentration at the inflow is the concentration within the adjacent voxels.
-	In this case it follows that \eqref{eq:singlevoxel} reduces to the standard equation for a well-mixed compartment $(\phi c_i)'(t) = P_{\mathrm{in}} (c_\mathrm{in}(t) - c_i(t))$ 
+	Note that the upwind-discretization described in Section~\ref{sec:transport} models each voxel as a well-mixed compartment: it is assumed that the CA concentration at the outflow $S_\mathrm{out}$ equals the concentration within the voxel and that the concentration at the inflow is the concentration within the adjacent voxels.
+	In this case it follows that \eqref{eq:singlevoxel} reduces to $(\phi c_i)'(t) = P_{\mathrm{in}} (c_\mathrm{in}(t) - c_i(t))$ 
 	with solution
 	\begin{equation}\label{eq:voxelcurve}
 		C_i(t) = \phi_i(I_i*c_{\mathrm{in}})(t)
@@ -802,10 +802,10 @@ In traditional models normalization is performed with respect to the volume and 
 		
 	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,l\}$, i.e.
 	\begin{equation}
-		C_i(t) = \phi_i((J_1*\dots *J_l)*\ca)(t).
+		C_i(t) = \phi_i\cdot ((J_1*\dots *J_l)*\ca)(t).
 		\label{eq:C_recur}
 	\end{equation}
-	where $J_j(s):=p_i\mathrm{exp}(- p_i(s))$ and $p_i=P_i/\phi_i$.
+	For a discretization using an upwind scheme we have the special case $J_j(s):=p_i\mathrm{exp}(- p_i(s))$ and $p_i=P_i/\phi_i$.
 	Following \cite{Kordecki97}, the convolution of exponential functions with pairwise different parameters $p_i$ is given by
 	\begin{equation}\label{eq:IAna}
 		(J_1*\dots *J_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is}.
@@ -909,7 +909,7 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	where $\zeta \in (0,z)$ and simplifications are due to $R(y) = 1/\sqrt{\vert q(y)} \vert$ and $\nu:=q(y)/\vert q(y) \vert$.
 	It follows from \eqref{eq:perfusiondef} that
 	\begin{equation}\label{eq:flux2perf}
-		P= \Big(\int_0^l r(s)^2 \diffint s\Big)^{-1}
+		P= \left(\int_0^l r(s)^2 \diffint s\right)^{-1}
 	\end{equation}
 	where we changed to the parameterized version of $V(r)$.
 	Equation \eqref{eq:flux2perf} is independent of the spatial location $y$ along the streamline and an explicit formula for converting flux into perfusion, showing that the perfusion scales with the streamline length $l$, as well as with the geometry of the domain, represented by the radii $r(s)$.
@@ -945,7 +945,7 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 		&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
 		&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
 	\end{align}
-	where the second step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the third step follows from $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
+	where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
 	Combining this result recursively with \eqref{eq:C_recur} yields:
 	\begin{equation}
 		\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
