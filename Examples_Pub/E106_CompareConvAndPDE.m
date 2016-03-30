@@ -81,7 +81,7 @@ return;
 %% save results for paper
 
 figure(1);clf;
-plot(timeline,CAna,timeline,CData,'linewidth',3);
+plot(timeline,CAna,timeline,CData,'--','linewidth',3);
 set(gca,'fontsize',20)
 legend('Convolution','PDE');
 ylabel('concentration [mmol/mm^3]');

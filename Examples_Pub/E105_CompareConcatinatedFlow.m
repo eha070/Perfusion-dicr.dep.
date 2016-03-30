@@ -101,7 +101,7 @@ return;
 %% plots for paper
 
 figure(1);clf;
-plot(timelineH(idxH),phi(l)*IAna(idxH),timeline(idx),IRec(idx),'linewidth',3);
+plot(timelineH(idxH),phi(l)*IAna(idxH),timeline(idx),IRec(idx),'--','linewidth',3);
 set(gca,'fontsize',20);
 legend('Analytic','Deconvolution');
 xlabel('time [s]');
