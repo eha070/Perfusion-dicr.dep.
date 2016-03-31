@@ -392,13 +392,13 @@
 % \documentclass[paper=a4, fontsize=10pt,headings=small]{scrartcl}
 % \documentclass[journal,onecolumn]{IEEEtran}
 % \documentclass[paper=a4, fontsize=10pt,parskip=half,headings=small]{scrartcl}
-\usepackage{check-short}
+%\usepackage{check-short}
 \usepackage{overpic}
 \usepackage{multirow}
 
 
 %% set author information etc
-\title{Why perfusion measurements will fail}
+\title{Why perfusion measurements will fail when image resolution increases}
 \author{Constantin Sandmann, Erik A. Hanson, Alexander Malyshev,  Arvid Lundervold, Jan Modersitzki, Erlend Hodneland }
 \date{\today}
 
@@ -462,7 +462,8 @@
 %	\tableofcontents
 
 	\begin{abstract}
-		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread. In this paper we show limits of traditional models to recover perfusion in coupled systems. Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. We show that the proposed model can be understood as a coupled set of traditional one-compartment models. It is furthermore demonstrated that traditional models (deconvolution, maximum slope) are accurately recovering the perfusion if applied to the entire domain. However, we also show both analytically and experimentally that results of traditional models are not meaningful if applied only to smaller portions of the system, and will result in over estimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed in real-life applications.  As a remedy, we propose to define perfusion in coupled systems as laminar flow along the streamlines.
+		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread. In this paper we show limits of traditional models to recover perfusion. We derive the theoretical details related to perfusion estimation when the image resolution reach the spatial scale of the capillary systems.  %in coupled systems. 
+Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. We show that the proposed model can be understood as a coupled set of traditional one-compartment models. It is furthermore demonstrated that traditional models (deconvolution, maximum slope) are accurately recovering the perfusion if applied to the entire domain. However, we also show both analytically and experimentally that results of traditional models are not meaningful if applied only to smaller portions of the system, and will result in over estimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed on coarse scale in real-life applications.  %As a remedy, we propose to define perfusion in coupled systems as laminar flow along the streamlines.
 	\end{abstract}
 
 	%--------------------------------------------------
@@ -475,12 +476,12 @@
 	Quantitative measurements of hemodynamic medical parameters based on tracer kinetic modeling are widespread both in research and in clinical practice \cite{sourbron13}. 
 	In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from contrast-enhanced dynamic image data. 
 
-	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision.  
+	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. We expect the development to continue and that imaging systems will reach a resolution where capillary systems span over several voxels.
 	Examples of estimated parameter maps can be found in \cite{Feng2013,Chen2011}. 
 	Quantitative perfusion maps, as well as other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information, and the maps have proven to be of particular value in e.g. stroke studies for localization of trauma. 
 	Among the physiological parameters obtainable from tracer kinetic models, CBF has found particularly difficult to describe reliably on a voxel-basis \cite{kudo10}.
-	Causes for these limitations in perfusion estimations are issues in the numerical implementation \cite{kudo10}, but might also depend on over-simplified dynamic models, which were originally designed to describe larger volumes of interest \cite{zierler00}.	
- 	Even though voxel wise perfusion measurements are questionable to establish by means of traditional compartment models, examples of perfusion maps are extensively reported in the literature \cite{Feng2013,Chen2011}.
+	These limitations in perfusion estimations are caused by issues in the numerical implementation \cite{kudo10}, but might also depend on over-simplified dynamic models, which were originally designed to describe larger volumes of interest \cite{zierler00}.	
+ 	%Even though voxel wise perfusion measurements are questionable to establish by means of traditional compartment models, examples of perfusion maps are extensively reported in the literature \cite{Feng2013,Chen2011}.
 	
 	There have been several approaches to clarify the concept of perfusion in a continuous sense, which is a problematic concept partly due to lack of precise definitions.
 	In \cite{calamante03}, dispersion of the arterial input function was simulated using Navier-Stokes equations.
@@ -1003,7 +1004,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	%  with units [\si{\siFmm}].
 	
 	Equation \eqref{eq:flowmodel} was solved numerically using two-point flux-approximation (TPFA), well known within porous media simulations \cite{Aarnes2007}.
-	The transport of CA described in \eqref{eq:conteq} was implemented using first order upwinding \cite{Patankar80}, yielding a 4D CA concentration map $C(x_i,t_j)$.
+	The transport of CA described in \eqref{eq:conteq} was implemented using first order upwinding \cite{Patankar80}, yielding a 3D CA concentration map $C(x_i,t_j)$.
 		
 \begin{figure*}[h!tb]
 	\centering
@@ -1075,7 +1076,9 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	%--------------------------------------------------	
 	\subsection{Reconstruction of perfusion within real data}\label{sec:RealData}
  	Experimental results from Section \ref{sec:RecPhantom} indicate that application of the deconvolution model to patches of tissues would lead to over estimation of blood flow as compared to the overall flow within the volume of interest.
-	In order to validate this guess, we applied the deconvolution model to a clinically acquired human perfusion CT dataset of a 56 years old male male admitted with suspicion of stroke to the Radboud University Medical Center in Nijmegen, the Netherlands.
+	In order to illustrate that this effect also may be observed on a complete dataset, 
+	%In order to validate this guess,
+	 we applied the deconvolution model to a clinically acquired human perfusion CT dataset of a 56 years old male male admitted with suspicion of stroke to the Radboud University Medical Center in Nijmegen, the Netherlands.
 	The perfusion scan was obtained using a Toshiba Aquilon ONE scanner, pixel-size $\SI{0.43}{\milli\meter}\times\SI{0.43}{\milli\meter}$, slice thickness $\SI{0.5}{\milli\meter}$, contrast agent \SI{50}{\milli\liter} Xentix 300, total scan-time \SI{114}{\second}, time resolution ranging from \SI{2.1}{\second} in the early- to \SI{30}{\second} in the late phase of CA uptake.
 	The arterial input function was manually selected by a medical expert within the middle cerebral artery (MCA).
 	Since we expected to see local over estimation effects mainly for small voxel sizes, the data was processed at full resolution ($512\times512\times320$) voxels. 
@@ -1135,6 +1138,8 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	In conclusion, our experiments show that if traditional methods for perfusion estimation are applied to a coupled system they perform well if applied to the entire domain, but tend to fail when applied only parts of the system. 
 	% The reason for this failure is not numerical instabilities in the deconvolution, but rather over-simplification of a physical phenomenon that is inter-connected in space.
 	% The perfusion becomes over estimated as the traditional models will not account for the streamline length of the flow in the transition phase when becoming venous blood, and the same flow will be counted multiple times.
+	We have illustrated this effect in detail in the case of high resolution images where the voxel size reach the spatial dimension of the capillary systems, , but also showed the effect on coarse scale real data.
+	
 	The reason for this failure is not numerical instabilities in the deconvolution, but rather that perfusion becomes overestimated since the traditional models will not account for the correct distribution volume.
 	
 	This problem is expected to become more pronounced in future as imaging hardware is constantly improving in spatial resolution.
