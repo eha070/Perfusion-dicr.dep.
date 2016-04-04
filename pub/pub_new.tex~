@@ -462,8 +462,9 @@
 %	\tableofcontents
 
 	\begin{abstract}
-		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread. In this paper we show limits of traditional models to recover perfusion. We derive the theoretical details related to perfusion estimation when the image resolution reach the spatial scale of the capillary systems.  %in coupled systems. 
-Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. We show that the proposed model can be understood as a coupled set of traditional one-compartment models. It is furthermore demonstrated that traditional models (deconvolution, maximum slope) are accurately recovering the perfusion if applied to the entire domain. However, we also show both analytically and experimentally that results of traditional models are not meaningful if applied only to smaller portions of the system, and will result in over estimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed on coarse scale in real-life applications. 
+		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread. In this paper we show limits of traditional models to recover perfusion. We derive the theoretical details related to perfusion estimation in highly-coupled systems, as e.g. the capillary system.
+Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. We show that the proposed model can be understood as a coupled set of traditional one-compartment models. It is furthermore demonstrated that traditional models (deconvolution, maximum slope) are accurately recovering the perfusion if applied to the entire domain. However, we also show both analytically and experimentally that results of traditional models are not meaningful if applied only to smaller portions of the system, and will result in over estimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed on coarse scale in real-life applications.  
+As a remedy, we propose to define perfusion in coupled systems as laminar flow along the streamlines.
 	\end{abstract}
 
 	%--------------------------------------------------
@@ -475,8 +476,8 @@ Based on modeling of porous media flow, we introduce a continuous model for prop
 	
 	Quantitative measurements of hemodynamic medical parameters based on tracer kinetic modeling are widespread both in research and in clinical practice \cite{sourbron13,Feng2013,Chen2011}. 
 	In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from contrast-enhanced dynamic image data. 
-
-	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. We expect the development to continue and that imaging systems will reach a resolution where capillary systems span over several voxels.
+	
+	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. 
 	Examples of estimated parameter maps can be found in \cite{Feng2013,Chen2011}. 
 	Quantitative perfusion maps, as well as other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information, and the maps have proven to be of particular value in e.g. stroke studies for localization of trauma. 
 	Among the physiological parameters obtainable from tracer kinetic models, CBF has found particularly difficult to describe reliably on a voxel-basis \cite{kudo10}.
@@ -491,7 +492,7 @@ Based on modeling of porous media flow, we introduce a continuous model for prop
 	However, clinical evaluation of the proposed modeling is still pending.
 	
 	In this work we focus on the validity of traditional perfusion models.
-	We do this by simulating a tissue patch with one inlet, one outlet, and a capillary system in between.
+	We do this by simulating a tissue patch with one inlet, one outlet, and a highly coupled system as e.g. pure capillary system in between.
 	A directional flow field for the patch is set up according to Darcy's law from porous media flow \cite{Darcy56}.
 	After that, contrast agent propagation in this patch is simulated using standard transport equations.
 	We show that the discretized 3D system can be equivalently described by a coupled set of multiple traditional one-compartment models, in line with the physical environment where each control volume is feeding their direct neighbors.
@@ -971,6 +972,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	\begin{table}[h!tb]
 		\scriptsize
 		\caption{Median, relative error $RE$ (\%) for reconstructing perfusion $\Perfv$, $\Perfs$ and CBV from the digital phantom. Both reconstruction models MS and bSVD are able to restore the perfusion for the entire domain, but fail when dividing the domain into smaller block sizes. For larger block sizes the bSVD model restores the perfusion more accurately than the MS model. However, the blood volume $\phi$ is recovered accurately, independent of block size. 
+		%Note that block size $(0.05,0.05)$ mm corresponds to the original voxel size of the PDE model.
 		} 
 		\centering
 		\begin{tabular}{p{2cm} c c c c c}
@@ -1020,7 +1022,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	%--------------------------------------------------	
 	\section{Discussion}\label{sec:conclusion}
 	
-	In this work we have studied the impact of traditional 1C models to perfusion reconstruction in a coupled system of blood flow in the capillary system.
+	In this work we have studied the impact of traditional 1C models to perfusion reconstruction in a coupled system.
 	To establish ground truth values, we developed a PDE based digital phantom to simulate blood flow as porous media flow within a slab of capillary tissue.
 	We have shown that the discretized PDE problem can be equivalently described as a system of coupled traditional one-compartment models.	
 	
