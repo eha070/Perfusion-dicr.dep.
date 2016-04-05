@@ -880,7 +880,7 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	\begin{equation}
 		\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
 	\end{equation}
-	and hence the \eqref{eq:CBV} follows.
+	and hence \eqref{eq:CBV} follows.
 	
 	
 	% Returning to the local definition of fluid tracer concentration as $c(x,t)$, the PDE in \eqref{eq:conteqlocal} is consistent with
@@ -917,15 +917,15 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	
 	A standard arterial input function was chosen \cite{ostergaard96}, the gamma-variate function $\ca(t) := D_0(t-t_0)^\alpha e^{-(t-t_0)/\beta}$ for default parameters $\alpha=3$, $D_0 = 1$, $\beta = \SI{1.5}{\second}$ and $t_0 = \SI{0}{\second}$.
 	Ground truth perfusion was chosen as \SI{50}{\siPml}, within the average range reported for brain perfusion \cite{Obrist1984,Smith00}. The field of view was chosen as $\SI{3}{\milli\meter}\times\SI{3}{\milli\meter}\times\SI{1}{\milli\meter}$, being within the same order as the characteristic length of the capillary bed or individual capillaries, ranging from $0.1$ mm to $3$ mm \cite{Cho2011}, or $0.25$ mm to $850$ mm \cite{Townsley2012}.
-	The source term was assigned to the upper left voxel and the sink term was assigned to the lower right voxel. The source can be understood as the arterial compartment, the sink as the venous compartment, and the remaning field of view as the capillary system. 
-	Permeability was chosen isotropic and constant throughout the domain $\mathbf{k}=k\mathbf{I}$ for the identity $\mathbf{I}$ and $k=\SI{5e-6}{\square\milli\meter}$.
+	The source term was assigned to the upper left voxel and the sink term was assigned to the lower right voxel. The source can be understood as the arterial compartment, the sink as the venous compartment, and the remaining field of view as the capillary system. 
+	Permeability was chosen to be isotropic and constant throughout the domain $\mathbf{k}=k\mathbf{I}$ for the identity $\mathbf{I}$ and $k=\SI{5e-6}{\square\milli\meter}$.
 	Dynamic blood viscosity was chosen as $\mu=\SI{5e-6}{\simu}$ according to \cite{rosencranz06}.
 	Porosity (e.g. CBV) was assumed to be $\phi = 0.05$, in line with measured CBV of the brain \cite{Smith00}.
 A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{1}{\milli\meter}$ was applied for the PDE model, but later relaxed when reconstructing perfusion by the traditional methods. From the porous media model using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal}, streamlines were found from tracking of the flux vector field $q$ by FACT \cite{Mori1998}, known from  tractography within diffusion tensor imaging (DTI). 
 	The flow field obtained by the PDE model is visualized in Figure~\ref{fig:flowpressureperfusion} (a).
 	
 	Equation~\eqref{eq:flowmodel} was solved numerically using two-point flux-approximation, well known within porous media simulations \cite{Aarnes2007}.
-	The transport of CA described in \eqref{eq:conteq} was implemented using first order upwinding \cite{Patankar80}, yielding a 3D CA concentration map $C(x_i,t_j)$.
+	The transport of CA described in \eqref{eq:conteq} was implemented using first order upwinding \cite{Patankar80}, yielding a discrete 2D+time CA concentration map $C(x_i,t_j)$.
 		
 \begin{figure*}[h!tb]
 	\centering
@@ -933,7 +933,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 		\includegraphics[width=.3\textwidth]{figs/qmat.pdf} & \includegraphics[width=.3\textwidth]{figs/perfmat.pdf} & \includegraphics[width=.3\textwidth]{figs/lperfmat.pdf}\\
 		(a) Synthetic flow field $q(x)$ & (b) Perfusion $\Perfs$ along the streamlines  & (c) Local perfusion $\Perfv$.
 	\end{tabular}
-	\caption{Porous media (PM) flow model with a source in the upper left corner and a sink in the lower right corner. (a) Flow field by the PDE model used to simulate distribution of the contrast agent, (b) Perfusion along the streamlines according to \eqref{eq:flux2perf}, (c) Local perfusion according to \eqref{eq:perflocal}.}
+	\caption{Porous media (PM) flow model with a source in the upper left corner and a sink in the lower right corner. (a) Flow field by the PDE model used to simulate distribution of the contrast agent. (b) Perfusion along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion according to \eqref{eq:perflocal}.}
         \label{fig:flowpressureperfusion}
 \end{figure*}
 
@@ -950,16 +950,16 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	We tested the convolution based traditional model (bSVD) \eqref{eq:conv} as well as maximum-slope (MS) model \eqref{eq:MS} for their capability to recover perfusion.
 	Prior to reconstruction, the CA concentration map $C(x_i,t_j)$ was downsampled to a time-resolution of $\SI{.1}{\second}$.
 	In order to simulate different spatial resolutions of the scanning process, the data was averaged using different block-sizes ranging from $(1,1)$ pixel (i.e. same resolution as the PDE model) to $(64,64)$ pixels (i.e. entire domain).		
-	Success of restoration was measured in terms of the relative error of the recovered perfusion with respect to the ground truth perfusion, $RE := \vert \Perf_{\mathrm{rec}} - \Perf_{\mathrm{true}}\vert/\Perf_{\mathrm{true}}\cdot 100\%$.
+	Success of restoration was measured in terms of averaged relative error of the recovered perfusion with respect to the ground truth perfusion, $RE := \vert \Perf_{\mathrm{rec}} - \Perf_{\mathrm{true}}\vert/\Perf_{\mathrm{true}}\cdot 100\%$.
 	The recovered perfusion was compared against the two perfusion maps $\Perfv$ and $\Perfs$ depicted in Figure~\ref{fig:flowpressureperfusion}.
 	
-	The local perfusion map $\Perfv$ was set up using the definition \eqref{eq:perflocal}. 
+	The local perfusion map $\Perfv$ was set up according to \eqref{eq:perflocal}. 
 	Since normalization is performed with respect to voxel size, the values are unrealistically high and will vary with the discretization.
 	As \eqref{eq:voxelcurve} shows, this can nevertheless be regarded a valid definition of perfusion since it models the feeding of arterial blood to a control region.
 	
 	The global perfusion map $\Perfs$ was set up using the definition along the streamlines \eqref{eq:flux2perf}.
 	This definition most accurately reflects the physical perfusion at a given location and shows plausible perfusion values, cf. Figure~\ref{fig:flowpressureperfusion}.
-	However, we do not expect the traditional models to be able to recover these values accurately.
+	However, we do not expect the traditional models to be able to recover these values either.
 	To quantify the errors occurring by traditional methods, the global arterial input function was used for the deconvolution, as measured in the source.
 	
 	Results from deconvolution by traditional methods are displayed in Table~\ref{tab:resultsSim}. 
@@ -972,7 +972,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	
 	\begin{table}[h!tb]
 		\scriptsize
-		\caption{Median, relative error $RE$ (\%) for reconstructing perfusion $\Perfv$, $\Perfs$ and CBV from the digital phantom. Both reconstruction models MS and bSVD are able to restore the perfusion for the entire domain, but fail when dividing the domain into smaller block sizes. For larger block sizes the bSVD model restores the perfusion more accurately than the MS model. However, the blood volume $\phi$ is recovered accurately, independent of block size. 
+		\caption{Median, relative error $RE$ (\%) of reconstructed perfusion compared to the ground truth values $\Perfv$, $\Perfs$ and CBV from the digital phantom. Both reconstruction models MS and bSVD are able to restore the perfusion for the entire domain, but fail when dividing the domain into smaller block sizes. For larger block sizes the bSVD model restores the perfusion more accurately than the MS model. However, the blood volume $\phi$ is recovered accurately, independent of block size. $\Perfs$ is only defined within a coupled system having streamlines and can therefore not be compared with restored perfusion for the entire domain.
 		} 
 		\centering
 		\begin{tabular}{p{2cm} c c c c c}
@@ -981,7 +981,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 			(0.05,0.05) 		& 93\%	& 98\%  & <1\%  & 423\%	& 95\% 	\\
 			(0.23,0.23) 		& 67\%	& 90\% 	& <1\% 	& 387\%	& 90\% 	\\
 			(0.5,0.5) 	& 44\%	& 79\% 	& <1\% 	& 292\%	& 82\% 	\\
-			full domain   	& 4\%	& <1\%  & <1\%	& 		& 	   
+			entire domain   	& 4\%	& <1\%  & <1\%	& 		& 	   
 		\end{tabular}
 		\label{tab:resultsSim}
 	\end{table}
@@ -1001,7 +1001,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	However, in order to deal with noise it was necessary to apply a prior gaussian smoothing with standard deviation of $1$ voxel.	
 	Relative concentrations were estimated from the CT signal assuming a spatially independent proportionality constant. The brain tissue was segmented automatically and used as ROI for the perfusion analysis.
 	CBF was then estimated voxel wise using a Matlab implementation of bSVD, yielding an average CBF of \SI{64.357}{\siPml}.
-	Additionally, we estimated the perfusion for the whole volume of interest by averaging the concentration values first and then performing the bSVD, yielding a total CBF of \SI{24.791}{\siPml}.
+	Furthermore, we estimated the perfusion for the whole volume of interest by averaging the concentration values first and then performing the bSVD, yielding a total CBF of \SI{24.791}{\siPml}.
 	Voxel wise results are depicted in Figure~\ref{fig:RealData}.
 	
 	\begin{figure*}[h!tb]\label{fig:RealData}
