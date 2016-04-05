@@ -734,13 +734,13 @@ In traditional models normalization is performed with respect to the volume and 
 	To verify this relationship numerically, we simulated a tissue curve $C_i(t)$ using both the continuous PDE model as well as convolution in \eqref{eq:voxelcurve}.
 	We refer to the latter approach as \textit{local convolution}. The two curves have an almost perfect match, as seen in Figure~\ref{fig:VoxelComp} (left).
 		
-	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,l\}$, i.e.
+	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,i-1\}$, i.e.
 	\begin{equation}
-		C_n(t) = \Pi_{i = 1}^n \phi_i\cdot ((J_1*\dots *J_n)*\ca)(t).
+		% C_i(t) = \phi_i W(J_1,\dots,J_{i-1})*\ca)(t).
+		C_i(t) = \phi_i J_i * c_{\mathrm{in}})(t).		
 		\label{eq:C_recur}
 	\end{equation}
-	%For a discretization using an upwind scheme we have the special case
-        with the relation $J_i(s):=p_i\mathrm{exp}(- p_i(s))$ and $p_i=\Perfv^i/\phi_i$.
+	where $W$ is some function which weights the impuls-response function according to the geometry of the flow and $J_i(s):=p_i\mathrm{exp}(- p_i(s))$ for $p_i=\Perfv^i/\phi_i$.
 	Following \cite{Kordecki97}, the convolution of exponential functions with pairwise different parameters $p_i$ is given by
 	\begin{equation}\label{eq:IAna}
 		(J_1*\dots *J_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is}.
@@ -870,11 +870,11 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	\begin{equation}
 		\int_{0}^\infty (J_i*\ca)(s) \diffint s = \int_{0} ^ \infty \ca(s)  \diffint s.
 	\end{equation}
-	% \begin{align}
-	% 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
-	% 	&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
-	% 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
-	% \end{align}
+	\begin{align}
+		&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
+		&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
+		&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
+	\end{align}
 	% where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
 	Combining this result recursively with \eqref{eq:C_recur} yields:
 	\begin{equation}
