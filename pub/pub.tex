@@ -448,6 +448,7 @@
 %define misc commands
 \newcommand{\missingsource}{\textcolor{red}{[?]}}
 \newlength{\fwd}
+\newlength{\fht}
 
 %--------------------------------------------------------------------------------------------
 %--------------------------------------------------------------------------------------------
@@ -754,11 +755,16 @@ In traditional models normalization is performed with respect to the volume and 
 These results show that the PDE model and the convolution model are equal in terms of local, voxel wise flow estimates if the convolution model is applied with the correct, local arterial input. 
 Also, the impulse response function obtained by convolution of the global arterial input function is identical to an analytical recursive convolution along all upstream voxels. 
 This clearly demonstrates that the traditional models measure a non-local perfusion quantity along the streamlines, but only upstream, and the entire streamline length within the capillary system is not taken into consideration where the blood is providing the tissue with nutrients and oxygen. These results also support the idea presented in the next section that pointwise perfusion can be regarded a globally constant quantity along the streamlines, as it can only be estimated when the entire streamline characteristics are known.
-	\fwd = .22\textwidth
+	\fwd = .2\textwidth
+	\fht = \fwd
 	\begin{figure}
+		{
+		\tiny
 		\begin{tabular}{p{\fwd} p{\fwd}}
-			\includegraphics[width=\fwd]{./figs/ConvVsPDE.pdf} & \includegraphics[width=\fwd]{./figs/IDecVsIAna.pdf} \\
+			% \includegraphics[width=\fwd]{./figs/ConvVsPDE.pdf} & \includegraphics[width=\fwd]{./figs/IDecVsIAna.pdf} \\
+			\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
 		\end{tabular}
+		}
 		\caption{Left: Red curve shows the tissue curve of the continuous PDE model at location [32,35]. Blue curve shows simulation using \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the perfusion is unrealisticly high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:C_recur}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels. }\label{fig:VoxelComp}
 	\end{figure}
 	
@@ -883,7 +889,7 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 		\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
 	\end{equation}
 	since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
-	This yields \eqref{eq:CBV} follows.
+	This yields \eqref{eq:CBV}.
 	
 	
 	% Returning to the local definition of fluid tracer concentration as $c(x,t)$, the PDE in \eqref{eq:conteqlocal} is consistent with
@@ -1018,8 +1024,10 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	Voxel wise results are depicted in Figure~\ref{fig:RealData}.
 	
 	\begin{figure*}[h!tb]\label{fig:RealData}
-		\begin{tabular}{p{.3\textwidth} p{.3\textwidth} p{.3\textwidth} }
-		 \includegraphics[width = .3\textwidth]{./figs/real_AIF.pdf} & \includegraphics[width = .3\textwidth]{./figs/real_axial160.pdf} & \includegraphics[width = .3\textwidth]{./figs/real_meanC.pdf} \\
+		\fwd = .29\textwidth
+		\centering
+		\begin{tabular}{p{\fwd} p{\fwd} p{\fwd} }
+		 \includegraphics[width = \fwd]{./figs/real_AIF.pdf} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & \includegraphics[width = \fwd]{./figs/real_meanC.pdf} \\
 		 (a) Arterial input function & (b) One slice of the voxel-wise CBF reconstruction.  & (c) Mean CA concentration curve of the whole volume of interest for reconstruction.
 		\end{tabular}
 		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details on the data). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise CBF-reconstruction for a 3D volume of interest. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}
@@ -1062,10 +1070,8 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	\section{Conclusion}
 	In conclusion, our experiments show that if traditional methods for perfusion estimation are applied to a coupled system they perform well if applied to the entire domain, but tend to fail when applied only parts of the system. 
 	We have illustrated this effect in detail in the case of high resolution images where the voxel size reaches the spatial dimension of the capillary systems, but also showed the effect on coarse scale real data.
-	
-	The reason for this failure is not numerical instabilities in the deconvolution, but rather that perfusion becomes overestimated since the traditional models will not account for the correct distribution volume.
- 
- 	This problem is expected to become more pronounced in future as imaging hardware is constantly improving in spatial resolution.
+		The reason for this failure is not numerical instabilities in the deconvolution, but rather that perfusion becomes overestimated since the traditional models will not account for the correct distribution volume.
+  	This problem is expected to become more pronounced in future as imaging hardware is constantly improving in spatial resolution.
 	We expect to find overestimation also in pathological tissue, where fluid is passing through multiple, adjacent voxels, and recommend to be take this effect into consideration in clinical evaluation of the data. To account for this problem, the development of new field models for perfusion is therefore highly demanded, in line with approaches described in \cite{sourbron14,Michler2013}. 	
 	
 
