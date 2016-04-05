@@ -728,37 +728,38 @@ In traditional models normalization is performed with respect to the volume and 
 	with solution
 	\begin{equation}\label{eq:voxelcurve}
 		C_i(t) = \phi_i(J_i*c_{\mathrm{in}})(t)
-			\text{ for } J_i(t)=(P_{\mathrm{in}}/\phi_i)e^{- (\Perfv/\phi_i)t}.
+			\text{ for } J_i(t)=(\Perfv/\phi_i)e^{- (\Perfv/\phi_i)t}.
 	\end{equation}
 	The arterial input $c_{\mathrm{in}}$ is determined by \eqref{eq:cin}, which recursively depends on all upstream voxels until the global arterial input is reached.
 	To verify this relationship numerically, we simulated a tissue curve $C_i(t)$ using both the continuous PDE model as well as convolution in \eqref{eq:voxelcurve}.
-	We refer to the latter approach as \textit{local convolution}. The two curves have an almost perfect match, as seen in Figure~\ref{fig:VoxelComp} (left).
-		
-	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,i-1\}$, i.e.
+	We refer to the latter approach as \textit{local convolution}. The two curves have an almost perfect match, as seen in Figure~\ref{fig:VoxelComp} (left).	
+	
+	As a direct consequence, it follows by recursion that the concentration at a voxel $i$ can be written as a convolution of the (global) arterial input function with a weighted average of all upstream impulse response functions.
+	Deconvolving a tissue concentration $C_i$ with the global AIF will yield an impulse response function which depends not only on the local flow and porosity, but on flow and porosity of all upstream voxels.
+	In the special case that transport is occuring only along one row of voxels, as e.g. in the top row of our synthetic example, the concentration in voxel $i$ is given by
 	\begin{equation}
-		% C_i(t) = \phi_i W(J_1,\dots,J_{i-1})*\ca)(t).
-		C_i(t) = \phi_i J_i * c_{\mathrm{in}})(t).		
+		C_i(t) = \phi_i (J_1\ast \dots \ast J_{i-1})*\ca)(t).
 		\label{eq:C_recur}
 	\end{equation}
-	where $W$ is some function which weights the impuls-response function according to the geometry of the flow and $J_i(s):=p_i\mathrm{exp}(- p_i(s))$ for $p_i=\Perfv^i/\phi_i$.
-	Following \cite{Kordecki97}, the convolution of exponential functions with pairwise different parameters $p_i$ is given by
-	\begin{equation}\label{eq:IAna}
-		(J_1*\dots *J_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is}.
-	\end{equation}
-	See \cite{Kordecki97} for the case $p_i=p_j$ for some $i,j$.
-	This relationship was also confirmed experimentally: Figure~\ref{fig:VoxelComp} (right) shows the impulse response function determined by \eqref{eq:IAna} and the impulse response function obtained from deconvolving a tissue curve of the continuous model with the global arterial input function.
+	where $J_i(s):=p_i\mathrm{exp}(- p_i(s))$ for $p_i=\Perfv^i/\phi_i$.
+	An analytic expression for the convolution of finitely many functions $J_i$ can be found in \cite{Kordecki97}.
+	% Following , the convolution of exponential functions with pairwise different parameters $p_i$ is given by
+	% \begin{equation}\label{eq:C_recur}
+	% 	(J_1\ast \dots \ast J_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is}.
+	% \end{equation}
+	% See \cite{Kordecki97} for the case $p_i=p_j$ for some $i,j$.
+	This relationship was also confirmed experimentally: Figure~\ref{fig:VoxelComp} (right) shows the impulse response function determined by \eqref{eq:C_recur} and the impulse response function obtained from deconvolving a tissue curve of the continuous model with the global arterial input function.
 	The two curves coincide almost perfectly.
 	
 These results show that the PDE model and the convolution model are equal in terms of local, voxel wise flow estimates if the convolution model is applied with the correct, local arterial input. 
 Also, the impulse response function obtained by convolution of the global arterial input function is identical to an analytical recursive convolution along all upstream voxels. 
 This clearly demonstrates that the traditional models measure a non-local perfusion quantity along the streamlines, but only upstream, and the entire streamline length within the capillary system is not taken into consideration where the blood is providing the tissue with nutrients and oxygen. These results also support the idea presented in the next section that pointwise perfusion can be regarded a globally constant quantity along the streamlines, as it can only be estimated when the entire streamline characteristics are known.
-	
 	\fwd = .22\textwidth
 	\begin{figure}
 		\begin{tabular}{p{\fwd} p{\fwd}}
 			\includegraphics[width=\fwd]{./figs/ConvVsPDE.pdf} & \includegraphics[width=\fwd]{./figs/IDecVsIAna.pdf} \\
 		\end{tabular}
-		\caption{Left: Red curve shows the tissue curve of the continuous PDE model at location [32,35]. Blue curve shows simulation using \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the perfusion is unrealisticly high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:IAna}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels. }\label{fig:VoxelComp}
+		\caption{Left: Red curve shows the tissue curve of the continuous PDE model at location [32,35]. Blue curve shows simulation using \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the perfusion is unrealisticly high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:C_recur}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels. }\label{fig:VoxelComp}
 	\end{figure}
 	
 
@@ -828,12 +829,12 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	Also, the radii $R(y)$ are chosen in such a way that in the limit when $\varepsilon \to 0$, the perfusion is constant along the streamline. 
 	To see this, let us assume that $q$ is differentiable with Jacobian $J$.
 	Using a Taylor expansion of $q(x)$ around $y$, the Lagrange remainder theorem, as well as a change of coordinates $z = (x-y)/(\varepsilon R)$ yields 
-	 \begin{align*}
-	 	F(y,\varepsilon R(y))&=\int_{B(y,\varepsilon R(y))} \nu^\top q(x) \diffint x \\
-	 	&= \int_{B(y,\varepsilon R(y))} \nu^\top q(y)  + \nu^\top J(\xi) (x-y) \diffint x \\
-	 	&= \varepsilon^2 \pi  + \int_{B(0,1)} \nu^\top J(\zeta) z(\varepsilon R(y))^3 \diffint z \\
-	 	&= \varepsilon^2 \left(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)z R(y)^3 \diffint z\right)
-	 \end{align*}
+	 % \begin{align*}
+	 % 	F(y,\varepsilon R(y))&=\int_{B(y,\varepsilon R(y))} \nu^\top q(x) \diffint x \\
+	 % 	&= \int_{B(y,\varepsilon R(y))} \nu^\top q(y)  + \nu^\top J(\xi) (x-y) \diffint x \\
+	 % 	&= \varepsilon^2 \pi  + \int_{B(0,1)} \nu^\top J(\zeta) z(\varepsilon R(y))^3 \diffint z \\
+	 % 	&= \varepsilon^2 \left(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)z R(y)^3 \diffint z\right)
+	 % \end{align*}
 	\begin{equation}
 		F(y,\varepsilon R(y))
 		= \varepsilon^2 \Big(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)zR(y)^3 \diffint z\Big)
@@ -866,10 +867,10 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	%\begin{equation}
 	%	C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
 	%\end{equation}
-	Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{-\infty}^\infty J_i(s) \diffint s = 1$.
-	This relationship allows us to estimate the integral over $J_i*\ca$ using Fubini's Theorem as follows:
+	Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{0}^\infty J_i(s) \diffint s = 1$.
+	Since the area under the convolution of two functions equals the product of the area under the two factors, this allows us to estimate the integral over $c_i = J_i*c_{\mathrm{in}}$ as follows:
 	\begin{equation}
-		\int_{0}^\infty (J_i*\ca)(s) \diffint s = \int_{0} ^ \infty \ca(s)  \diffint s.
+		\int_0^\infty c_i(s) \diffint s = \int_{0}^\infty (J_i*c_{\mathrm{in}})(s) \diffint s = \int_{0} ^ \infty c_\mathrm{in}(s)  \diffint s.
 	\end{equation}
 	 %\begin{align}
 	% 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
@@ -877,11 +878,12 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	% 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
 	 %\end{align}
 	 %where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
-	Combining this result recursively with \eqref{eq:C_recur} yields:
+	Combining this result recursively with the considerations around \eqref{eq:C_recur} yields
 	\begin{equation}
 		\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
 	\end{equation}
-	and hence \eqref{eq:CBV} follows.
+	since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
+	This yields \eqref{eq:CBV} follows.
 	
 	
 	% Returning to the local definition of fluid tracer concentration as $c(x,t)$, the PDE in \eqref{eq:conteqlocal} is consistent with
@@ -1045,7 +1047,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	Theory and examples show that this definition of perfusion does not comply with the physical understanding of perfusion since it depends heavily on the discretization.
 	However, we have shown that traditional models would restore this local value if the correct (local) arterial input function was selected.
 	We have additionally analyzed, both analytically and experimentally, the impact of selecting a further upstream arterial input function.
-	Specifically, we have provided an analytic expression for the impulse response function which shows that the perfusion will depend on the flow at all upstream voxels, and that the traditional convolution method finds the recursive impulse response function for all upstream voxels according to \eqref{eq:IAna}. However, the drawback of this approach is that the correct distribution volume is not accounted for and the obtained perfusion values will be overestimated.
+	Specifically, we have provided an analytic expression for the impulse response function which shows that the perfusion will depend on the flow at all upstream voxels, and that the traditional convolution method finds the recursive impulse response function for all upstream voxels according to \eqref{eq:C_recur}. However, the drawback of this approach is that the correct distribution volume is not accounted for and the obtained perfusion values will be overestimated.
 	
 	\section{Conclusion}
 	In conclusion, our experiments show that if traditional methods for perfusion estimation are applied to a coupled system they perform well if applied to the entire domain, but tend to fail when applied only parts of the system. 
