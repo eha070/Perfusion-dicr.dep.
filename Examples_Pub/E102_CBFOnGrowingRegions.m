@@ -14,8 +14,8 @@ close all;
 clear;
 
 %which results to show?
-showPerfusion      = 1;
-showLocalPerfusion = 0;
+showPerfusion      = 0;
+showLocalPerfusion = 1;
 showSingleCurve    = 0;
 
 %setup main parameters
@@ -164,10 +164,12 @@ if showPerfusion
     cScale   = 1;
     
     %setup true perfusion and relative errors
-    RECirc   = abs(CBFCirc-P)./P;
-    REMS     = abs(CBFMS-P)./P;    
-    medianRECirc = median(RECirc(:));
-    medianREMS = median(REMS(:));
+    RECirc  = (CBFCirc-P)./P;
+    REMS    = (CBFMS-P)./P;    
+    mRECirc = mean(RECirc(:));
+    mREMS   = mean(REMS(:));
+    sRECirc = std(RECirc(:));
+    sREMS   = std(REMS(:));
     
     %setup color axis
     tmp    = [P(:);CBFCirc(:)]*100*60;
@@ -198,7 +200,7 @@ if showPerfusion
     subplot(2,3,3);
     imagesc(RECirc);
     axis image;
-    ti = sprintf('Relative Errors Circ\nmedianRE: %1.4f\n',medianRECirc);
+    ti = sprintf('Relative Errors Circ\nmeanRE: %1.4f, stdRE=%1.4f\n',mRECirc,sRECirc);
     title(ti)
     
     %CBF MS
@@ -218,7 +220,7 @@ if showPerfusion
     subplot(2,3,6);
     imagesc(REMS);
     axis image;
-    ti = sprintf('Relative Errors MS \nmedianRE: %1.4f\n',medianREMS);
+    ti = sprintf('Relative Errors MS\nmeanRE: %1.4f, stdRE=%1.4f\n',mREMS,sREMS);
     title(ti)    
     
 
@@ -237,10 +239,12 @@ if showLocalPerfusion
     cScale   = 1;
     
     %setup true perfusion and relative errors
-    RECirc   = abs(CBFCirc-PLocal)./PLocal;
-    REMS     = abs(CBFMS-PLocal)./PLocal;    
-    medianRECirc = median(RECirc(:));
-    medianREMS = median(REMS(:));
+    RECirc   = (CBFCirc-PLocal)./PLocal;
+    REMS     = (CBFMS-PLocal)./PLocal;    
+    mRECirc  = mean(RECirc(:));
+    sRECirc  = std(RECirc(:));
+    mREMS    = mean(REMS(:));
+    sREMS    = std(REMS(:));
     
     %setup color axis
     tmp    = [PLocal(:);CBFCirc(:)]*100*60;
@@ -271,7 +275,7 @@ if showLocalPerfusion
     subplot(2,3,3);
     imagesc(RECirc);
     axis image;
-    ti = sprintf('Relative Errors Circ\nmedianRE: %1.4f\n',medianRECirc);
+    ti = sprintf('Relative Errors Circ\nmeanRE: %1.4f, stdRE=%1.4f\n',mRECirc,sRECirc);
     title(ti)
     
     %CBF MS
@@ -291,7 +295,7 @@ if showLocalPerfusion
     subplot(2,3,6);
     imagesc(REMS);
     axis image;
-    ti = sprintf('Relative Errors MS \nmedianRE: %1.4f\n',medianREMS);
+    ti = sprintf('Relative Errors MS\nmeanRE: %1.4f, stdRE=%1.4f\n',mREMS,sREMS);
     title(ti)    
     
 
