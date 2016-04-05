@@ -734,9 +734,9 @@ In traditional models normalization is performed with respect to the volume and 
 	To verify this relationship numerically, we simulated a tissue curve $C_i(t)$ using both the continuous PDE model as well as convolution in \eqref{eq:voxelcurve}.
 	We refer to the latter approach as \textit{local convolution}. The two curves have an almost perfect match, as seen in Figure~\ref{fig:VoxelComp} (left).
 		
-	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,l-1\}$, i.e.
+	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,l\}$, i.e.
 	\begin{equation}
-		C_l(t) = \phi_l \cdot ((J_1*\dots *J_l)*\ca)(t).
+		C_n(t) = \Pi_{i = 1}^n \phi_i\cdot ((J_1*\dots *J_n)*\ca)(t).
 		\label{eq:C_recur}
 	\end{equation}
 	%For a discretization using an upwind scheme we have the special case
@@ -746,19 +746,19 @@ In traditional models normalization is performed with respect to the volume and 
 		(J_1*\dots *J_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is}.
 	\end{equation}
 	See \cite{Kordecki97} for the case $p_i=p_j$ for some $i,j$.
-	This relationship was also confirmed experimentally: Figure~\ref{fig:VoxelComp} (right) shows the impulse response function determined by \eqref{eq:IAna} and the impulse response function obtained from deconvolving a tissue curve $J_i$ of the continuous model with the global arterial input function.
+	This relationship was also confirmed experimentally: Figure~\ref{fig:VoxelComp} (right) shows the impulse response function determined by \eqref{eq:IAna} and the impulse response function obtained from deconvolving a tissue curve of the continuous model with the global arterial input function.
 	The two curves coincide almost perfectly.
 	
 These results show that the PDE model and the convolution model are equal in terms of local, voxel wise flow estimates if the convolution model is applied with the correct, local arterial input. 
 Also, the impulse response function obtained by convolution of the global arterial input function is identical to an analytical recursive convolution along all upstream voxels. 
-This clearly demonstrates that the traditional models measure a non-local perfusion quantity along the streamlines, and the entire streamline length within the capillary system is not taken into consideration where the blood is providing the tissue with nutrients and oxygen. These results also support the idea presented in the next section that pointwise perfusion can be regarded a global quantity along the streamlines, as it can only be estimated when the entire streamline characteristics are known.
+This clearly demonstrates that the traditional models measure a non-local perfusion quantity along the streamlines, but only upstream, and the entire streamline length within the capillary system is not taken into consideration where the blood is providing the tissue with nutrients and oxygen. These results also support the idea presented in the next section that pointwise perfusion can be regarded a globally constant quantity along the streamlines, as it can only be estimated when the entire streamline characteristics are known.
 	
 	\fwd = .22\textwidth
 	\begin{figure}
 		\begin{tabular}{p{\fwd} p{\fwd}}
 			\includegraphics[width=\fwd]{./figs/ConvVsPDE.pdf} & \includegraphics[width=\fwd]{./figs/IDecVsIAna.pdf} \\
 		\end{tabular}
-		\caption{Left: Red curve shows the tissue curve of the continuous PDE model at location [32,35]. Blue curve shows simulation using \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the perfusion is unrealisticly high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the numerical impulse response functions at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:IAna}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels. }\label{fig:VoxelComp}
+		\caption{Left: Red curve shows the tissue curve of the continuous PDE model at location [32,35]. Blue curve shows simulation using \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the perfusion is unrealisticly high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:IAna}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels. }\label{fig:VoxelComp}
 	\end{figure}
 	
 
@@ -783,7 +783,7 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	However, for another discretization as shown in the middle, the perfusion within each of these sub-volumes becomes $\Perf_{2} = F_0/V = 2\Perf_{1}$. 
 	Taking the average across the two sub-volumes, it is clear that the perfusion is over-estimated with a factor of two. 
 	A discretization dependent perfusion estimate is not recommendable, and the perfusion estimate of $\Perf_{2}$ is clearly wrong. 
-	This problematic issue was already identified by \cite{Henkelman1990}, stating that normalizing the perfusion by control volumes that are not upstream of the flow will lead to multiple counting of the same flow, and hence an over-estimation of perfusion.
+	This problematic issue was already identified by \cite{Henkelman1990}, stating that an incorrect normalization will lead to multiple counting of the same flow, and hence an over-estimation of perfusion.
 
 	\begin{figure}[h!tb]
 	    \centering
@@ -801,15 +801,15 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	\end{figure}
 	
 	In the following we introduce a meaningful notion of perfusion for the continuous model.
-	To do this, we will consider distribution volumes which are following the streamlines. 	
+	To do this, we will consider distribution volumes which are following the streamlines, as shown in Fig. \ref{fig:perfusion-problem} (right). 	
 	For each point of a streamline we will select a small perpendicular disk with radius chosen in such a way that the total flow over each disk is constant along the streamline.
 		
 	More precisely, let us consider an arbitrary streamline $S \subseteq \Omega \subseteq \R^3$ of length $l>0$ and parametrization $s:[0,l] \to S$.
 	We start by calculating the total flow over a small 2-D disc perpendicular to the streamline.
 	Let $y \in S$ be an arbitrary location along the streamline. 
-	The total flow $F$ over a 2-D disc $B_r(y)$ perpendicular to the flow field $q(y)$, centered at $y$ and with radius $r$, is given by
+	The total flow $F$ over a 2-D disc $B(y,R(y))$ perpendicular to the flow field $q(y)$, centered at $y$ and with radius $R:S\to\R^+$, is given by
 	\begin{equation}
-		F(y,r) = \int_{B_r(y)} q(x) \cdot \nu \diffint x \text{ where }\nu := q(y)/\vert q(y) \vert.
+		F(y,R(y)) = \int_{B(y,R(y))} q(x) \cdot \nu \diffint x \text{ where }\nu := q(y)/\vert q(y) \vert.
 		\label{eq:Fdisc}
 	\end{equation}
 	In order to calculate the perfusion, we need to establish the volume of a small tube around the streamline.
@@ -818,31 +818,31 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	\begin{equation}
 		V(r) = \int_0^l r(u)^2 \pi \diffint u.
 	\end{equation}
-	Let $R:S\to\R^+$ denote $r:[0,l]\to\R^+$ in cartesian coordinates, i.e. $R(y):=r(u)$ for $y=s(u)$. We define the perfusion at an arbitrary point $y$ on the streamline as
+        Note that $R(y):=r(u)$ for some $u \in [0,l]$ satisfying $y=s(u)$. We define the perfusion at the arbitrary point $y$ on the streamline as
 	\begin{equation}
 		\Perfs:=  \lim_{\varepsilon \to 0} \frac{F(y,\varepsilon R(y))}{V(\varepsilon R(y))}
 		\label{eq:perfusiondef}
 	\end{equation}
-	for $R(y):=1/\sqrt{\vert q(y) \vert}$. Note that $F(y,\varepsilon r(s))=F(y,\varepsilon R(y))$ and $V(\varepsilon r(s))=V(\varepsilon R(y))$, and can be interchanged independent of parameterization. Also, the radii $r(y)$ are chosen in such a way that in the limit when $\varepsilon \to 0$, the perfusion is constant along the streamline. 
+	for $R(y):=1/\sqrt{\vert q(y) \vert}$. Note that $F(y,\varepsilon r(u))=F(y,\varepsilon R(y))$ and $V(\varepsilon r(u))=V(\varepsilon R(y))$, and can be interchanged independent of parameterization. Also, the radii $R(y)$ are chosen in such a way that in the limit when $\varepsilon \to 0$, the perfusion is constant along the streamline. 
 	To see this, let us assume that $q$ is differentiable with Jacobian $J$.
 	Using a Taylor expansion of $q(x)$ around $y$, the Lagrange remainder theorem, as well as a change of coordinates $z = (x-y)/(\varepsilon R)$ yields 
-	% \begin{align*}
-	% 	F(y,\varepsilon R)&=\int_{B_{\varepsilon R}(y)} \nu^\top q(x) \diffint x \\
-	% 	&= \int_{B_{\varepsilon R}(y)} \nu^\top q(y)  + \nu^\top J(\xi) (x-y) \diffint x \\
-	% 	&= \varepsilon^2 \pi  + \int_{B_{1}(0)} \nu^\top J(\zeta) z(\varepsilon R(y))^3 \diffint z \\
-	% 	&= \varepsilon^2 \left(\pi + \varepsilon \int_{B_{1}(0)} \nu^\top J(\zeta)z R(y)^3 \diffint z\right)
-	% \end{align*}
+	 \begin{align*}
+	 	F(y,\varepsilon R(y))&=\int_{B(y,\varepsilon R(y))} \nu^\top q(x) \diffint x \\
+	 	&= \int_{B(y,\varepsilon R(y))} \nu^\top q(y)  + \nu^\top J(\xi) (x-y) \diffint x \\
+	 	&= \varepsilon^2 \pi  + \int_{B(0,1)} \nu^\top J(\zeta) z(\varepsilon R(y))^3 \diffint z \\
+	 	&= \varepsilon^2 \left(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)z R(y)^3 \diffint z\right)
+	 \end{align*}
 	\begin{equation}
-		F(y,\varepsilon R)
-		= \varepsilon^2 \Big(\pi + \varepsilon \int_{B_{1}(0)} \nu^\top J(\zeta)zR^3 \diffint z\Big)
+		F(y,\varepsilon R(y))
+		= \varepsilon^2 \Big(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)zR(y)^3 \diffint z\Big)
 	\end{equation}
-	where $\zeta \in (0,z)$ and simplifications are due to $R = 1/\sqrt{\vert q(y)} \vert$ and $\nu:=q(y)/\vert q(y) \vert$.
+	where $\zeta \in (0,z)$ and simplifications are due to $R(y) = 1/\sqrt{\vert q(y)} \vert$ and $\nu:=q(y)/\vert q(y) \vert$.
 	It follows from \eqref{eq:perfusiondef} that
 	\begin{equation}\label{eq:flux2perf}
-		\Perfs= \left(\int_0^l r(s)^2 \diffint s\right)^{-1}
+		\Perfs= \left(\int_0^l r(u)^2 \diffint u\right)^{-1}
 	\end{equation}
 	where we changed to the parameterized version of $V(r)$.
-	Equation \eqref{eq:flux2perf} is independent of the spatial location $y$ along the streamline and an explicit formula for converting flux into perfusion, showing that the perfusion scales with the streamline length $l$, as well as with the geometry of the domain, represented by the radii $r(s)$.
+	Equation \eqref{eq:flux2perf} is independent of the spatial location $y$ along the streamline and an explicit formula for converting flux into perfusion, showing that the perfusion scales with the streamline length $l$, as well as with the geometry of the domain, represented by the radii $r(u)$.
 	
 
 	
@@ -854,11 +854,11 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	
 	It is known from literature on traditional models for perfusion that CBV for the entire compartment can be expressed as
 	\begin{equation}
-		\phi = \frac{\int_0^\infty C(t) \diffint t}{\int_0^\infty c_a(t) \diffint t}.
+		\phi = \frac{\int_0^\infty C(t) \diffint t}{\int_0^\infty c_a(t) \diffint t}
 		\label{eq:CBV}
 	\end{equation}
-	where $C(t)$ are the tracer concentration with respect to a well mixed compartment and $c_a(t)$ is the tracer plasma concentration of the arterial input.
-	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. We will now proof that \eqref{eq:CBV} is nevertheless valid.
+	where $C(t)$ is the tracer concentration with respect to a well mixed compartment and $c_a(t)$ is the tracer plasma concentration of the arterial input.
+	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. We will now prove that \eqref{eq:CBV} is nevertheless valid.
 	
 	Let us consider the recursive expression \eqref{eq:C_recur} for the contrast agent concentration.
 	%, namely
