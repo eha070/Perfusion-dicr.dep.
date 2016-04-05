@@ -462,7 +462,7 @@
 %	\tableofcontents
 
 	\begin{abstract}
-		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread. In this paper we show limits of traditional models to recover perfusion. We derive the theoretical details related to perfusion estimation when the image resolution reach the spatial scale of the capillary systems.  %in coupled systems. 
+		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like blood flow (perfusion), blood volume and mean transit times is widespread. In this paper we show limits of traditional models to recover perfusion. We derive the theoretical details related to voxel wise perfusion estimation when the image resolution reach the spatial scale of the capillary systems.  %in coupled systems. 
 Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. We show that the proposed model can be understood as a coupled set of traditional one-compartment models. It is furthermore demonstrated that traditional models (deconvolution, maximum slope) are accurately recovering the perfusion if applied to the entire domain. However, we also show both analytically and experimentally that results of traditional models are not meaningful if applied only to smaller portions of the system, and will result in over estimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed on coarse scale in real-life applications. 
 	\end{abstract}
 
@@ -474,20 +474,21 @@ Based on modeling of porous media flow, we introduce a continuous model for prop
 	\section{Introduction}
 	
 	Quantitative measurements of hemodynamic medical parameters based on tracer kinetic modeling are widespread both in research and in clinical practice \cite{sourbron13,Feng2013,Chen2011}. 
-	In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from contrast-enhanced dynamic image data. 
+	In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from dynamic image data using tracers. 
 
-	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. We expect the development to continue and that imaging systems will reach a resolution where capillary systems span over several voxels.
-	Examples of estimated parameter maps can be found in \cite{Feng2013,Chen2011}. 
+	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. Examples of estimated parameter maps can be found in \cite{Feng2013,Chen2011}. We expect the development to continue and that imaging systems will reach a resolution where a single capillary system spans over several voxels.
 	Quantitative perfusion maps, as well as other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information, and the maps have proven to be of particular value in e.g. stroke studies for localization of trauma. 
 	Among the physiological parameters obtainable from tracer kinetic models, CBF has found particularly difficult to describe reliably on a voxel-basis \cite{kudo10}.
 	These limitations in perfusion estimations are caused by issues in the numerical implementation \cite{kudo10}, but might also depend on over-simplified dynamic models, which were originally designed to describe larger volumes of interest \cite{zierler00}.	
 	
-	There have been several approaches to clarify the concept of perfusion in a continuous sense, which is a problematic concept partly due to lack of precise definitions.
-	In \cite{calamante03}, dispersion of the arterial input function was simulated using Navier-Stokes equations.
-	It was shown that neglecting to account for dispersion can have adverse impact on perfusion measurements.
-	In \cite{Henkelman1990} the problem of scale dependent continuous perfusion was discussed. Perfusion defined as flow entering a voxel will scale with voxel size as volume flow (perfusion) scales differently than surface flow (flux). 
-	This notion of perfusion is therefore unsuited.	
-	More recently, a two-compartment model for voxelwise perfusion was introduced in \cite{sourbron14} as a mathematical definition of perfusion.	
+	There have been several approaches to clarify the concept of perfusion in a continuous sense, which perviously has been suffering from lack of precise mathematical definitions coinciding with the common understanding of perfusion as the delivery of arterial blood to the capillary system.
+	%which is a problematic concept partly due to lack of precise definitions.
+	%In \cite{calamante03}, dispersion of the arterial input function was simulated using Navier-Stokes equations.
+	%It was shown that neglecting to account for dispersion can have adverse impact on perfusion measurements.
+	In \cite{Henkelman1990}, the problem of scale dependent continuous perfusion was discussed. Perfusion defined as flow entering a voxel will scale with voxel size, 
+	%  as volume flow (perfusion) scales differently than surface flow (flux). 
+	and this notion of perfusion is therefore unsuited.	
+	More recently a two-compartment model was introduced as a precise definition of local perfusion \cite{sourbron14}.	
 	However, clinical evaluation of the proposed modeling is still pending.
 	
 	In this work we focus on the validity of traditional perfusion models.
@@ -516,7 +517,7 @@ Based on modeling of porous media flow, we introduce a continuous model for prop
 	For the remaining, they are referred to as \emph{traditional} models.
 	
 	Let $\Omega_i$ be an arbitrary control volume with one inlet and one outlet, and let $C(t)$ denote the average contrast agent (CA) concentration within $\Omega_i$ at timepoint $t$.
-	The traditional model assumes that the change of concentration at timepoint $t$ can be described by the ordinary differential equation 
+	The traditional models assume that the change of concentration at timepoint $t$ can be described by the ordinary differential equation 
 	\begin{equation}\label{eq:classicgeneral}
 		C'(t) = \Pa\ca(t) - \Pout\cout(t), \quad C(0) = 0.
 	\end{equation}
@@ -590,7 +591,7 @@ Based on modeling of porous media flow, we introduce a continuous model for prop
 	
 	A major difference between our coupled flow model and traditional tracer kinetic modeling is the normalization of the flow field.
 In traditional models normalization is performed with respect to the volume and leads to the units of perfusion [\si{\siQmm}], cf. \cite{sourbron13}.
-	To avoid a discretization dependent flow field, for the PDE model we instead use vector valued surface fluid flux $q = q(x)$ with units [\si{\siq}] as the fluid carrying parameter, in agreement with geoscience and porous media simulation theory.
+	To avoid a discretization dependent flow field for the PDE model, we instead use vector valued surface fluid flux $q = q(x)$ with units [\si{\siq}] as the fluid carrying parameter, in agreement with geoscience and porous media simulation theory.
 	The fluid flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.	
 	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity in the fluid flux are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
 	
@@ -605,7 +606,7 @@ In traditional models normalization is performed with respect to the volume and 
 	The fluid density is denoted by $\rho = \rho(x,t)$. 
 	The flux $q$ as well as the porosity $\phi$ are assumed to be stationary and hence independent of time.
 	Fluid entering and leaving the system is described by a source- and sink term $\tilde{Q} = \tilde{Q}(x)$ [\si{\siQtilde}]. 
-	The continuity equation describing conservation of fluid mass states
+	The continuity equation assuring conservation of fluid mass states
 	\begin{equation}
 		\frac{\partial (\phi \rho)}{\partial t} + \nabla \cdot (\rho q) = \tilde{Q}.
 		\label{eq:syntcont}
@@ -626,7 +627,7 @@ In traditional models normalization is performed with respect to the volume and 
 	\end{equation}
 	Here, $\mathbf{k} = \mathbf{k}(x)$ is a permeability tensor, $p=p(x)$ is the pressure, and $\mu = \mu(x)$ is the viscosity of the fluid. 	
 	For simplicity, we will assume that $\mathbf{k}$ is a symmetric and positive definite tensor with only nonzero diagonal elements $\mathbf{k}_{ii} = k$, in accordance with a homogeneous porous medium.	
-	Equations \eqref{eq:syntcontsimp} and \eqref{eq:syntdarcysimp} can be combined, yielding the following elliptic partial differential equation in the pressure-field $p$ within the closed domain $\Omega$,
+	Equations \eqref{eq:syntcontsimp} and \eqref{eq:syntdarcysimp} can be combined, yielding the following elliptic partial differential equation in the pressure field $p$ within the closed domain $\Omega$,
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
@@ -650,16 +651,16 @@ In traditional models normalization is performed with respect to the volume and 
 	%--------------------------------------------------	
 	\subsection{Modelling Indicator Dilution}\label{sec:transport}
 
-	The introduced framework in Section \ref{sec:flow} does not relate flow to propagation of a contrast agent. This section describes a model for  CA propagation in the tissue as it is dissolved in the evolving fluid.
+	The introduced framework in Section \ref{sec:flow} does not relate flow to propagation of a contrast agent. This section describes a model for  CA propagation in the tissue as it is homogeneously dissolved in the evolving fluid.
 	We assume that the CA is entering the domain along with the fluid flowing in via the source, and similarly extracted at a sink.
 	The resulting CA concentration map is a simulation of the CA concentrations observed within real MRI measurements.
 	
 	In order to define meaningful and continuous contrast agent concentrations, we first describe CA concentration in an (arbitrarily) small tissue volume $\Omega_i$.
 	% where $C_i(t):= C(x_i,t)$ and $\phi_i := \phi(x_i)$ are assumed to be constant within $\Omega_i$.
-	Let $V_i$ be the volume of $\Omega_i$ and $v_i$ the the blood volume within $\Omega_i$.
+	Let $V_i$ be the volume of an arbitrary control region $\Omega_i$ and let $v_i$ be the blood volume within $\Omega_i$.
 	The porosity $\phi_i := v_i/V_i$ reflects the relative space within the vascular system.
 	We further introduce $C_i(t)$ and $c_i(t)$ as the CA concentration in $\Omega_i$ with respect to $V_i$ and $v_i$ respectively.
-	By definition we obtain the relation $C_i(t) = \phi_i  c_i(t)$.
+	By definition, we obtain the relation $C_i(t) = \phi_i  c_i(t)$.
 	The rate of change of tracer molecules within an arbitrary control volume $\Omega_i$ can hence he phrased as
 	\begin{equation}
 		\diffop{t}\int_{\Omega_i}C_i(t) \diffint x = \int_{\Omega_i}\diffop{t}(\phi_i c_i(t)) \diffint x = \int_{\Omega_i} \phi_i \frac{d c_i}{dt}\diffint x,
@@ -693,7 +694,7 @@ In traditional models normalization is performed with respect to the volume and 
 		\right\vert
 		\label{eq:conteqlocal}
 	\end{equation}
-	where we also added the initial value $c(x,0) = 0$ in line with the physical problem.
+	where we also added the initial condition $c(x,0) = 0$ in line with the physical problem of no tracer at $t = 0$.
 	Equation \eqref{eq:conteqlocal} is a linear transport equation in $c(x,t)$. 
 	Following \cite{evans98}, \eqref{eq:conteqlocal} admits a unique local solution.
 
@@ -702,8 +703,8 @@ In traditional models normalization is performed with respect to the volume and 
 	% Subsection: Relating New Model with Old Model
 	%--------------------------------------------------
 \subsection{Relating the transport equation model with the traditional deconvolution model for perfusion}\label{sec:NewAndOld}
-	In this section we will describe how the continuous model is related to the traditional deconvolution model.
-	More specifically, we will show that in the continuous model, the flow into each voxel can be described by a traditional model with arterial input determined by the adjacent upstream voxels.
+	In this section we describe how the continuous model is related to the traditional deconvolution model.
+	More specifically, we will show that in the continuous model, the flow into each voxel can be described by a traditional model with arterial input determined by adjacent upstream voxels.
 	
 	Let us start by modeling the CA concentration in a given voxel $\Omega_i$ using traditional models.
 	For sake of simplicity we assume that $Q_{\mathrm{so},i} = Q_{\mathrm{si},i} = 0$ within that voxel.
@@ -713,7 +714,7 @@ In traditional models normalization is performed with respect to the volume and 
 	\begin{equation}\label{eq:cin}
 	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}c(t)(q_i \cdot n) \diffint s}{\int_{S_{\mathrm{in}}} q_i \cdot n \diffint s}.
 	\end{equation}
-	This allows us to define the perfusion within $\Omega_i$ as the total fluid inflow divided by the voxel volume,
+	This allows us to define the perfusion $\Perfv$ within $\Omega_i$ as the total fluid inflow divided by the volume,
 	\begin{equation}\label{eq:perflocal}
 		\Perfv :=-\frac{1}{\mathrm{Vol}( \Omega_i)}\int_{S_{\mathrm{in}}} q_i \cdot n \diffint s.
 	\end{equation}
@@ -726,7 +727,7 @@ In traditional models normalization is performed with respect to the volume and 
 	In this case it follows that \eqref{eq:singlevoxel} reduces to $(\phi c_i)'(t) = \Perfv (c_\mathrm{in}(t) - c_i(t))$ 
 	with solution
 	\begin{equation}\label{eq:voxelcurve}
-		C_i(t) = \phi_i(I_i*c_{\mathrm{in}})(t)
+		C_i(t) = \phi_i(J_i*c_{\mathrm{in}})(t)
 			\text{ for } J_i(t)=(P_{\mathrm{in}}/\phi_i)e^{- (\Perfv/\phi_i)t}.
 	\end{equation}
 	The arterial input $c_{\mathrm{in}}$ is determined by \eqref{eq:cin}, which recursively depends on all upstream voxels until the global arterial input is reached.
@@ -735,10 +736,11 @@ In traditional models normalization is performed with respect to the volume and 
 		
 	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,l\}$, i.e.
 	\begin{equation}
-		C_i(t) = \phi_i\cdot ((J_1*\dots *J_l)*\ca)(t).
+		C_l(t) = \Pi_{i = 1}^l \phi_i\cdot ((J_1*\dots *J_l)*\ca)(t).
 		\label{eq:C_recur}
 	\end{equation}
-	For a discretization using an upwind scheme we have the special case $J_j(s):=p_i\mathrm{exp}(- p_i(s))$ and $p_i=\Perfv^i/\phi_i$.
+	%For a discretization using an upwind scheme we have the special case
+        with the relation $J_i(s):=p_i\mathrm{exp}(- p_i(s))$ and $p_i=\Perfv^i/\phi_i$.
 	Following \cite{Kordecki97}, the convolution of exponential functions with pairwise different parameters $p_i$ is given by
 	\begin{equation}\label{eq:IAna}
 		(J_1*\dots *J_n)(s) = \sum_{i=1}^n \frac{\Pi_{j=1}^n p_j}{\Pi_{j=1,j\neq i}^n(p_j-p_i)}e^{-p_is}.
