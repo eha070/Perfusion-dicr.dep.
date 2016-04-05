@@ -975,17 +975,27 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	
 	\begin{table}[h!tb]
 		\scriptsize
-		\caption{Mean relative error $RE$ and standard deviation (\%) of reconstructed perfusion compared to the ground truth values $\Perfv$, $\Perfs$ and CBV from the digital phantom. Both reconstruction models MS and bSVD are able to restore the perfusion for the entire domain, but fail when dividing the domain into smaller block sizes. For larger block sizes the bSVD model restores the perfusion more accurately than the MS model. However, the blood volume $\phi$ is recovered accurately, independent of block size. $\Perfs$ is only defined within a coupled system having streamlines and can therefore not be compared with restored perfusion for the entire domain.
+		\caption{Mean relative error $RE$ and standard deviation (both in \%) of reconstructed perfusion compared to the ground truth values $\Perfv$, $\Perfs$ and CBV from the digital phantom. Both reconstruction models MS and bSVD are able to restore the perfusion for the entire domain, but fail when dividing the domain into smaller block sizes. For larger block sizes the bSVD model restores the perfusion more accurately than the MS model. However, the blood volume $\phi$ is recovered accurately, independent of block size. $\Perfs$ is only defined within a coupled system having streamlines and can therefore not be compared with restored perfusion for the entire domain.
 		} 
 		\centering
-		\begin{tabular}{p{2cm} c c c c c}
-						& \multicolumn{2}{c}{$\Perfv$} & CBV & \multicolumn{2}{c}{$\Perfs$}  \\
-			block size (mm)	& bSVD				& MS 			&  		& bSVD	& MS 									\\ \toprule
-			(0.05,0.05) 		& -93\%$\pm$4\%	& -98\%$\pm$2\%	& <1\%  & 753\% $\pm$ 926\%	& 124\% $\pm$ 79\%		\\
-			(0.23,0.23) 		& -67\%$\pm$16\%& -88\%$\pm$6\%	& <1\% 	& 650\% $\pm$ 757\%	& 114\% $\pm$ 66\% 		\\
-			(0.5,0.5) 			& -50\%$\pm$23\%& -79\%$\pm$11\%& <1\% 	& 476\% $\pm$ 507\% & 103\% $\pm$ 51\%		\\
-			entire domain   	& 4\%			& <1\%  & <1\%	& 		& 	   
+		% \begin{tabular}{p{2cm} c c c c c}
+		% 				& \multicolumn{2}{c}{$\Perfv$} & CBV & \multicolumn{2}{c}{$\Perfs$}  \\
+		% 	block size (mm)	& bSVD				& MS 			&  		& bSVD				& MS 					\\ \toprule
+		% 	(0.05,0.05) 		& -93\%$\pm$4\%	& -98\%$\pm$2\%	& <1\%  & 753\% $\pm$ 926\%	& 124\% $\pm$ 79\%		\\
+		% 	(0.23,0.23) 		& -67\%$\pm$16\%& -88\%$\pm$6\%	& <1\% 	& 650\% $\pm$ 757\%	& 114\% $\pm$ 66\% 		\\
+		% 	(0.5,0.5) 			& -50\%$\pm$23\%& -79\%$\pm$11\%& <1\% 	& 476\% $\pm$ 507\% & 103\% $\pm$ 51\%		\\
+		% 	entire domain   	& 4\%			& <1\%  & <1\%	& 		&
+		% \end{tabular}		
+		\begin{tabular}{p{.3cm} l l l l l}
+			& & \multicolumn{4}{c}{block size (\si{\mm})} \\
+										& 		& (0.05,0.05) 		& (0.23,0.23) 	& 	(0.47,0.47)			& all \\ \toprule
+			\multirow{2}{*}{$\Perfv$}	& bSVD 	& -93\%$\pm$4\% 	& -67\%$\pm$16\%	& -50\%$\pm$23\%	& 4\% 	\\ 
+									   	& MS 	& -98\%$\pm$2\% 	& -88\%$\pm$6\%		& -79\%$\pm$11\%	& <1\% 	\\ \midrule
+									CBV & 		& <1\% 				& <1\% 				& <1\% 				& <1\% 	\\ \midrule
+			\multirow{2}{*}{$\Perfs$}	& bSVD	& 753\% $\pm$ 926\%	& 650\% $\pm$ 757\%	& 476\% $\pm$ 507\% & 		\\
+										& MS 	& 124\% $\pm$ 79\%  & 114\% $\pm$ 66\%	& 103\% $\pm$ 51\% 	& 		\\
 		\end{tabular}
+		
 		\label{tab:resultsSim}
 	\end{table}
 	
