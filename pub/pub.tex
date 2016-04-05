@@ -734,9 +734,9 @@ In traditional models normalization is performed with respect to the volume and 
 	To verify this relationship numerically, we simulated a tissue curve $C_i(t)$ using both the continuous PDE model as well as convolution in \eqref{eq:voxelcurve}.
 	We refer to the latter approach as \textit{local convolution}. The two curves have an almost perfect match, as seen in Figure~\ref{fig:VoxelComp} (left).
 		
-	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,l\}$, i.e.
+	As a direct consequence, it follows by recursion that for a given voxel at location $i$ the concentration can be written as a convolution of the (global) arterial input function with the impulse response functions of all upstream voxels $\{1,\hdots,l-1\}$, i.e.
 	\begin{equation}
-		C_n(t) = \Pi_{i = 1}^n \phi_i\cdot ((J_1*\dots *J_n)*\ca)(t).
+		C_l(t) = \phi_l \cdot ((J_1*\dots *J_l)*\ca)(t).
 		\label{eq:C_recur}
 	\end{equation}
 	%For a discretization using an upwind scheme we have the special case
