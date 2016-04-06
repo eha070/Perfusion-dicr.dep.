@@ -795,12 +795,12 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	\begin{figure}[h!tb]
 	    \centering
 	    \begin{overpic}[scale=0.3]{figs/perfusion-problem.eps}
-	    	\put(11,70){\color{black}$F_0$}
-			\put(49,70){\color{black}$F_0$}
-			\put(85.0,70){\color{black}$\Delta F_0$}
-			\put(13,33){\color{black}$2V$}
-			\put(50,20){\color{black}$V$}
-			\put(50,45){\color{black}$V$}
+	    	\put(10,70){\color{black}$F_0$}
+			\put(48,70){\color{black}$F_0$}
+			\put(84,70){\color{black}$\Delta F_0$}
+			\put(10,33){\color{black}$2V$}
+			\put(49,20){\color{black}$V$}
+			\put(49,45){\color{black}$V$}
 			\put(91,42){\color{black}$\Delta V$}
 		\end{overpic}
 	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $\Flow_0$ [$\si{\siFmm}$] of fluid. By definition, the perfusion within this compartment becomes $\Perf_{1} = \Flow_0/(2V)$. Middle: The same volume is divided into two compartments (e.g. voxels), and the perfusion for each of the compartments becomes $\Perf_{2} = \Flow_0/V = 2\Perf_{1}$. The discrepancy between the two discretizations occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we rather pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area in this 2D sketch) which is fed with arterial blood from the incoming fractional flow $\Delta \Flow_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/\Delta V$. The entire compartment can further be divided into similar infinitesimal distribution volumes, thus providing locally correct perfusion estimates.}
@@ -860,60 +860,48 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	%--------------------------------------------------	
 	\subsection{A Method to Estimate local Porosity}\label{sec:CBV}
 	
-	It is known from literature on traditional models for perfusion that CBV for the entire compartment can be expressed as
+	It is known from literature on traditional models \cite{sourbron13} for perfusion that CBV for the entire compartment can be expressed as
 	\begin{equation}
-		\phi = \frac{\int_0^\infty C(t) \diffint t}{\int_0^\infty c_a(t) \diffint t}
+		\phi = \frac{\int_0^\infty C(t) \diffint t}{\int_0^\infty c_a(t) \diffint t}.
 		\label{eq:CBV}
 	\end{equation}
 	where $C(t)$ is the tracer concentration with respect to a well mixed compartment and $c_a(t)$ is the tracer plasma concentration of the arterial input.
-	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. We will now prove that \eqref{eq:CBV} is nevertheless valid.
+	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. We will now show that \eqref{eq:CBV} is nevertheless valid.
 	
-	Let us consider the recursive expression \eqref{eq:C_recur} for the contrast agent concentration.
-	%, namely
-	%\begin{equation}
-	%	C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
-	%\end{equation}
-	Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{0}^\infty J_i(s) \diffint s = 1$.
-	Since the area under the convolution of two functions equals the product of the area under the two factors, this allows us to estimate the integral over $c_i = J_i*c_{\mathrm{in}}$ as follows:
+	% Let us consider the recursive expression \eqref{eq:C_recur} for the contrast agent concentration.
+	% %, namely
+	% %\begin{equation}
+	% %	C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
+	% %\end{equation}
+	% Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{0}^\infty J_i(s) \diffint s = 1$.
+	% Since the area under the convolution of two functions equals the product of the area under the two factors, this allows us to estimate the integral over $c_i = J_i*c_{\mathrm{in}}$ as follows:
+	% \begin{equation}
+	% 	\int_0^\infty c_i(s) \diffint s = \int_{0}^\infty (J_i*c_{\mathrm{in}})(s) \diffint s = \int_{0} ^ \infty c_\mathrm{in}(s)  \diffint s.
+	% \end{equation}
+	%  %\begin{align}
+	% % 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
+	% % 	&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
+	% % 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
+	%  %\end{align}
+	%  %where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
+	% Combining this result recursively with the considerations around \eqref{eq:C_recur} yields
+	% \begin{equation}
+	% 	\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
+	% \end{equation}
+	% since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
+	% This yields \eqref{eq:CBV}.
+	Returning to the local definition of fluid tracer concentration $c(x,t)$, outside the source and sink area where $Q(x)=0$ the PDE \eqref{eq:conteqlocal} is consistent with
 	\begin{equation}
-		\int_0^\infty c_i(s) \diffint s = \int_{0}^\infty (J_i*c_{\mathrm{in}})(s) \diffint s = \int_{0} ^ \infty c_\mathrm{in}(s)  \diffint s.
+		\phi\frac{\partial c}{\partial t}  = - q \cdot \nabla c.
+		\label{eq:1cmodel}
 	\end{equation}
-	 %\begin{align}
-	% 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
-	% 	&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
-	% 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
-	 %\end{align}
-	 %where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
-	Combining this result recursively with the considerations around \eqref{eq:C_recur} yields
+	Integrating, using the boundary conditions $c(x,0) = c(x,\infty) = 0$ and defining $E(x):= \int_0^\infty c(x,t) \diffint t$ leads to
 	\begin{equation}
-		\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
+		0 = q \cdot \nabla  E(x).
+		\label{eq:streamlinezero}
 	\end{equation}
-	since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
-	This yields \eqref{eq:CBV}.
-	
-	
-	% Returning to the local definition of fluid tracer concentration as $c(x,t)$, the PDE in \eqref{eq:conteqlocal} is consistent with
-	% \begin{equation}
-	% 	\phi\frac{\partial c}{\partial t}  = - q \cdot \nabla c.
-	% 	\label{eq:1cmodel}
-	% \end{equation}
-	% for locations $x$ where $Q(x) = 0$.
-	% Integrating from $t_0$ to $t_1$ results in the model
-	% \begin{equation}
-	% 	\phi [c(x,t_1) - c(x,t_0)]  = - \int_{t_0}^{t_1}q \cdot  \nabla c \diffint t.
-	% \end{equation}
-	% Approaching the limit $t_0 = 0, t_1 = \infty$, using the boundary conditions $c(x,0) = c(x,\infty) = 0$ and defining $E(x):= \int_0^\infty c(x,t) \diffint t$ leads to
-	% \begin{equation}
-	% 	0 = q \cdot \nabla  E(x).
-	% 	\label{eq:streamlinezero}
-	% \end{equation}
-	% We can interpret this equation such that $q$ is tangent to the level-sets of the function $E(x)$, which means that $E(x)$ is constant along the streamlines of the fluid flow.
-	% Since at the beginning of the streamline it holds by construction that $c(x_0,t) = \ca(t)$ and since $C(x,t) = \phi(x) c(x,t)$ it follows that
-	% \begin{equation}
-	% 	\phi(x) =  \frac{ \int_{0}^{\infty} C(x,t) \diffint t }{\int_{0}^{\infty} \ca(t) \diffint t}.
-	% 	\label{eq:phi}
-	% \end{equation}
-	% Note that equation \eqref{eq:phi} coincides with the traditional formula \eqref{eq:CBV} for $\phi$.
+	We can interpret this equation such that $q$ is tangent to the level-sets of the function $E(x)$, which means that $E(x)$ is constant along the streamlines of the fluid flow.
+	Since at the beginning of the streamline it holds by construction that $c(x_0,t) = \ca(t)$ and since $C(x,t) = \phi(x) c(x,t)$ the claim follows.
 	
 	
 	%--------------------------------------------------
@@ -922,7 +910,9 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 	%--------------------------------------------------
 	%--------------------------------------------------
 	\section{Numerical Implementation}\label{sec:NumExp}
-	Based on the field models described in Section \ref{sec:synthetic}, we now establish an experimental setup suited to study the performance of the traditional methods in a synthetic flow field with a known ground truth. Using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal} we set up a forward simulation of blood flow and indicator dilution through the capillary system. We aimed at creating a generic synthetic test case and kept all optional parameters as simple as possible. 
+	Based on the field models described in Section \ref{sec:synthetic}, we now establish an experimental setup suited to study the performance of the traditional methods in a synthetic flow field with a known ground truth. 
+	Using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal} we set up a forward simulation of blood flow and indicator dilution through the capillary system.
+	We aimed at creating a generic synthetic test case and kept all optional parameters as simple as possible. 
 	
 	A standard arterial input function was chosen \cite{ostergaard96}, the gamma-variate function $\ca(t) := D_0(t-t_0)^\alpha e^{-(t-t_0)/\beta}$ for default parameters $\alpha=3$, $D_0 = 1$, $\beta = \SI{1.5}{\second}$ and $t_0 = \SI{0}{\second}$.
 	Ground truth perfusion was chosen as \SI{50}{\siPml}, within the average range reported for brain perfusion \cite{Obrist1984,Smith00}. The field of view was chosen as $\SI{3}{\milli\meter}\times\SI{3}{\milli\meter}\times\SI{1}{\milli\meter}$, being within the same order as the characteristic length of the capillary bed or individual capillaries, ranging from $0.1$ mm to $3$ mm \cite{Cho2011}, or $0.25$ mm to $850$ mm \cite{Townsley2012}.
@@ -959,7 +949,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	We tested the convolution based traditional model (bSVD) \eqref{eq:conv} as well as maximum-slope (MS) model \eqref{eq:MS} for their capability to recover perfusion.
 	Prior to reconstruction, the CA concentration map $C(x_i,t_j)$ was downsampled to a time-resolution of $\SI{.1}{\second}$.
 	In order to simulate different spatial resolutions of the scanning process, the data was averaged using different block-sizes ranging from $(1,1)$ pixel (i.e. same resolution as the PDE model) to $(64,64)$ pixels (i.e. entire domain).		
-	Success of restoration was measured in terms of averaged relative error of the recovered perfusion with respect to the ground truth perfusion, $RE := \vert \Perf_{\mathrm{rec}} - \Perf_{\mathrm{true}}\vert/\Perf_{\mathrm{true}}\cdot 100\%$.
+	Success of restoration was measured in terms of averaged relative error of the recovered perfusion with respect to the ground truth perfusion, $RE :=  \Perf_{\mathrm{rec}} - \Perf_{\mathrm{true}}/\Perf_{\mathrm{true}}\cdot 100\%$.
 	The recovered perfusion was compared against the two perfusion maps $\Perfv$ and $\Perfs$ depicted in Figure~\ref{fig:flowpressureperfusion}.
 	
 	The local perfusion map $\Perfv$ was set up according to \eqref{eq:perflocal}. 
@@ -974,7 +964,8 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	Results from deconvolution by traditional methods are displayed in Table~\ref{tab:resultsSim}. 
 	For the complete domain (i.e. block size $64 \times 64$), both the MS method as well as the convolution method were able to restore the ground truth perfusion of \SI{50}{\siPml} accurately with errors of $<1\%$ and $4\%$ respectively.
 	However, the errors are increasing as methods are applied to smaller blocks of the system.
-	If compared to $\Perfv$, one can see that results are clearly improving with increasing block size. Note that the block size of $(0.5,0.5)\SI{}{\milli\meter}$ is within the range of resolution available on clinical scanners today, and is therefore clinically interesting.
+	If compared to $\Perfv$, one can see that results are improving with increasing block size. 
+	Note that the block size of $(0.5,0.5)\SI{}{\milli\meter}$ is within the range of resolution available on clinical scanners today, and is therefore clinically interesting.
 	Also a clear advantage of the bSVD method as compared to MS can be observed for larger block sizes.
 		
 	Results from reconstructing the porosity $\phi$ (i.e. CBV) according to \eqref{eq:CBV} are also shown in Table~\ref{tab:resultsSim}. The errors are low, independent of block size.

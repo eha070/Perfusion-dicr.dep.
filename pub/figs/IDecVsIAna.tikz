@@ -24,7 +24,7 @@ ylabel={$\text{Impuls Response [mmol/s/mm}^\text{3}\text{]}$},
 axis background/.style={fill=white},
 legend style={legend cell align=left,align=left,draw=white!15!black}
 ]
-\addplot [color=mycolor1,solid]
+\addplot [color=mycolor1,solid,very thick]
   table[row sep=crcr]{%
 0	-2.38418579101562e-07\\
 0.0300060060012012	-9.08970832824707e-08\\
@@ -129,7 +129,7 @@ legend style={legend cell align=left,align=left,draw=white!15!black}
 };
 \addlegendentry{Analytic};
 
-\addplot [color=mycolor2,dashed]
+\addplot [color=mycolor2,dashed,very thick]
   table[row sep=crcr]{%
 0	2.79082655572944e-05\\
 0.1	-0.000185486217763745\\

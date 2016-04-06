@@ -23,7 +23,7 @@ ylabel={$\text{concentration [mmol/mm}^\text{3}\text{]}$},
 axis background/.style={fill=white},
 legend style={legend cell align=left,align=left,draw=white!15!black}
 ]
-\addplot [color=mycolor1,solid]
+\addplot [color=mycolor1,solid,very thick]
   table[row sep=crcr]{%
 0	0\\
 0.4	3.53540962313006e-39\\
@@ -128,7 +128,7 @@ legend style={legend cell align=left,align=left,draw=white!15!black}
 };
 \addlegendentry{Convolution};
 
-\addplot [color=mycolor2,dashed]
+\addplot [color=mycolor2,dashed,very thick]
   table[row sep=crcr]{%
 0	0\\
 0.4	6.55897768753897e-40\\
