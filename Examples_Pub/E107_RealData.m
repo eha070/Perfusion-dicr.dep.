@@ -12,6 +12,7 @@
 
 clc;
 close all;
+clear;
 
 
 
@@ -350,21 +351,18 @@ return;
 
 %plot Cmean vs CMean R
 figure(5);clf;
-plot(timelineNewL,para.Cmean,'b',timelineNewL,para.CmeanR,'r','LineWidth',3);
-xlabel('time (s)');
-ylabel('concentration');
-legend('mean concentration','approximation by bSVD');
-set(gca,'FontSize',16)
-% export_fig('real_meanC.pdf','-transparent',5);
+plot(timelineNewL,para.Cmean,'b',timelineNewL,para.CmeanR,'r');
+xlabel('time [s]');
+ylabel('rel. concentration');
+matlab2tikz('real_meanC.tikz','width','\fwd');
+
 
 %% plot AIF
 figure(5);clf;
-plot(timelineNew,aifNew,'LineWidth',3);
-xlabel('time (s)');
-ylabel('concentration');
-legend('AIF');
-set(gca,'FontSize',16)
-% export_fig('real_AIF.pdf','-transparent',5);
+plot(timelineNew,aifNew);
+xlabel('time [s]');
+ylabel('rel. concentration');
+matlab2tikz('real_AIF.tikz','width','\fwd');
 
 
 %% plot CBF

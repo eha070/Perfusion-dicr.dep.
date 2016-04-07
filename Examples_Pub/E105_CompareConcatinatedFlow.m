@@ -96,6 +96,10 @@ figure(1);clf;
 plot(timeline(idx),IRec(idx),timelineH(idxH),phi(l)*IAna(idxH));
 legend('IRec','IAna');    
 
+figure(1);clf;
+plot(timeline,IRec,timelineH,phi(l)*IAna);
+legend('IRec','IAna');    
+
 return;
 
 %% pdf plots for paper
@@ -120,10 +124,16 @@ stepH = ceil(numel(idxH)/100);
 idxT  = idx(1:step:end);
 idxHT = idxH(1:stepH:end);
 
+
+IAnaT = IAna(idxHT);
+IRecT = IRec(idxT);
+IAnaT(IAnaT<1e-12) = 0;
+IRecT(IRecT<1e-12)=0;
+
 %TIKZ
 figure(1);clf;
-plot(timelineH(idxHT),phi(l)*IAna(idxHT),timeline(idxT),IRec(idxT),'--');
+plot(timelineH(idxHT),phi(l)*IAnaT,timeline(idxT),IRecT,'--');
 legend('Analytic','Deconvolution');
 xlabel('time [s]');
 ylabel('Impuls Response [mmol/s/mm^3]');
-matlab2tikz('IDecVsIAna.tikz', 'height', '\fht', 'width', '\fwd');
+matlab2tikz('IDecVsIAna.tikz','width', '\fwd');
