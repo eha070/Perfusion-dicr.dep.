@@ -116,19 +116,20 @@ if nargout > 2
     fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
     
     %reconstruction for the averaged curve
+    fprintf('Reconstruction of averaged curve...');    
+    tic;
     Cmean  = mean(CHat,1);
     Imean  = Cmean*MregInv';
     CmeanR = Imean*Mreg';
     Fmean  = max(Imean,[],2);
     para = struct('Cmean',Cmean(:),'Imean',Imean(:),'CmeanR',CmeanR(:),'Fmean',Fmean,'meanF',mean(F(:)));
+    fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
     
 end 
 
 
 
  
-
-
 
 
 
