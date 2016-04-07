@@ -765,7 +765,7 @@ This clearly demonstrates that the traditional models measure a non-local perfus
 			\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
 		\end{tabular}
 		}
-		\caption{Left: Red curve shows the tissue curve of the continuous PDE model at location [32,35]. Blue curve shows simulation using \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the perfusion is unrealisticly high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:C_recur}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels. CONSTANTIN, WILL YOU VERIFY THE AXES UNITS? ISNT THE RIGHT ONE INVERTED? }\label{fig:VoxelComp}
+		\caption{Left: Red curve shows the tissue curve of the continuous PDE model at location [32,35]. Blue curve shows simulation using \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the perfusion is unrealisticly high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:C_recur}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
 	\end{figure}
 	
 
@@ -957,7 +957,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	As \eqref{eq:voxelcurve} shows, this can nevertheless be regarded a valid definition of perfusion since it models the feeding of arterial blood to a control region.
 	
 	The global perfusion map $\Perfs$ was set up using the definition along the streamlines \eqref{eq:flux2perf}.
-	This definition most accurately reflects the physical perfusion at a given location and shows plausible perfusion values, cf. Figure~\ref{fig:flowpressureperfusion}. As an internal control, the average of $\Perfv$ was found to the \SI{50}{\siPml}, for all practical means identical to the global input perfusion. CONSTANTIN, CAN YOU PUT IN THE NUMBER?
+	This definition most accurately reflects the physical perfusion at a given location and shows plausible perfusion values, cf. Figure~\ref{fig:flowpressureperfusion}. As an internal control, the average of $\Perfv$ was found to to be \SI{49.59}{\siPml}, for all practical means identical to the global input perfusion of $\SI{50}{\siPml}$.
 	However, we do not expect the traditional models to be able to recover these values either.
 	To quantify the errors occurring by traditional methods, the global arterial input function was used for the deconvolution, as measured in the source.
 	
@@ -1015,13 +1015,13 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	Voxel wise results are depicted in Figure~\ref{fig:RealData}.
 	
 	\begin{figure*}[h!tb]\label{fig:RealData}
-		\fwd = .29\textwidth
+		\fwd = .28\textwidth
 		\centering
-		\begin{tabular}{p{\fwd} p{\fwd} p{\fwd} }
-		 \includegraphics[width = \fwd]{./figs/real_AIF.pdf} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & \includegraphics[width = \fwd]{./figs/real_meanC.pdf} \\
-		 (a) Arterial input function & (b) One slice of the voxel-wise CBF reconstruction.  & (c) Mean CA concentration curve of the whole volume of interest for reconstruction.
+		\begin{tabular}{ccc}
+		 {\tiny\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\tiny\input{./figs/real_meanC.tikz}} \\
+		 (a) & (b) & (c) 
 		\end{tabular}
-		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details on the data). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise CBF-reconstruction for a 3D volume of interest. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD. CONSTANTIN: I THINK WE NEED LARGER AXIS LEGENDS ON THESE FIGURES. ALSO, WE NEED UNITS ON THE THE Y-AXIS ON THE RIGHT FIGURE. IT ONLY SAYS "CONCENTRATION" RIGHT NOW. I ALSO SUGGEST WE TAKE AWAY THE SMALL FIGURE LEGENDS. ITS ALL WRITTEN IN THE TEXT OF THE MAIN LEGEND.}
+		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details on the data). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise CBF-reconstruction for a 3D volume of interest. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}
 	\end{figure*}
 	
 
@@ -1041,7 +1041,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	Our results strongly support the usage of traditional models for entire regions which are exclusively fed by the measured arterial input.
 	However, they also show that if traditional models are applied only to parts of the system, they tend to overestimate the actual perfusion. The reason for this is that traditional models do not take into account the correct distribution volume and therefore become discretization dependent.
 	Note that taking local arterial input functions is no remedy for this problem, since the resulting perfusion will depend heavily on the voxel size and overestimate the actual flow, cf. Figure~\ref{fig:perfusion-problem} and \eqref{eq:voxelcurve}.
-	In fact, in the most extreme example we measured overestimated perfusion values of up to $753\%$ (IS THIS RIGHT CONSTANTIN?).
+	In fact, in the most extreme example we measured overestimated perfusion values which were on average up to $753\%$.
 	The results from the digital phantom are supported by real data experiments, where we showed local overestimation of perfusion for small voxel-sizes as compared to an averaging of concentrations for the entire volume of interest.
 	Regarding the CBV estimates, one can observe from Table \ref{tab:resultsSim} that estimation of blood volume is far more stable, and  even various block sizes had little impact on the results. 
 	These results are in well agreement with the analytical considerations in Section \ref{sec:CBV}, stating that \eqref{eq:CBV} is valid for entire organs as well as for single voxels. 
