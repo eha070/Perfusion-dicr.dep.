@@ -738,7 +738,7 @@ In traditional models normalization is performed with respect to the volume and 
 	Deconvolving a tissue concentration $C_i$ with the global AIF will yield an impulse response function which depends not only on the local flow and porosity, but on flow and porosity of all upstream voxels.
 	In the special case that transport is occuring only along one row of voxels, as e.g. in the top row of our synthetic example, the concentration in voxel $i$ is given by
 	\begin{equation}
-		C_i(t) = \phi_i (J_1\ast \dots \ast J_{i-1})*\ca)(t).
+		C_i(t) = \phi_i (J_1\ast \dots \ast J_{i-1})\ast\ca)(t).
 		\label{eq:C_recur}
 	\end{equation}
 	where $J_i(s):=p_i\mathrm{exp}(- p_i(s))$ for $p_i=\Perfv^i/\phi_i$.
@@ -756,16 +756,18 @@ Also, the impulse response function obtained by convolution of the global arteri
 This clearly demonstrates that the perfusion which is recovered by traditional models will depend on all upstream flow.
 However, for meaningful results the entire streamline length within the capillary system needs to be taken into consideration, where the blood is providing the tissue with nutrients and oxygen. 
 These results also support the idea presented in the next section that pointwise perfusion can be regarded a globally constant quantity along the streamlines, as it can only be estimated when the entire streamline characteristics are known.
-	\fwd = .2\textwidth
-	\begin{figure}
+	\fwd = .4\textwidth
+	\fht = .1\textheight	
+	\begin{figure*}
 		{
-		\tiny
-		\begin{tabular}{p{\fwd} p{\fwd}}
+		\small
+		% \begin{tabular}{p{\fwd} p{\fwd}}
+		\begin{tabular}{c c}
 			\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
 		\end{tabular}
 		}
-		\caption{Left: Red curve shows the tissue curve of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:C_recur}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
-	\end{figure}
+		\caption{Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by \eqref{eq:C_recur}. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
+	\end{figure*}
 	
 
 	%--------------------------------------------------
@@ -791,7 +793,7 @@ These results also support the idea presented in the next section that pointwise
 	A discretization dependent perfusion estimate is not recommendable, and the perfusion estimate of $\Perf_{2}$ is clearly wrong. 
 	This problematic issue was already identified by \cite{Henkelman1990}, stating that an incorrect normalization will lead to multiple counting of the same flow, and hence an over-estimation of perfusion.
 
-	\begin{figure}[h!tb]
+	\begin{figure}
 	    \centering
 	    \begin{overpic}[scale=0.3]{figs/perfusion-problem.eps}
 	    	\put(10,70){\color{black}$F_0$}
