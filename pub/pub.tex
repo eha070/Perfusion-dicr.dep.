@@ -461,7 +461,7 @@
 
 	\begin{abstract}
 		Objective:
-		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we show limitations of traditional models to recover perfusion. 
+		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we show limitations of traditional models to recover perfusion.
 		Methods:
 		In this work we derive theoretical details for voxelwise perfusion estimation when the image resolution reaches the spatial scale of the capillary systems. Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. 
 		Results:
@@ -938,8 +938,9 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 		
 \begin{figure*}[h!tb]
 	\centering
+	\fwd = .23\textwidth
 	\begin{tabular}{c c c}
-		\includegraphics[width=.3\textwidth]{figs/qmat.pdf} & \includegraphics[width=.3\textwidth]{figs/perfmat.pdf} & \includegraphics[width=.3\textwidth]{figs/lperfmat.pdf}\\
+		\includegraphics[width=\fwd]{figs/qmat.pdf} & \includegraphics[width=\fwd]{figs/perfmat.pdf} & \includegraphics[width=\fwd]{figs/lperfmat.pdf}\\
 		(a) Synthetic flow field $q(x)$ & (b) Perfusion $\Perfs$ along the streamlines  & (c) Local perfusion $\Perfv$.
 	\end{tabular}
 	\caption{Porous media (PM) flow model with a source in the upper left corner and a sink in the lower right corner. (a) Flow field by the PDE model used to simulate distribution of the contrast agent. (b) Perfusion along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion according to \eqref{eq:perflocal}.}
