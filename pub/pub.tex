@@ -460,8 +460,18 @@
 %	\tableofcontents
 
 	\begin{abstract}
-		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we show limitations of traditional models to recover perfusion. We derive theoretical details for voxelwise perfusion estimation when the image resolution reaches the spatial scale of the capillary systems.  %in coupled systems. 
-Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. We found that the proposed model can be understood as a coupled set of traditional one-compartment models. It is furthermore demonstrated that traditional models (deconvolution, maximum slope) are accurately recovering the perfusion if applied to the entire domain. However, we also show both analytically and experimentally that results of traditional models are not meaningful if applied only to smaller portions of the system, and will result in over estimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed on coarse scale in real-life applications. 
+		Objective:
+		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we show limitations of traditional models to recover perfusion. 
+		Methods:
+		In this work we derive theoretical details for voxelwise perfusion estimation when the image resolution reaches the spatial scale of the capillary systems. Based on modeling of porous media flow, we introduce a continuous model for propagation of a tracer in the capillary tissue. 
+		Results:
+		We found that the proposed model can be understood as a coupled set of traditional one-compartment models. 
+		It is demonstrated that traditional models are accurately recovering perfusion if applied to the entire domain, but are not meaningful if applied to smaller portions of the system and will result in over estimation of perfusion. 
+		Evidence of real patient data is provided, indicating that this effect might also be observed on coarse scale in real-life applications.
+		Conclusion:
+		We find that traditional models for perfusion overestimate blood flow if applied to only parts of a coupled system. Estimation of the blood volume is stable and can also be applied in coupled systems.
+		Significance:
+		Awareness should be draw to potentially inaccurate perfusion estimates in clinical applications. For the task of future perfusion estimations we suggest that continuous and coupled PDE models are developed.		
 	\end{abstract}
 
 	%--------------------------------------------------
