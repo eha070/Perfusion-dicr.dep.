@@ -19,7 +19,7 @@ xmax=3,
 xlabel={time [s]},
 ymin=0,
 ymax=0.2,
-ylabel={$\text{IR [mmol/s/mm}^\text{3}\text{]}$},
+ylabel={$\text{IR [1/s]}$},
 ytick={0,0.1,0.2},
 axis background/.style={fill=white},
 legend style={legend cell align=left,align=left,draw=white!15!black}
