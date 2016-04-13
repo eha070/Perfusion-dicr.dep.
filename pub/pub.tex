@@ -1022,18 +1022,18 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	However, in order to deal with noise it was necessary to apply a prior gaussian smoothing with standard deviation of $1$ voxel.	
 	Relative concentrations were estimated from the CT signal assuming a spatially independent proportionality constant. The brain tissue was segmented automatically and used as ROI for the perfusion analysis.
 
-	CBF was then estimated voxelwise using an own Matlab implementation of bSVD, yielding an average CBF of \SI{64.357}{\siPml}.
-	Furthermore, we estimated the perfusion for the whole volume of interest by averaging the concentration values first and then performing the bSVD, yielding a total CBF of \SI{24.791}{\siPml}.
-	voxelwise results are depicted in Figure~\ref{fig:RealData}.
+	CBF was then estimated voxelwise using an own Matlab implementation of bSVD, yielding an average scaled CBF of \SI{64.357}{\milli\litre\per\minute\per100\milli\gram}.
+	Furthermore, we estimated the perfusion for the whole volume of interest by averaging the concentration values first and then performing the bSVD, yielding a total scaled CBF of \SI{24.791}{\milli\litre\per\minute\per100\milli\gram}.
+	Voxelwise results are depicted in Figure~\ref{fig:RealData}.
 	
 	\begin{figure*}[h!tb]\label{fig:RealData}
-		\fwd = .28\textwidth
+		\fwd = .25\textwidth
 		\centering
 		\begin{tabular}{ccc}
-		 {\tiny\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\tiny\input{./figs/real_meanC.tikz}} \\
+		 {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
 		 (a) & (b) & (c) 
 		\end{tabular}
-		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details on the data). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise CBF-reconstruction for a 3D volume of interest. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}
+		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details on the data). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise scaled CBF-reconstruction [\si{\milli\litre\per\minute\per100\milli\gram}] for a 3D volume of interest. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}
 	\end{figure*}
 	
 
