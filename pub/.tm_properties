@@ -1,4 +1,4 @@
-TM_LATEX_MASTER  = "$CWD/pub.tex"
+#TM_LATEX_MASTER  = "$CWD/pub.tex"
 excludeInBrowser = {*.aux,*.log,*.synctex.gz,*.bbl,*.toc}
 windowTitle 	 = 'Validation of a classic one-comartment model for perfusion -  (${CWD}) - ${TM_DISPLAYNAME}'
 spellChecking    = true
