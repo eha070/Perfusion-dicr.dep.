@@ -6,7 +6,8 @@ function [F,phi,Irec,Crec,para] = fastPerfusionAnalysis(C,aif,timeline,thres,var
 %   C        - Tissue curves, size(C)=[ncurve,k];
 %   aif      - The arterial input function
 %   timeline - REGULARLY SPACED timeline in seconds.
-%   thres    - threshold for the deconvolution
+%   thres    - threshold for the deconvolution (fraction with respect to
+%              the larges eigenvalue)
 %
 % VARARGIN:
 %   mode - Deconvolution Mode. Allowed is
