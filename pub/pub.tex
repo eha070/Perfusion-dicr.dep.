@@ -414,6 +414,10 @@
 \newcommand{\Perfs}{P_{\mathrm{s}}}
 \newcommand{\Flow}{F}
 \newcommand{\vq}{\mathbf{q}}
+\newcommand{\vx}{\mathbf{x}}
+\newcommand{\vy}{\mathbf{y}}
+\newcommand{\vdx}{\mathbf{dx}}
+
 
 
 %define SI-units, since we want to be able to easily change them
@@ -465,12 +469,12 @@
 	%ABSTRACT MODIFIED TO FOCUS ON THE ANALYSIS AND NOT THE NUERICAL EXPERIMENTS OR THE POROUS MEDIA FLOW.
 	\begin{abstract}
 		Objective:
-		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we set up at mathematical framework, clearly revealing the traditional models' limitations related to perfusion recovery.
+		In perfusion imaging the usage of traditional one-compartment models to estimate hemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we set up at mathematical framework, clearly revealing traditional models' limitations related to perfusion recovery.
 		Methods:
-		We derive theoretical details for voxelwise perfusion estimation when the image resolution reaches the spatial scale of the capillary systems. Furthermore we analyse the transitional understanding of perfusion estimation using a continuous model for microcirculation and propagation of a tracer in the capillary tissue, understood as tissue perfused by capillaries. The effects are illustrated using porous media flow simulations.
+		We derive theoretical details for voxelwise perfusion estimation when the image resolution goes beyond the spatial scale of the capillary systems. Furthermore, we analyse the transitional understanding of perfusion estimation using a continuous model for microcirculation and propagation of a tracer in the capillary tissue, understood as tissue perfused by capillaries. The effects are illustrated using porous media flow simulations.
 		Results:
-		Traditional one-compartment models only are equivalent to a continuos model for tracer transport when upstream effects can be counted for. This is however difficult to incorporate into practical applications. 
-		It is demonstrated that traditional models are accurately recovering perfusion if applied to the entire domain, but are not meaningful if applied to smaller portions of the system and will result in over estimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed on coarse scale in real-life applications.
+		Traditional one-compartment models are equivalent to a continuos model for tracer transport when upstream effects can be counted for. This is however difficult to incorporate into practical applications. 
+		It is demonstrated that traditional models are accurately recovering perfusion if applied to the entire domain, but are not meaningful if applied to smaller portions of the system beyond the scale of capillaries, and will result in over estimation of perfusion. Evidence of real patient data is provided, indicating that this effect might also be observed in real-life applications.
 		Conclusion:
 		We find that traditional models for perfusion overestimate blood flow if applied to only parts of a coupled system. Estimation of the blood volume is stable and can also be applied in coupled systems.
 		Significance:
@@ -492,7 +496,7 @@
 	Among the physiological parameters obtainable from tracer kinetic modeling, CBF has been found particularly difficult to describe reliably on a voxel-basis \cite{kudo10}.
 	These limitations are caused by issues of the numerical implementation \cite{kudo10}, but might also depend on over-simplified dynamic models, which were originally designed to describe larger volumes of interest \cite{zierler00}.	
 
-	Most commonly perfusion can be understood as the delivery of arterial blood to the capillary system.
+	Most commonly, perfusion can be understood as the delivery of arterial blood to the capillary system.
 	There have been several approaches to clarify this concept in a continuous sense.
 	In \cite{calamante03}, dispersion of the arterial input function was simulated using Navier-Stokes equations.
 	It was shown that neglecting to account for dispersion can have adverse impact on perfusion measurements.
@@ -507,7 +511,7 @@
 	In this work we focus on the validity of traditional perfusion models.
 	We  demonstrate that traditional models like deconvolution or the maximum slope model are able to recover the perfusion accurately if applied to the entire domain fed by the incoming flow.
 	However, when applying the traditional models to isolated parts of the full system, we find that local perfusion in coupled systems is not straightforward to define.
-	In order to cope with this issue, two useful definitions of voxel-wise perfusion are presented: A definition $\Perfv$ describing the local inflow into a voxel, but otherwise not fulfilling the traditional concept of perfusion, and then a tailored definition of perfusion $\Perfs$ for continuous models.
+	In order to highlight this issue, two useful definitions of voxel-wise perfusion are presented: A definition $\Perfv$ describing the local inflow into a voxel, but otherwise not fulfilling the traditional concept of perfusion, and then a tailored definition of perfusion $\Perfs$ for continuous models.
 
 The concepts are illustrated by simulations of flow in a tissue patch with one inlet, one outlet, and a capillary system in between.
 	A directional flow field for the patch is set up according to Darcy's law from porous media flow \cite{Darcy56}.
@@ -537,8 +541,8 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	\begin{equation}\label{eq:classicgeneral}
 		C'(t) = \Pa\ca(t) - \Pout\cout(t), \quad C(0) = 0.
 	\end{equation}
-	Here $\ca,\cout$ are the plasma CA concentrations at the inlet and outlet of $\Omega_i$ and $\Pa,\Pout$ are the corresponding flow values at these locations.
-	In the following it is assumed that the plasma tracer concentration $\ca$ at the inlet is known.
+	Here, $\ca,\cout$ are the plasma CA concentrations at the inlet and outlet of $\Omega_i$ and $\Pa,\Pout$ is the flow at these locations.
+	In the following, it is assumed that the plasma tracer concentration $\ca$ at the inlet is known.
 	In clinical practice this can be accounted for by measuring $\ca$ in a feeding artery \cite{ostergaard96}.
 	Since $\cout$ is usually unknown, additional assumptions need to be made if one wants to reconstruct $\Pa$ from a given tissue curve $C$. The convolution model and the maximum slope (MS) model diverge in further assumptions.
 
@@ -597,17 +601,16 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	%--------------------------------------------------	
 	\section{A Synthetic Model for Capillary Flow}\label{sec:synthetic}
 
-	The validity of the traditional methods rely on a ROI with only one inlet and one outlet.
-	In fact, this assumption may easily be violated when we locally describe CA propagation through a larger volume with a highly developed capillary system.
+	The validity of the traditional methods relies on a control volume with only one inlet and one outlet, and that the control volumes are not feeding each other.
+	These assumptions may easily be violated when we locally describe CA propagation through a larger volume.
 	For this type of model system we instead expect a set of coupled transport equations where each voxel can be regarded as an inlet for surrounding voxels.
 
 	Hence, in order to make a realistic synthetic model for capillary flow, we decided to describe the CA propagation as a spatially coupled transport process, i.e. using partial differential equations (PDE) for transport. This PDE model is used for validation of the traditional models. 
 
 	
 	A major difference between our coupled flow model and traditional tracer kinetic modeling is the normalization of the flow field.
-.
 % In traditional models normalization is performed with respect to the volume and leads to the units of perfusion [\si{\siQmm}], cf. \cite{sourbron13}.
-	To avoid a discretization dependent flow field for the PDE model, we instead use vector valued surface fluid flux $\vq = \vq(x)$ with units [\si{\siq}] as the fluid carrying quantity, in agreement with geoscience and porous media simulation theory.
+	To avoid a discretization dependent flow field for the PDE model, we instead of perfusion use vector valued surface fluid flux $\vq = \vq(\vx)$ with units [\si{\siq}] as the fluid carrying quantity, in agreement with geoscience and porous media simulation theory.
 	The fluid flux is a vector field describing the volume of fluid per unit time flowing across a sliced unit area of the sample.
 	A detailed outline of how the flow field was obtained can be found in Section~\ref{sec:flow}.
 	Apart from the normalization with respect to surface, the assumptions of linearity and stationarity in the fluid flux are in complete agreement with standard pharmacokinetic modeling \cite{sourbron13}.
@@ -624,25 +627,25 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 
 	%The introduced framework in Section \ref{sec:flow} does not relate flow to propagation of a contrast agent. 
 	This section describes a model for  CA propagation in the tissue as it is homogeneously dissolved in the evolving fluid.
-	We assume that the CA is entering the domain along with the fluid flowing in via the source, and similarly extracted at a sink.
+	We assume that the CA is entering the domain along with the fluid flowing into the ROI via the source, and similarly extracted at a sink.
 	%The resulting CA concentration map is a simulation of the CA concentrations observed within real MRI measurements.
 
-	In order to define meaningful and continuous contrast agent concentrations, we first describe CA concentration in an (arbitrarily) small tissue volume $\Omega_\varepsilon(x)$.
+	In order to define meaningful and continuous contrast agent concentrations, we first describe CA concentration in an (arbitrarily) small tissue volume $\Omega_\varepsilon$.
 	% where $C_i(t):= C(x_i,t)$ and $\phi_i := \phi(x_i)$ are assumed to be constant within $\Omega_i$.
-	Let $V_\varepsilon(x)$ be the volume of an arbitrarily small control region and let $v_\varepsilon(x)$ be the blood volume within the same control region.
-	Letting the control region go towards zero volume, the porosity $\phi(x) := v_\varepsilon(x)/V_\varepsilon(x)$ reflects the local space of the vascular system. The simplification of porosity as a continuous quantity is frequently performed in flow simulations.
-	The flux $\vq(x)$ [\si{\siq}] as well as the porosity $\phi(x)$ [\si{\siphi}] are assumed to be stationary and hence independent of time.	
-	We further introduce $C = C(x,t)$ and $c = c(x,t)$ as the CA concentration with respect to $V(x)$ and $v(x)$ respectively.
-	By definition, we obtain the relation $C(x,t) = \phi(x)  c(x,t)$.
+	Let $V_\varepsilon$ be the volume of $\Omega_\varepsilon$ and let $v_\varepsilon$ be the blood volume within the same control region.
+	Letting the control region go towards zero volume, the porosity $\phi(\vx) := v_\varepsilon/V_\varepsilon$ reflects the local, relative volume of the vascular system. The simplification of porosity as a continuous quantity is frequently performed in flow simulations.
+	The flux $\vq(\vx)$ [\si{\siq}] as well as the porosity $\phi(\vx)$ [\si{\siphi}] are assumed to be stationary and hence independent of time.	
+	We further introduce $C = C(\vx,t)$ and $c = c(\vx,t)$ as the average CA concentration within $V_\varepsilon$ and $v_\varepsilon$, respectively.
+	By definition, we obtain the relation $C(\vx,t) = \phi(\vx)  c(\vx,t)$.
 	The rate of change of tracer molecules within a control volume $\Omega_i$ can hence be phrased as
 	\begin{equation}
-		\diffop{t}\int_{\Omega_i}C \diffint x = \int_{\Omega_i}\diffop{t}(\phi c) \diffint x = \int_{\Omega_i} \phi \frac{d c}{dt}\diffint x,
+		\diffop{t}\int_{\Omega_i}C  \vdx = \int_{\Omega_i}\diffop{t}(\phi c) \vdx = \int_{\Omega_i} \phi \frac{d c}{dt} \vdx,
 		\label{eq:dmdt}
 	\end{equation}	
-	where the assumption of stationary $\phi(x)$ was used.
-	Since we expect mainly transport and marginal diffusion, the change in tracer mass within $\Omega_i$ occurs from advective flow and the source and sink field $Q(x)$.
-	Let us write the source- and the sink term as $Q(x) = \Qsi(x) + \Qso(x)$ where $\Qsi(x) < 0$ is the sink and $\Qso(x) > 0$ is the source, and zero elsewhere. 
-	Note that $\int_\Omega Q \diffint x = 0$. 
+	where the assumption of stationary $\phi(\vx)$ was used.
+	Since we mainly expect transport and marginal diffusion, the change in tracer mass within $\Omega_i$ occurs from advective flow and the source and sink field $Q(\vx)$.
+	Let us write the source- and the sink term as $Q(\vx) = \Qsi(\vx) + \Qso(\vx)$ where $\Qsi(\vx) < 0$ is the sink and $\Qso(\vx) > 0$ is the source, and zero elsewhere. 
+	Note that $\int_\Omega Q  \vdx = 0$. 
 	% The change in contrast agent at time point $t$ from fluid entering the control volume can be written as
 	% \begin{equation}
 	% 	-\int_{ \partial \Omega_i}c(\vq \cdot n)\diffint s + \int_{\Omega_i}\ca Q_{so} \diffint x + \int_{\Omega_i}cQ_{si} \diffint x,
@@ -652,24 +655,24 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	% In standard pharmacokinetic modeling, $\ca = \ca(x,t)$ is referred to as the arterial input function (AIF).
 	Following the principle of conservation of tracer molecules, we model the contrast agent concentration in a control volume $\Omega_i$ as
 	\begin{align}
-		& \int_{\Omega_i} \phi \frac{d c}{dt} \diffint x + \int_{ \partial \Omega_i}c(\vq \cdot n) \diffint s
-		 = \int_{\Omega_i}\ca Q_{so} \diffint x + \int_{\Omega_i}c Q_{si} \diffint x.
+		& \int_{\Omega_i} \phi \frac{d c}{dt} \vdx + \int_{ \partial \Omega_i}c(\vq \cdot \mathbf{n}) \diffint \mathbf{A}
+		 = \int_{\Omega_i}\ca Q_{so} \vdx + \int_{\Omega_i}c Q_{si} \vdx.
 		\label{eq:conteq}
 	\end{align}
-	where $n(x)$ is the outward unit normal on $\partial \Omega_i$.
+	where $\mathbf{n}(\vx)$ is the outward unit normal on $\partial \Omega_i$.
 % 	Now, let the contrast agent concentrations, porosity, volume fluxes, and surface flux be continuous functions of space and time. 
 	Equation (\ref{eq:conteq}) is consistent with the continuity equation on local form
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
-			\phi \frac{\partial c}{\partial t} + \nabla \cdot (c\vq) &= \ca\Qso + c\Qsi \qquad	&x &\in \Omega, \ t>0,  \\
-			c(x,t) &= 0 																			 	&x &\in \Omega, \ t=0.
+			\phi \frac{\partial c}{\partial t} + \nabla \cdot (c\vq) &= \ca\Qso + c\Qsi \qquad	&\vx &\in \Omega, \ t>0,  \\
+			c(\vx,t) &= 0 																			 	&\vx &\in \Omega, \ t=0.
 		\end{alignedat}
 		\right\vert
 		\label{eq:conteqlocal}
 	\end{equation}
-	where we also added the initial condition $c(x,0) = 0$ in line with the physical problem of no tracer at $t = 0$.
-	Equation \eqref{eq:conteqlocal} is a linear transport equation in $c(x,t)$. 
+	where we also added the initial condition $c(\vx,0) = 0$ in line with the physical problem of no tracer at $t = 0$.
+	Equation \eqref{eq:conteqlocal} is a linear transport equation in $c(\vx,t)$. 
 	Following \cite{evans98}, \eqref{eq:conteqlocal} admits a unique local solution.
 
 
@@ -678,19 +681,19 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	%--------------------------------------------------
 \subsection{Relating the transport equation model with the traditional deconvolution model for perfusion}\label{sec:NewAndOld}
 	In this section we describe how the continuous model is related to the traditional deconvolution model.
-	More specifically, we will show that in the continuous model, the flow into each voxel can be described by a traditional model with arterial input determined by adjacent upstream voxels.
+	We will show that in the continuous model the flow into each voxel can be described as a traditional model with arterial input determined by adjacent upstream voxels.
 
 	Let us start by modeling the CA concentration in a given voxel $\Omega_i$ using traditional models.
 	For sake of simplicity we assume that $Q_{\mathrm{so}} = Q_{\mathrm{si}} = 0$ within that voxel.
 	Note that it is possible to extend the following approach also to voxels where this is not the case.
-	Define the outward normal vector $n$ and areas (voxel faces) of inflow and outflow over the boundary as $S_{\mathrm{in}} := \{ x \in \partial \Omega_i: \ \vq \cdot n < 0 \}$ and $S_{\mathrm{out}}:= \{ x \in \partial \Omega_i: \ \vq \cdot n > 0 \}$ respectively.
+	Define the outward normal vector $n$ and areas (voxel faces) of inflow and outflow over the boundary as $S_{\mathrm{in}} := \{ \vx \in \partial \Omega_i: \ \vq \cdot \mathbf{n} < 0 \}$ and $S_{\mathrm{out}}:= \{ \vx \in \partial \Omega_i: \ \vq \cdot \mathbf{n} > 0 \}$ respectively.
 	For the domain $\Omega_i$ we define the arterial input $c_{\mathrm{in}}$ as the weighted average of the tracer flux across $S_{\mathrm{in}}$
 	\begin{equation}\label{eq:cin}
-	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}(\vq \cdot n)c \diffint s}{\int_{S_{\mathrm{in}}} \vq \cdot n \diffint s}.
+	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}(\vq \cdot \mathbf{n})c \diffint \mathbf{A}}{\int_{S_{\mathrm{in}}} \vq \cdot \mathbf{n} \diffint \mathbf{A}}.
 	\end{equation}
-	This allows us to define the perfusion $\Perfv$ within $\Omega_i$ as the total fluid inflow divided by the volume,
+	We define perfusion $\Perfv$ within $\Omega_i$ in line with the definition as the total feeding fluid inflow divided by the volume,
 	\begin{equation}\label{eq:perflocal}
-		\Perfv :=-\frac{1}{\mathrm{Vol}( \Omega_i)}\int_{S_{\mathrm{in}}} \vq \cdot n \diffint s.
+		\Perfv :=-\frac{1}{\mathrm{Vol}( \Omega_i)}\int_{S_{\mathrm{in}}} \vq \cdot \mathbf{n} \diffint \mathbf{A}.
 	\end{equation}
 	Given an incompressible flow, let us now assume that the rate of fluid entering the region is the same as the rate of fluid leaving it. 
 	Further let $c_i(t)$ denote the average CA concentration within $\Omega_i$.
@@ -731,10 +734,10 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	The simulation was performed at location (1,20) of the software phantom.
 	The two curves coincide almost perfectly, highlighting the validity of the established theory.
 
-These results show that the PDE model and the convolution model are equal in terms of local, voxelwise flow estimates if the convolution model is applied with the correct, local arterial input. 
+These results show that the PDE model and the convolution model are equal in terms of local, voxelwise flow estimates if the convolution model is applied with the local arterial input. 
 Also, the impulse response function obtained by convolution of the global arterial input function is identical to an analytical recursive convolution along all upstream voxels. 
 This clearly demonstrates that the perfusion which is recovered by traditional models will depend on all upstream flow.
-However, for meaningful results the entire streamline length within the capillary system needs to be taken into consideration, where the blood is providing the tissue with nutrients and oxygen. 
+However, for meaningful interpretation of the perfusion the entire streamline length within the capillary system needs to be taken into consideration, where the blood is providing the tissue with nutrients and oxygen. 
 %These results also support the idea presented in the next section that pointwise perfusion can be regarded a globally constant quantity along the streamlines, as it can only be estimated when the entire streamline characteristics are known.
 	\fwd = .4\textwidth
 	\fht = .1\textheight	
@@ -746,7 +749,7 @@ However, for meaningful results the entire streamline length within the capillar
 			\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
 		\end{tabular}
 		}
-		\caption{Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by a convolution over all upstream flow. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
+		\caption{Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental values of $\Perfv^i=\SI{5328}{\siPml}$ (CONSTANTIN: Was this equal for all voxels in the recursive convolution?) and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by a convolution over all upstream flow. The two curves have an almost perfect overlap. These numerical experiments support the analytic considerations, that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
 	\end{figure*}
 
 
@@ -759,20 +762,17 @@ However, for meaningful results the entire streamline length within the capillar
 	%THE OTHER APPROACH IS THE FLOW IN COUPLED CAPILARY SYSTEMS APROACH. HERE WE ASSUME THAT THE PERFUSION IS TAKING PLACE ACROSS VOXELS. IE. WE HAVE A MILIMETER VOXEL SCALE WHERE THE STREMLINES GO THROUGH THE CAPILARY SYSTEMS. IN THIS SETTING THE RELATION BETWEEN FLOW/FLUX AND PERFUSION CAN BE CONSIDERED IN THE 1C-FRAMEWORK WE ARE USING. 
 
 	\subsection{Relating Flow with Perfusion}\label{sec:flux2perf}
-	The model described in \eqref{eq:flowmodel} uniquely determines the flux field $\vq(x)$. 
-	However, in pharmacokinetic modeling the parameter of interest is usually CBF, which we will denote by $\Perf (x)$ as the voxelwise field of perfusion. The surface flux and perfusion are physically distinct, and there are at least two differences between $\vq(x)$ and $\Perf (x)$. 
-	First, the flux is a vector field and the perfusion is a scalar field. 
-	Second, the flux is normalized to a surface area and the perfusion is normalized to a volume. 
+	The flow model described in \eqref{eq:flowmodel} uniquely determines the flux field $\vq(\vx)$. 
+	However, in pharmacokinetic modeling the parameter of interest is usually CBF, which we will denote by $\Perf (\vx)$ as the voxelwise field of perfusion. Surface flux and perfusion are physically distinct, and there are at least two differences between $\vq(\vx)$ and $\Perf (\vx)$. 
+	First, flux is a vector field and perfusion is a scalar field. Second, the flux is normalized to a surface area and the perfusion is normalized to a volume. 
 	Hence the flux describes flow and transport over a surface separating spatial regions, while the perfusion describes blood leaving/entering a compartment within a given volume. 
 
 	
 	%In the following we describe a method for converting flux into perfusion, motivated by our need to compare the PDE based ground-truth, vector valued flux field to the scalar valued perfusion field obtained by traditional methods.
 
-	More specifically,
-	the common understanding of perfusion
-	 %or volume flux 
-	 $\Perf (x)$ is the amount of blood feeding a tissue volume per unit time, with units [\si{\siQmm}]. 
-	 In this work we address the  fine scale setting, where the perfusion is taking place on voxel level. At this level, a clearer understanding of how perfusion relates to flows and fluxes is desirable.  
+	More specifically, the common understanding of perfusion
+	 $\Perf (\vx)$ is the amount of blood feeding a tissue volume per unit time, with units [\si{\siQmm}]. 
+	 In this work we address the  fine scale setting, where the perfusion is taking place on voxel level. At this level, a clearer understanding of how perfusion relates to the flux is desirable.  
 
 	One straightforward approach for converting flux into perfusion could be to estimate the perfusion as the total inflow (or outflow) of fluid (e.g. arterial blood) into a control region per unit time, and then normalizing with the control region volume. 
 	This is a valid approach only if the control regions are not feeding each other, and is therefore well-founded for the entire organ,
@@ -807,10 +807,10 @@ However, for meaningful results the entire streamline length within the capillar
 
 	More precisely, let us consider an arbitrary streamline $S \subseteq \Omega \subseteq \R^3$ of length $l>0$ and parametrization $s:[0,l] \to S$.
 	We start by calculating the total flow over a small 2-D disc perpendicular to the streamline.
-	Let $y \in S$ be an arbitrary location along the streamline. 
-	The total flow $F$ over a 2-D disc $B(y,R(y))$ perpendicular to the flow field $\vq(y)$, centered at $y$ and with radius $R:S\to\R^+$, is given by
+	Let $\vy \in S$ be an arbitrary location along the streamline. 
+	The total flow $F$ over a 2-D disc $B(\vy,R(\vy))$ perpendicular to the flow field $\vq(\vy)$, centered at $\vy$ and with radius $R:S\to\R^+$, is given by
 	\begin{equation}
-		F(y,R(y)) = \int_{B(y,R(y))} \vq(x) \cdot \nu \diffint x \text{ where }\nu := \vq(y)/\vert \vq(y) \vert.
+		F(\vy,R(\vy)) = \int_{B(\vy,R(\vy))} \vq(\vx) \cdot \mathbf{n} \diffint \vx \text{ where }\mathbf{n} := \vq(\vy)/\vert \vq(\vy) \vert.
 		\label{eq:Fdisc}
 	\end{equation}
 	In order to calculate the perfusion, we need to establish the volume of a small tube around the streamline.
@@ -819,15 +819,17 @@ However, for meaningful results the entire streamline length within the capillar
 	\begin{equation}
 		V(r) = \int_0^l r(u)^2 \pi \diffint u.
 	\end{equation}
-        Note that $R(y):=r(u)$ for some $u \in [0,l]$ satisfying $y=s(u)$. We define the perfusion at the arbitrary point $y$ on the streamline as
+        Note that $R(\vy):=r(u)$ for some $u \in [0,l]$
+        % satisfying $\vy=s(u)$. 
+        We define the perfusion at the arbitrary point $\vy$ on the streamline as
 	\begin{equation}
-		\Perfs(y):=  \lim_{\varepsilon \to 0} \frac{F(y,\varepsilon R(y))}{V(\varepsilon r)} \text{ for } R(y):=1/\sqrt{\vert \vq(y) \vert}.
+		\Perfs(\vy):=  \lim_{\varepsilon \to 0} \frac{F(\vy,\varepsilon R(\vy))}{V(\varepsilon r)} \text{ for } R(\vy):=1/\sqrt{\vert \vq(\vy) \vert}.
 		\label{eq:perfusiondef}
 	\end{equation}
 	%Note that $F(y,\varepsilon r(u))=F(y,\varepsilon R(y))$, and can be interchanged independent of parameterization. 
-	In this expression the radii $R(y)$ are chosen in such a way that in the limit when $\varepsilon \to 0$, the perfusion is constant along the streamline. 
+	In this expression the radii $R(\vy)$ are chosen in such a way that in the limit when $\varepsilon \to 0$, the perfusion is constant along the streamline. 
 	To see this, let us assume that $\vq$ is differentiable with Jacobian $J$.
-	Using a Taylor expansion of $\vq(x)$ around $y$, the Lagrange remainder theorem, as well as a change of coordinates $z = (x-y)/(\varepsilon R)$ yields 
+	Using a Taylor expansion of $\vq(\vx)$ around $\vy$, the Lagrange remainder theorem, as well as a change of coordinates $\mathbf{z} = (\vx-\vy)/(\varepsilon R)$ yields 
 	 % \begin{align*}
 	 % 	F(y,\varepsilon R(y))&=\int_{B(y,\varepsilon R(y))} \nu^\top q(x) \diffint x \\
 	 % 	&= \int_{B(y,\varepsilon R(y))} \nu^\top q(y)  + \nu^\top J(\xi) (x-y) \diffint x \\
@@ -835,13 +837,13 @@ However, for meaningful results the entire streamline length within the capillar
 	 % 	&= \varepsilon^2 \left(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)z R(y)^3 \diffint z\right)
 	 % \end{align*}
 	\begin{equation}
-		F(y,\varepsilon R(y))
-		= \varepsilon^2 \Big(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)zR(y)^3 \diffint z\Big)
+		F(\vy,\varepsilon R(\vy))
+		= \varepsilon^2 \Big(\pi + \varepsilon \int_{B(0,1)} \mathbf{n}^\top J(\zeta)zR(\vy)^3 \diffint \mathbf{z} \Big)
 	\end{equation}
-	where $\zeta \in (0,z)$ and simplifications are due to $R(y) = 1/\sqrt{\vert \vq(y)} \vert$ and $\nu:=\vq(y)/\vert \vq(y) \vert$.
+	where $\zeta_i \in (0,z_i)$ for every vector element $i$, and simplifications are due to $R(\vy) = 1/\sqrt{\vert \vq(\vy)} \vert$ and $\mathbf{n}:=\vq(\vy)/\vert \vq(\vy) \vert$.
 	Combining this result with \eqref{eq:perfusiondef} yields
 	\begin{equation}\label{eq:flux2perf}
-		\Perfs(y) = \left(\int_0^l r(u)^2 \diffint u\right)^{-1}.
+		\Perfs(\vy) = \left(\int_0^l r(u)^2 \diffint u\right)^{-1}.
 	\end{equation}
 	Note that Equation \eqref{eq:flux2perf} is independent of the spatial location $y$ along the streamline and an explicit formula for converting flux into perfusion, showing that the perfusion scales with the streamline length $l$, as well as with the geometry of the domain, represented by the radii $r(u)$.
 
@@ -881,18 +883,18 @@ However, for meaningful results the entire streamline length within the capillar
 	% \end{equation}
 	% since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
 	% This yields \eqref{eq:CBV}.
-	Returning to the local definition of fluid tracer concentration $c(x,t)$, outside the source and sink area where $Q(x)=0$ the PDE \eqref{eq:conteqlocal} is consistent with
+	Returning to the local definition of fluid tracer concentration $c(\vx,t)$, outside the source and sink area where $Q(\vx)=0$ the PDE \eqref{eq:conteqlocal} is consistent with
 	\begin{equation}
 		\phi\frac{\partial c}{\partial t}  = - \vq \cdot \nabla c.
 		\label{eq:1cmodel}
 	\end{equation}
-	Integrating, using the boundary conditions $c(x,0) = c(x,\infty) = 0$ and defining $E(x):= \int_0^\infty c(x,t) \diffint t$ leads to
+	Integrating, using the boundary conditions $c(\vx,0) = c(\vx,\infty) = 0$ and defining $E(\vx):= \int_0^\infty c(\vx,t) \diffint t$ leads to
 	\begin{equation}
-		0 = \vq \cdot \nabla  E(x).
+		0 = \vq \cdot \nabla  E(\vx).
 		\label{eq:streamlinezero}
 	\end{equation}
-	We can interpret this equation such that $\vq$ is tangent to the level-sets of the function $E(x)$, which means that $E(x)$ is constant along the streamlines of the fluid flow.
-	Since at the beginning of the streamline it holds by construction that $c(x_0,t) = \ca(t)$ and since $C(x,t) = \phi(x) c(x,t)$ the claim \eqref{eq:CBV} follows when we pick out $E$ for the arterial input function and for any other point on the streamline.
+	We can interpret this equation such that $\vq$ is tangent to the level-sets of the function $E(\vx)$, which means that $E(\vx)$ is constant along the streamlines of the fluid flow.
+	Since at the beginning of the streamline it holds by construction that $c(\vx_0,t) = \ca(t)$ and since $C(\vx,t) = \phi(\vx) c(\vx,t)$ the claim \eqref{eq:CBV} follows when we pick out $E$ for the arterial input function and for any other point on the streamline.
 
 
 
@@ -904,9 +906,8 @@ However, for meaningful results the entire streamline length within the capillar
 	%I HAVE CHANGED THIS SECTION TO THE STYLE OF AN ILUSTRATIVE EXAMPLE
 	%\subsection{Modelling Capillary Blood Flow}\label{sec:flow}
 	\subsection{Simulations of capillary flow}\label{sec:flow}
-	In this section we will describe how we construct the vector flow field $\vq(x)$ which drives the transport.
-.
-	This modeling is in agreement with the assumption of stationary, incompressible flow at low Reynold numbers within the capillary system \cite{Cho2011} and with previous work on capillary perfusion simulations \cite{Cookson2012,Michler2013}. 
+	In this section we will describe how we construct the flux field $\vq(\vx)$ driving the transport of fluid and tracer.
+	The modeling is in agreement with the assumption of stationary, incompressible flow at low Reynold numbers within the capillary system \cite{Cho2011} and with previous work on capillary perfusion simulations \cite{Cookson2012,Michler2013}. 
 
 	For the time being we will not consider contrast agent concentrations, but only the fluid flow in general.
 	In-line with standard theory for a steady-state of an incompressible fluid, we assume that the fluid-flow $\vq$ [\si{\siq}] obeys the following local PDE
@@ -936,19 +937,19 @@ However, for meaningful results the entire streamline length within the capillar
 		\vq = -\frac{\mathbf{k}}{\mu} \nabla p.
 		\label{eq:syntdarcysimp}
 	\end{equation}
-	Here, $\mathbf{k} = \mathbf{k}(x)$ is the intrinsic permeability tensor, $p=p(x)$ is the pressure, and $\mu = \mu(x)$ is the viscosity of the fluid. 	
+	Here, $\mathbf{k} = \mathbf{k}(\vx)$ is the intrinsic permeability tensor, $p=p(\vx)$ is the pressure, and $\mu = \mu(\vx)$ is the viscosity of the fluid. 	
 	For simplicity, we will assume that $\mathbf{k}$ is a symmetric and positive definite tensor with only nonzero diagonal elements $\mathbf{k}_{ii} = k$, in accordance with a homogeneous porous medium.	
 	Equations \eqref{eq:syntcontsimp} and \eqref{eq:syntdarcysimp} can be combined, yielding the following elliptic partial differential equation in the pressure field $p$ within the closed domain $\Omega$,
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
-			\nabla \cdot \left( -\frac{\mathbf{k}}{\mu} \nabla p \right) &= Q,  \qquad &&x \in \Omega \\
-			n \cdot \nabla p &=0, &&x \in \partial \Omega.
+			\nabla \cdot \left( -\frac{\mathbf{k}}{\mu} \nabla p \right) &= Q,  \qquad &&\vx \in \Omega \\
+			\mathbf{n} \cdot \nabla p &=0, &&\vx \in \partial \Omega.
 		\end{alignedat}
 		\right\vert 
 		\label{eq:flowmodel}
 	\end{equation}
-	For the outward unit normal $n=n(x)$, Neuman boundary conditions are reflecting zero fluid flux $\vq(x)$ across the boundary $\partial \Omega$.
+	For the outward unit normal $\mathbf{n}=\mathbf{n}(\vx)$, Neuman boundary conditions are reflecting zero fluid flux $\vq(\vx)$ across the boundary $\partial \Omega$.
 	After solving \eqref{eq:flowmodel} for the pressure $p$, the flux field can be estimated according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
 
 	
@@ -963,11 +964,11 @@ However, for meaningful results the entire streamline length within the capillar
 	%--------------------------------------------------
 	\subsection{Numerical Implementation}\label{sec:NumExp}
 	%Based on the field models described in Section \ref{sec:synthetic}, we now establish an experimental setup suited to study the performance of the traditional methods in a synthetic flow field with a known ground truth. 
-	Using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal} we set up a forward simulation of blood flow and indicator dilution through the capillary system.
+	Using \eqref{eq:conteqlocal} and \eqref{eq:flowmodel} we set up a forward simulation of blood flow and indicator dilution through the capillary system.
 	We aimed at creating a generic synthetic test case and kept all optional parameters as simple as possible. 
 
 	A standard arterial input function was chosen \cite{ostergaard96}, the gamma-variate function $\ca(t) := D_0(t-t_0)^\alpha e^{-(t-t_0)/\beta}$ for default parameters $\alpha=3$, $D_0 = \SI{1}{\milli\mol\per\litre\per\second}$, $\beta = \SI{1.5}{\second}$ and $t_0 = \SI{0}{\second}$.
-	Ground truth perfusion was chosen as \SI{50}{\siPml}, within the average range reported for human brain perfusion \cite{Obrist1984,Smith00}. The field of view was chosen as $\SI{3}{\milli\meter}\times\SI{3}{\milli\meter}\times\SI{1}{\milli\meter}$, within the same order as the characteristic length of the capillary bed or individual capillaries, ranging from $0.1$ mm to $3$ mm \cite{Cho2011}, or $0.25$ mm to $850$ mm \cite{Townsley2012}.
+	Ground truth perfusion was chosen as \SI{50}{\siPml}, within the average range reported for human brain perfusion \cite{Obrist1984,Smith00}. The field of view was chosen as $\SI{3}{\milli\meter}\times\SI{3}{\milli\meter}\times\SI{1}{\milli\meter}$, within the order of the capillary bed or individual capillaries, ranging from $0.1$ mm to $3$ mm \cite{Cho2011}, or $0.25$ mm to $850$ mm \cite{Townsley2012}.
 	The source term was assigned to the upper left voxel and the sink term was assigned to the lower right voxel. The source can be understood as the arterial compartment, the sink as the venous compartment, and the remaining field of view as the capillary system. 
 	Permeability was chosen to be isotropic and constant throughout the domain $\mathbf{k}=k\mathbf{I}$ for the identity $\mathbf{I}$ and $k=\SI{5e-6}{\square\milli\meter}$.
 	Dynamic blood viscosity was chosen as $\mu=\SI{5e-6}{\simu}$ according to \cite{rosencranz06}.
@@ -976,14 +977,14 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	The flow field obtained by the PDE model is visualized in Figure~\ref{fig:flowpressureperfusion} (a).
 
 	Equation~\eqref{eq:flowmodel} was solved numerically using two-point flux-approximation (TPFA), well known within porous media simulations \cite{Aarnes2007}.
-	The transport of CA described in \eqref{eq:conteq} was implemented using first order upwinding \cite{Patankar80}, yielding a discrete 2D+time CA concentration map $C(x_i,t_j)$.
+	The transport of CA described in \eqref{eq:conteq} was implemented using first order upwinding \cite{Patankar80}, yielding a discrete 2D+time CA concentration map $C(\mathbf{x}_i,t_j)$.
 
 \begin{figure*}[h!tb]
 	\centering
 	\fwd = .23\textwidth
 	\begin{tabular}{c c c}
 		\includegraphics[width=\fwd]{figs/qmat.pdf} & \includegraphics[width=\fwd]{figs/perfmat.pdf} & \includegraphics[width=\fwd]{figs/lperfmat.pdf}\\
-		(a) Synthetic flow field $\vq(x)$ & (b) Perfusion $\Perfs$ along the streamlines  & (c) Local perfusion $\Perfv$.
+		(a) Synthetic flow field $\vq(\vx)$ & (b) Perfusion $\Perfs$ along the streamlines  & (c) Local perfusion $\Perfv$.
 	\end{tabular}
 	\caption{Porous media (PM) flow model with a source in the upper left corner and a sink in the lower right corner. (a) Flow field by the PDE model used to simulate distribution of the contrast agent. (b) Perfusion along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion according to \eqref{eq:perflocal}.}
         \label{fig:flowpressureperfusion}
@@ -1000,7 +1001,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 
 
 	We tested the convolution based traditional model (bSVD) \eqref{eq:conv} as well as maximum-slope (MS) model \eqref{eq:MS} for their capability to recover perfusion, and both models were compared to ground truth perfusion values.
-	Prior to reconstruction, the CA concentration map $C(x_i,t_j)$ was downsampled to a time-resolution of $\SI{.1}{\second}$.
+	Prior to reconstruction, the CA concentration map $C(\mathbf{x}_i,t_j)$ was downsampled to a time-resolution of $\SI{.1}{\second}$.
 	In order to simulate different spatial resolutions of the scanning process, the data was averaged using different block-sizes ranging from $(1,1)$ pixel (i.e. same resolution as the PDE model) to $(64,64)$ pixels (i.e. entire domain).		
 	Success of restoration was measured in terms of averaged relative error of the recovered perfusion with respect to the ground truth perfusion, $RE :=  (\Perf_{\mathrm{rec}} - \Perf_{\mathrm{true}})/\Perf_{\mathrm{true}}\cdot 100\%$.
 	The recovered perfusion $\Perf_{\mathrm{rec}}$ was compared against the two perfusion maps $\Perf_{\mathrm{true}}=\{\Perfv,\Perfs\}$ depicted in Figure~\ref{fig:flowpressureperfusion}.
@@ -1025,7 +1026,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 
 	\begin{table}[h!tb]
 		\scriptsize
-		\caption{Mean relative error $RE$ and standard deviation (both in \%) of reconstructed perfusion compared to the ground truth values $\Perfv$, CBV, and $\Perfs$ from the digital phantom. Both reconstruction models MS and bSVD are able to restore the perfusion for the entire domain, but fail when dividing the domain into smaller block sizes. On the other hand, the blood volume $\phi$ is recovered accurately, independent of block size. $\Perfs$ is only defined within a coupled system having streamlines and can therefore not be compared with restored perfusion for the entire domain.
+		\caption{Mean relative error $RE$ and standard deviation (both in \%) of reconstructed perfusion using traditional methods compared to the ground truth values $\Perfv$, CBV, and $\Perfs$ from the digital phantom. The traditional models MS and bSVD are able to restore the perfusion for the entire domain, but fail when dividing the domain into smaller block sizes. On the other hand, the blood volume $\phi$ is recovered accurately, independent of block size. $\Perfs$ is only defined within a coupled system having streamlines and can therefore not be compared with restored perfusion for the entire domain.
 		} 
 		\centering
 		% \begin{tabular}{p{2cm} c c c c c}
@@ -1038,7 +1039,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 		% \end{tabular}		
 		\begin{tabular}{p{.3cm} l l l l l}
 			& & \multicolumn{4}{c}{block size (\si{\mm})} \\
-										& 		& (0.05,0.05) 		& (0.23,0.23) 	& 	(0.47,0.47)			& all \\ \toprule
+										& 		& (0.05,0.05) 		& (0.23,0.23) 	& 	(0.47,0.47)			& Entire ROI \\ \toprule
 			\multirow{2}{*}{$\Perfv$}	& bSVD 	& -93\%$\pm$4\% 	& -67\%$\pm$16\%	& -50\%$\pm$23\%	& 4\% 	\\ 
 									   	& MS 	& -98\%$\pm$2\% 	& -88\%$\pm$6\%		& -79\%$\pm$11\%	& <1\% 	\\ \midrule
 									CBV & 		& <1\% 				& <1\% 				& <1\% 				& <1\% 	\\ \midrule
@@ -1076,7 +1077,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 		 {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
 		 (a) & (b) & (c) 
 		\end{tabular}
-		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details on the data). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise scaled CBF-reconstruction [\si{\milli\litre\per\minute\per100\milli\gram}] for a 3D volume of interest. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}
+		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise scaled CBF-reconstruction [\si{\milli\litre\per\minute\per100\milli\gram}] for a 3D volume of interest. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}
 	\end{figure*}
 
 
@@ -1090,15 +1091,16 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	\section{Discussion}\label{sec:conclusion}
 
 	
-	In this work we have studied the impact of traditional 1C models to perfusion reconstruction in a coupled system of blood flow in the capillary system.
+	In this work we have studied the accuracy of traditional 1C models for perfusion reconstruction in a coupled system of blood flow in the capillary system.
 	To establish ground truth values, we developed a PDE based digital phantom to simulate blood flow as porous media flow within a slab of capillary tissue.
-	We have justified that the discretized PDE problem can be equivalently described as a system of coupled traditional one-compartment models.	
+	%We have justified that the discretized PDE problem can be equivalently described as a system of coupled traditional one-compartment models.	
 
 	Our results strongly support the usage of traditional models for entire regions which are exclusively fed by the measured arterial input.
 	However, they also show that if traditional models are applied only to parts of the system, they tend to overestimate the actual perfusion. 
-	These limitations are only partly known to the community, and studies reporting voxel wise perfusion are continuously published \cite{Mokin16,Kickingereder15}. 
-	Thus, a major motivation for our study is to stimulate the awareness around this topic to push the development of more appropriate models.
+	These limitations are only partly known to the community, and studies reporting voxel wise perfusion maps without discussing their possible limitations are continuously published \cite{Mokin16,Kickingereder15}. 
+	Thus, a major motivation for our study is to stimulate the awareness around this topic and to push the development of more appropriate models for future applications.
 	%The reason for this is that traditional models do not take into account the correct distribution volume and therefore become discretization dependent.
+	
 	There are at least two issues related to the overestimation of perfusion. 
 	The first issue is that blood passing through a voxel without being locally delivered to the capillary tissue will contribute to artificially high perfusion values. 
 	The second issue is thoroughly studied in this work, and relates to estimation of the correct distribution volume used for computing the perfusion. As soon as there is dependency of capillary flow between adjacent voxels, the correct distribution volume used for normalizing the absolute flow into perfusion (i.e. \si{\siPml}) is not known and over-estimation of perfusion will occur. 
@@ -1113,24 +1115,24 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 
 	Furthermore we have introduced two definitions of voxelwise perfusion.
 	The perfusion $\Perfs$ models perfusion along the streamlines and most accurately reflects the physical notion of volume flow within the correct distribution volume according to mathematical definitions. We showed that $\Perfs$ is a global quantity along the streamline, and scales with streamline length and geometry.
-	Theory and experiments show that the traditional models cannot recover this perfusion. The usage of $\Perfs$ for reconstruction of perfusion in real data might as well be challenging as the entire geometry and microscopical flow patterns would have to be known to track the streamlines. However, for our purpose $\Perfs$ was useful to clarify the concept of perfusion as a flow that must be normalized along its entire capillary length, when the blood undergoes a transition from arterial to venous blood. 
+	Theory and experiments show that the traditional models cannot recover this perfusion. The usage of $\Perfs$ for reconstruction of perfusion in real data might as well be challenging as the entire geometry and microscopical flow patterns would have to be known to track the streamlines. However, for our purpose, the concept of $\Perfs$ was useful to clarify the definition of perfusion as a flow that must be normalized along its entire capillary length, where the blood undergoes a transition from arterial to venous blood. 
 	For future developments of field models, multi compartment models as suggested in \cite{sourbron14} might be more applicable, where the perfusion was suggested as the non-zero divergence of the arterial flux.
 
 	Perfusion $\Perfv$ was set up based on the interpretation of a coupled system between adjacent voxels. 
 	Theory and examples show that this definition of perfusion does not comply with the physical understanding of perfusion since it depends heavily on the discretization.
 	However, we have shown that traditional models would restore this local value if the local arterial input function was selected. 
 	We have additionally analyzed, both analytically and experimentally, the impact of selecting a further upstream arterial input function.
-	Specifically, we have justified that traditional perfusion measurements based on convolution will identify the recursive impulse response function for all upstream voxels according Section~\ref{sec:NewAndOld}. 
+	Specifically, we have justified that traditional perfusion measurements based on convolution will identify the recursive impulse response function for all upstream voxels (see Section~\ref{sec:NewAndOld}). 
 Locally, the correct distribution volume is not accounted for and the obtained perfusion will be overestimated compared to the actual perfusion. The coupling between the continuous model and the convolution model in Section \ref{sec:NewAndOld} demonstrates that the two approaches physically provide the same results, and there is no contradiction between them. The problematic issue of the traditional models is related to physical interpretation and normalization with respect to correct distribution volume.
 
 	
 	
 	\section{Conclusion}
 	In conclusion, our experiments show that if traditional methods for perfusion estimation are applied to a coupled system they perform well if applied to the entire domain, but tend to fail when applied to only parts of the system. 
-	We have illustrated this effect in detail in the case of high resolution images where the voxel size reaches the spatial dimension of the capillary systems, but also showed the effect on coarse scale real data.
-		The reason for this failure is not numerical instabilities in the deconvolution, but rather that perfusion becomes overestimated since traditional models will not account for the correct distribution volume.
+	We have illustrated this effect in detail in the case of high resolution images where the voxel size reaches the spatial dimension of the capillary systems, but also showed the effect on real data.
+		The reason for this failure is not numerical instabilities in the deconvolution, but rather that perfusion becomes overestimated as traditional models will not account for the correct distribution volume.
   	This problem is expected to become more pronounced in future as imaging hardware is constantly improving in spatial resolution.
-	We expect to find overestimation also in pathological tissue, where fluid is passing through multiple, adjacent voxels, and recommend to be take this effect into consideration in clinical evaluation of the data. To account for this problem, the development of new field models for perfusion is therefore highly demanded, in line with approaches described in \cite{sourbron14,Michler2013}. 	
+	We expect to find overestimation also in pathological tissue, where fluid is passing through multiple, adjacent voxels, and recommend to be take this effect into consideration for clinical evaluation of the data. To account for this problem, the development of new field models for perfusion is therefore highly demanded, in line with approaches described in \cite{sourbron14,Michler2013}. 	
 
 
 	
