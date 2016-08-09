@@ -87,3 +87,22 @@ legend('Convolution','PDE');
 ylabel('concentration [mmol/mm^3]');
 xlabel('time [s]');
 export_fig ConvVsPDE.pdf -transparent
+
+
+%% tikz plots for paper
+idx   = (1:numel(timeline));  idx  = idx(timeline<40);
+step  = ceil(numel(idx)/100);
+idxT  = idx(1:step:end);
+
+CAnaT  = CAna(idxT);
+CDataT = CData(idxT);
+CAnaT(CAnaT<1e-12)=0;
+CDataT(CDataT<1e-12)=0;
+
+%TIKZ
+figure(1);clf;
+plot(timeline(idxT),CAnaT,timeline(idxT),CDataT,'--');
+legend('Convolution','PDE');
+xlabel('time [s]');
+ylabel('concentration [mmol/mm^3]');
+matlab2tikz('ConvVsPDE.tikz', 'width', '\fwd');

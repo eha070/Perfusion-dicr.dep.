@@ -1,0 +1,51 @@
+% This file was created by matlab2tikz.
+%
+%The latest updates can be retrieved from
+%  http://www.mathworks.com/matlabcentral/fileexchange/22022-matlab2tikz-matlab2tikz
+%where you can also make suggestions and rate matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{0.00000,0.44700,0.74100}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.951\fwd,
+height=0.75\fwd,
+at={(0\fwd,0\fwd)},
+scale only axis,
+xmin=0,
+xmax=120,
+xlabel={time [s]},
+ymin=0,
+ymax=250,
+ylabel={rel. concentration},
+axis background/.style={fill=white}
+]
+\addplot [color=mycolor1,solid,forget plot,thick]
+  table[row sep=crcr]{%
+0	0\\
+5	4.81948215980018\\
+10	11.7249407767123\\
+15	109.788176034815\\
+20	221.037522824365\\
+25	141.890221064755\\
+30	49.1060473080009\\
+35	27.7167012296253\\
+40	34.5042336994668\\
+45	46.9343027309933\\
+50	38.6517774527303\\
+55	37.0988211659761\\
+60	37.9793720995833\\
+65	38.8599230331905\\
+70	39.7404739667976\\
+75	40.6210249004048\\
+80	41.501575834012\\
+85	42.3663391649169\\
+90	41.668129828291\\
+95	40.969920491665\\
+100	40.2717111550391\\
+105	39.5735018184132\\
+110	38.8752924817873\\
+};
+\end{axis}
+\end{tikzpicture}%

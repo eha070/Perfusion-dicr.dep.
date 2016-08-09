@@ -13,9 +13,13 @@
 \RequirePackage{siunitx}
 \RequirePackage{todonotes}
 \RequirePackage{booktabs}
+\RequirePackage{pgfplots} 
 
 
 
+%set pfgplots for matlab2tikz
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
 
 %setup siunitx. Hint: \si{\milli\litre\per100\gram} and \SI{20}{\milli\litre\per100\gram}
 \sisetup{per-mode = symbol,qualifier-mode=brackets}
