@@ -642,7 +642,7 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	By definition, we obtain the relation $C(\vx,t) = \phi(\vx)  c(\vx,t)$.
 	The rate of change of tracer molecules within a control volume $\Omega_i$ can hence be phrased as
 	\begin{equation}
-		\diffop{t}\int_{\Omega_i}C  \vdx = \int_{\Omega_i}\diffop{t}(\phi c) \vdx = \int_{\Omega_i} \phi \frac{d c}{dt} \vdx,
+		\diffint t\int_{\Omega_i}C  \diffint \vx = \int_{\Omega_i}\diffint t(\phi c) \diffint \vx = \int_{\Omega_i} \phi \frac{d c}{dt} \diffint \vx,
 		\label{eq:dmdt}
 	\end{equation}	
 	where the assumption of stationary $\phi(\vx)$ was used.
@@ -658,8 +658,8 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	% In standard pharmacokinetic modeling, $\ca = \ca(x,t)$ is referred to as the arterial input function (AIF).
 	Following the principle of conservation of tracer molecules, we model the contrast agent concentration in a control volume $\Omega_i$ as
 	\begin{align}
-		& \int_{\Omega_i} \phi \frac{d c}{dt} \vdx + \int_{ \partial \Omega_i}c(\vq \cdot \mathbf{n}) \diffint \mathbf{A}
-		 = \int_{\Omega_i}\ca Q_{so} \vdx + \int_{\Omega_i}c Q_{si} \vdx.
+		& \int_{\Omega_i} \phi \frac{d c}{dt} \diffint \vx + \int_{ \partial \Omega_i}c(\vq \cdot \mathbf{n}) \diffint \mathbf{A}
+		 = \int_{\Omega_i}\ca Q_{so} \diffint \vx + \int_{\Omega_i}c Q_{si} \diffint \vx.
 		\label{eq:conteq}
 	\end{align}
 	where $\mathbf{n}(\vx)$ is the outward unit normal on $\partial \Omega_i$.
@@ -865,40 +865,58 @@ However, for meaningful interpretation of the perfusion the entire streamline le
 	where $C(t)$ is the tracer concentration with respect to a well mixed compartment and $c_a(t)$ is the tracer plasma concentration of the arterial input. 
 	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. We will now show that \eqref{eq:CBV} is nevertheless valid.
 
-	% Let us consider the recursive expression \eqref{eq:C_recur} for the contrast agent concentration.
-	% %, namely
-	% %\begin{equation}
-	% %	C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
-	% %\end{equation}
-	% Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{0}^\infty J_i(s) \diffint s = 1$.
-	% Since the area under the convolution of two functions equals the product of the area under the two factors, this allows us to estimate the integral over $c_i = J_i*c_{\mathrm{in}}$ as follows:
-	% \begin{equation}
-	% 	\int_0^\infty c_i(s) \diffint s = \int_{0}^\infty (J_i*c_{\mathrm{in}})(s) \diffint s = \int_{0} ^ \infty c_\mathrm{in}(s)  \diffint s.
-	% \end{equation}
-	%  %\begin{align}
-	% % 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
-	% % 	&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
-	% % 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
-	%  %\end{align}
-	%  %where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
-	% Combining this result recursively with the considerations around \eqref{eq:C_recur} yields
-	% \begin{equation}
-	% 	\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
-	% \end{equation}
-	% since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
-	% This yields \eqref{eq:CBV}.
-	Returning to the local definition of fluid tracer concentration $c(\vx,t)$, outside the source and sink area where $Q(\vx)=0$ the PDE \eqref{eq:conteqlocal} is consistent with
+	
+	Equation \eqref{eq:voxelcurve} shows that for a voxel at location $i$ the concentration time-curve can be written as 
 	\begin{equation}
-		\phi\frac{\partial c}{\partial t}  = - \vq \cdot \nabla c.
-		\label{eq:1cmodel}
+		C_i(t) = \phi_i(J_i*c_{\mathrm{in}})(t)
+			\text{ for } .
 	\end{equation}
-	Integrating, using the boundary conditions $c(\vx,0) = c(\vx,\infty) = 0$ and defining $E(\vx):= \int_0^\infty c(\vx,t) \diffint t$ leads to
+	where $J_i(t)=ke^{-kt}$ for a suitable $k>0$ and $c_{\mathrm{in}}(t)$ is a weighted average of the concentrations in the adjacent upstream voxels.
+	Since the area under the convolution of two functions equals the product of the area under the two factors and $\int_0^\infty J_i(s) \diffint s = 1$, it follows that
+	\[
+		\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty c_{\mathrm{in}} \diffint s.
+	\]
+	Here either $c_{\mathrm{in}}(t) = \ca(t)$ or $c_{\mathrm{in}}(t) = \sum_j\frac{f_j c_j(t)}{\sum_j f_j}$
+	
+	
+	 
+	
+	
+	
+	Let us consider the recursive expression \eqref{eq:voxelcurve} for the contrast agent concentration.
+	%, namely
+	%\begin{equation}
+	%	C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
+	%\end{equation}
+	Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{0}^\infty J_i(s) \diffint s = 1$.
+	Since the area under the convolution of two functions equals the product of the area under the two factors, this allows us to estimate the integral over $c_i = J_i*c_{\mathrm{in}}$ as follows:
 	\begin{equation}
-		0 = \vq \cdot \nabla  E(\vx).
-		\label{eq:streamlinezero}
+		\int_0^\infty c_i(s) \diffint s = \int_{0}^\infty (J_i*c_{\mathrm{in}})(s) \diffint s = \int_{0} ^ \infty c_\mathrm{in}(s)  \diffint s.
 	\end{equation}
-	We can interpret this equation such that $\vq$ is tangent to the level-sets of the function $E(\vx)$, which means that $E(\vx)$ is constant along the streamlines of the fluid flow.
-	Since at the beginning of the streamline it holds by construction that $c(\vx_0,t) = \ca(t)$ and since $C(\vx,t) = \phi(\vx) c(\vx,t)$ the claim \eqref{eq:CBV} follows when we pick out $E$ for the arterial input function and for any other point on the streamline.
+	 %\begin{align}
+	% 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
+	% 	&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
+	% 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
+	 %\end{align}
+	 %where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
+	Combining this result recursively with the considerations around \eqref{eq:C_recur} yields
+	\begin{equation}
+		\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
+	\end{equation}
+	since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
+	This yields \eqref{eq:CBV}.
+	% Returning to the local definition of fluid tracer concentration $c(\vx,t)$, outside the source and sink area where $Q(\vx)=0$ the PDE \eqref{eq:conteqlocal} is consistent with
+	% \begin{equation}
+	% 	\phi\frac{\partial c}{\partial t}  = - \vq \cdot \nabla c.
+	% 	\label{eq:1cmodel}
+	% \end{equation}
+	% Integrating, using the boundary conditions $c(\vx,0) = c(\vx,\infty) = 0$ and defining $E(\vx):= \int_0^\infty c(\vx,t) \diffint t$ leads to
+	% \begin{equation}
+	% 	0 = \vq \cdot \nabla  E(\vx).
+	% 	\label{eq:streamlinezero}
+	% \end{equation}
+	% We can interpret this equation such that $\vq$ is tangent to the level-sets of the function $E(\vx)$, which means that $E(\vx)$ is constant along the streamlines of the fluid flow.
+	% Since at the beginning of the streamline it holds by construction that $c(\vx_0,t) = \ca(t)$ and since $C(\vx,t) = \phi(\vx) c(\vx,t)$ the claim \eqref{eq:CBV} follows when we pick out $E$ for the arterial input function and for any other point on the streamline.
 
 
 
