@@ -9,7 +9,7 @@ function varargout = getParkerAIF(timeline,varargin)
 %               - varargout = {AIF,dAIF,dAIFdt}
 %
 %   OUTPUT:
-%   AIF - The AIF. Dimensions length(t) \times 1
+%   AIF - The AIF in [mmol/l]. Concentration in the blood.
 %   dAIF - the derivative of the AIF w.r.t. p. dAIF has dimension length(t) \times 10
 %   dAIFdt - the derivative of the AIF w.r.t. t. dAIF has dimensions
 %            length(t) \times length(t)
