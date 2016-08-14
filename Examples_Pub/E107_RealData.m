@@ -378,6 +378,7 @@ colormap('parula(512)');
 imagesc(Si);
 axis image;
 axis off;
-caxis([0,500]);
+% caxis([0,500]);
+caxis([0,150]);
 colorbar('south','color','white')
 export_fig('real_axial160.pdf','-transparent',5);
