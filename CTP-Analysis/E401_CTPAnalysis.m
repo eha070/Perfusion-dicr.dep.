@@ -19,7 +19,7 @@ close all;
 
 
 %% settings
-%{
+% {
 %Parameters for 128x128x80
 dataset  = 'D2';
 m        = [128,128,80];
@@ -27,9 +27,10 @@ k        = 24;
 
 maskMode = 'head';  %mask where to do the deconvolution
 tRes     = 5;          %time resolution  in seconds after interpolation
-sd       = .5;           %sd for prior smoothing
+sd       = 1;           %sd for prior smoothing
 fsize    = [3,3,3];   
 thres    = .04;         %global threshold for svd
+thres    = .05;         %experimental
 memorySave = false;
 
 %}
@@ -37,7 +38,7 @@ memorySave = false;
 
 
 %parameters for 512x512x320
-% {
+%{
 dataset  = 'D2';
 m        = [512,512,320];
 k        = 24;
@@ -65,6 +66,7 @@ fprintf('Loading data...');tic;
 %setup main variables
 n  = prod(m);
 mk = [m,k];
+h  = (omega(2:2:end)-omega(1:2:end-1))./m;
 
 %generate filename
 
@@ -190,10 +192,11 @@ fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
 
 %% show something of the input data
 %{
-scrollView(data,omega,m,3,'name','Original Data','fig',1);
-scrollView(D,omega,m,3,'name','Smoothed data','fig',2);
-scrollView(D(:,:,:,1),omega,m,3,'mask',maskAif,'name','Smoothed data with AIF','fig',3);
-scrollView(D(:,:,:,1),omega,m,3,'mask',mask,'name','Smoothed data with mask','fig',4);
+h = (omega(2:2:end)-omega(1:2:end-1))./m;
+scrollView(data,h,3,'name','Original Data','fig',1);
+scrollView(D,h,3,'name','Smoothed data','fig',2);
+scrollView(D(:,:,:,1),h,3,'mask',maskAif,'name','Smoothed data with AIF','fig',3);
+scrollView(D(:,:,:,1),h,3,'mask',mask,'name','Smoothed data with mask','fig',4);
 return;
 %}
 
@@ -327,8 +330,9 @@ title('AIF');
 %% show CBF and CBV
 
 % {
-scrollView(CBF,omega,m,3,'name','CBF in ml/min/100ml','fig',2);
-scrollView(CBV,omega,m,3,'name','CBV in percent','fig',3);
+scrollView(CBF,h,3,'name','CBF in ml/min/100ml','fig',2,'cmap','parula(512)');
+scrollView(CBV,h,3,'name','CBV in percent','fig',3,'cmap','parula(512)');
+return;
 %}
 
 
