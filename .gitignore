@@ -18,5 +18,5 @@ commit_msg
 #ignore converted-to.pdf files
 *converted-to.pdf
 
-#some specific files
-smallDataSet.mat
+#constantins data folder
+data_c
