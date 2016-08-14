@@ -692,7 +692,7 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	Define the outward normal vector $n$ and areas (voxel faces) of inflow and outflow over the boundary as $S_{\mathrm{in}} := \{ \vx \in \partial \Omega_i: \ \vq \cdot \mathbf{n} < 0 \}$ and $S_{\mathrm{out}}:= \{ \vx \in \partial \Omega_i: \ \vq \cdot \mathbf{n} > 0 \}$ respectively.
 	For the domain $\Omega_i$ we define the arterial input $c_{\mathrm{in}}$ as the weighted average of the tracer flux across $S_{\mathrm{in}}$
 	\begin{equation}\label{eq:cin}
-	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}(\vq \cdot \mathbf{n})c \diffint \mathbf{A}}{\int_{S_{\mathrm{in}}} \vq \cdot \mathbf{n} \diffint \mathbf{A}}.
+	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}c\cdot(\vq \cdot \mathbf{n}) \diffint \mathbf{A}}{\int_{S_{\mathrm{in}}} \vq \cdot \mathbf{n} \diffint \mathbf{A}}.
 	\end{equation}
 	We define perfusion $\Perfv$ within $\Omega_i$ in line with the definition as the total feeding fluid inflow divided by the volume,
 	\begin{equation}\label{eq:perflocal}
@@ -857,66 +857,79 @@ However, for meaningful interpretation of the perfusion the entire streamline le
 	%--------------------------------------------------	
 	\subsection{A Method to Estimate local Porosity}\label{sec:CBV}
 
-	Porosity and CBV have the same definition, and we can therefore state that $\phi \equiv CBV$. It is known from literature on traditional models \cite{sourbron13} for perfusion that CBV for the entire compartment can be expressed as
+	Porosity and CBV have the same definition, and we can therefore state that $\phi \equiv \mathrm{CBV}$. It is known from literature on traditional models \cite{sourbron13} for perfusion that CBV for the entire compartment can be expressed as
 	\begin{equation}
-		\phi = \frac{\int_0^\infty C \diffint t}{\int_0^\infty c_a \diffint t}.
+		\phi = \frac{\int_0^\infty C \diffint t}{\int_0^\infty \ca \diffint t}.
 		\label{eq:CBV}
 	\end{equation}
-	where $C(t)$ is the tracer concentration with respect to a well mixed compartment and $c_a(t)$ is the tracer plasma concentration of the arterial input. 
-	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. We will now show that \eqref{eq:CBV} is nevertheless valid.
+	where $C(t)$ is the tracer concentration with respect to a well mixed compartment and $\ca(t)$ is the plasma concentration of the arterial input. 
+	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. 
+	We will now show that this is indeed the case.
 
-	
-	Equation \eqref{eq:voxelcurve} shows that for a voxel at location $i$ the concentration time-curve can be written as 
-	\begin{equation}
-		C_i(t) = \phi_i(J_i*c_{\mathrm{in}})(t)
-			\text{ for } .
-	\end{equation}
-	where $J_i(t)=ke^{-kt}$ for a suitable $k>0$ and $c_{\mathrm{in}}(t)$ is a weighted average of the concentrations in the adjacent upstream voxels.
+	We have seen in Section~\ref{sec:NewAndOld} that for a voxel at location $i$ it holds $C_i'(t) = \phi_i (J_i\ast c_{\mathrm{in},i}(t))$,
+	where $c_{\mathrm{in},i}(t)$ is a weighted average of adjacent upstream voxels and the arterial input $\ca(t)$, if the voxel lies within the source field.
 	Since the area under the convolution of two functions equals the product of the area under the two factors and $\int_0^\infty J_i(s) \diffint s = 1$, it follows that
 	\[
-		\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty c_{\mathrm{in}} \diffint s.
+		\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty c_{\mathrm{in},i}(s) \diffint s.
 	\]
-	Here either $c_{\mathrm{in}}(t) = \ca(t)$ or $c_{\mathrm{in}}(t) = \sum_j\frac{f_j c_j(t)}{\sum_j f_j}$
-	
-	
-	 
-	
-	
-	
-	Let us consider the recursive expression \eqref{eq:voxelcurve} for the contrast agent concentration.
-	%, namely
-	%\begin{equation}
-	%	C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
-	%\end{equation}
-	Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{0}^\infty J_i(s) \diffint s = 1$.
-	Since the area under the convolution of two functions equals the product of the area under the two factors, this allows us to estimate the integral over $c_i = J_i*c_{\mathrm{in}}$ as follows:
-	\begin{equation}
-		\int_0^\infty c_i(s) \diffint s = \int_{0}^\infty (J_i*c_{\mathrm{in}})(s) \diffint s = \int_{0} ^ \infty c_\mathrm{in}(s)  \diffint s.
-	\end{equation}
-	 %\begin{align}
-	% 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
-	% 	&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
-	% 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
-	 %\end{align}
-	 %where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
-	Combining this result recursively with the considerations around \eqref{eq:C_recur} yields
-	\begin{equation}
-		\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
-	\end{equation}
-	since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
-	This yields \eqref{eq:CBV}.
-	% Returning to the local definition of fluid tracer concentration $c(\vx,t)$, outside the source and sink area where $Q(\vx)=0$ the PDE \eqref{eq:conteqlocal} is consistent with
+	Let us now show that $\int_0^\infty c_{\mathrm{in},i}(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then the claim follows.
+	Assuming a discrete setting, where voxel $i$ has upstream voxels at locations $j$, we find the following expansion of $c_{\mathrm{in},i}(t)$:
+	\[
+		c_{\mathrm{in},i}(t) = \tfrac{1}{\Perfv}\Big(p_0 \ca(t) + {\textstyle\sum\limits_{j\ge 1}} p_jc_j(t)\Big),
+	\]
+	where $\Perfv=\sum_{j\ge 0} p_j$ and $p_0>0$ if $i$ lies within the source field.
+	Since $c_{j}(t) = (J_{j}\ast c_{\mathrm{in},j})(t)$, where $c_{\mathrm{in},j}$ is itself again the the weighted average of upstream voxels and the arterial input, the claim follows by recursion.
+
+	% We have seen in Section~\ref{sec:NewAndOld} that for a voxel with adjacent upstream voxels at locations $j$ it holds that
+	% \[
+	% 	C'(t) = \phi\big( f_0 \ca(t) + \sum_{j\ge 1} f_jc_j(t) - F c(t) \big) = \phi J_i \ast c_{\mathrm{in}}(t),
+	% \]
+	% where $F=\sum_{j\ge 0} f_j$ and $f_0 > 0$ if the voxel is in the source-field and $c_{\mathrm{in}}$ is a weighted average.
+	% Since the area under the convolution of two functions equals the product of the area under the two factors and $\int_0^\infty J_i(s) \diffint s = 1$, it follows that
+	% \[
+	% 	\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty c_{\mathrm{in}} \diffint s.
+	% \]
+	% Here either $c_{\mathrm{in}}(t) = \ca(t)$ or $c_{\mathrm{in}}(t) = \sum_j\frac{f_j c_j(t)}{\sum_j f_j}$
+	%
+	%
+	%
+	%
+	%
+	%
+	% Let us consider the recursive expression \eqref{eq:voxelcurve} for the contrast agent concentration.
+	% %, namely
+	% %\begin{equation}
+	% %	C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
+	% %\end{equation}
+	% Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{0}^\infty J_i(s) \diffint s = 1$.
+	% Since the area under the convolution of two functions equals the product of the area under the two factors, this allows us to estimate the integral over $c_i = J_i*c_{\mathrm{in}}$ as follows:
 	% \begin{equation}
-	% 	\phi\frac{\partial c}{\partial t}  = - \vq \cdot \nabla c.
-	% 	\label{eq:1cmodel}
+	% 	\int_0^\infty c_i(s) \diffint s = \int_{0}^\infty (J_i*c_{\mathrm{in}})(s) \diffint s = \int_{0} ^ \infty c_\mathrm{in}(s)  \diffint s.
 	% \end{equation}
-	% Integrating, using the boundary conditions $c(\vx,0) = c(\vx,\infty) = 0$ and defining $E(\vx):= \int_0^\infty c(\vx,t) \diffint t$ leads to
+	%  %\begin{align}
+	% % 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
+	% % 	&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
+	% % 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
+	%  %\end{align}
+	%  %where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
+	% Combining this result recursively with the considerations around \eqref{eq:C_recur} yields
 	% \begin{equation}
-	% 	0 = \vq \cdot \nabla  E(\vx).
-	% 	\label{eq:streamlinezero}
+	% 	\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
 	% \end{equation}
-	% We can interpret this equation such that $\vq$ is tangent to the level-sets of the function $E(\vx)$, which means that $E(\vx)$ is constant along the streamlines of the fluid flow.
-	% Since at the beginning of the streamline it holds by construction that $c(\vx_0,t) = \ca(t)$ and since $C(\vx,t) = \phi(\vx) c(\vx,t)$ the claim \eqref{eq:CBV} follows when we pick out $E$ for the arterial input function and for any other point on the streamline.
+	% since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
+	% This yields \eqref{eq:CBV}.
+	% % Returning to the local definition of fluid tracer concentration $c(\vx,t)$, outside the source and sink area where $Q(\vx)=0$ the PDE \eqref{eq:conteqlocal} is consistent with
+	% % \begin{equation}
+	% % 	\phi\frac{\partial c}{\partial t}  = - \vq \cdot \nabla c.
+	% % 	\label{eq:1cmodel}
+	% % \end{equation}
+	% % Integrating, using the boundary conditions $c(\vx,0) = c(\vx,\infty) = 0$ and defining $E(\vx):= \int_0^\infty c(\vx,t) \diffint t$ leads to
+	% % \begin{equation}
+	% % 	0 = \vq \cdot \nabla  E(\vx).
+	% % 	\label{eq:streamlinezero}
+	% % \end{equation}
+	% % We can interpret this equation such that $\vq$ is tangent to the level-sets of the function $E(\vx)$, which means that $E(\vx)$ is constant along the streamlines of the fluid flow.
+	% % Since at the beginning of the streamline it holds by construction that $c(\vx_0,t) = \ca(t)$ and since $C(\vx,t) = \phi(\vx) c(\vx,t)$ the claim \eqref{eq:CBV} follows when we pick out $E$ for the arterial input function and for any other point on the streamline.
 
 
 
