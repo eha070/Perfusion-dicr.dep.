@@ -642,7 +642,7 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	By definition, we obtain the relation $C(\vx,t) = \phi(\vx)  c(\vx,t)$.
 	The rate of change of tracer molecules within a control volume $\Omega_i$ can hence be phrased as
 	\begin{equation}
-		\frac{d}{dt} \int_{\Omega_i}C  \vx = \int_{\Omega_i}	\frac{d}{dt} (\phi c) \diffint \vx = \int_{\Omega_i} \phi \frac{d c}{dt} \diffint \vx,
+		\frac{d}{dt} \int_{\Omega_i}C  \diffint \vx = \int_{\Omega_i}	\frac{d}{dt} (\phi c) \diffint \vx = \int_{\Omega_i} \phi \frac{d c}{dt} \diffint \vx,
 		\label{eq:dmdt}
 	\end{equation}	
 	where the assumption of stationary $\phi(\vx)$ was used.
@@ -656,7 +656,7 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	% \end{equation}
 	% where $n(x)$ is the outward unit normal on $\partial \Omega_i$.
 	% In standard pharmacokinetic modeling, $\ca = \ca(x,t)$ is referred to as the arterial input function (AIF).
-	Using \eqref{dmdt} and following the principle of conservation of tracer molecules, we model the contrast agent concentration in a control volume $\Omega_i$ as
+	Using \eqref{eq:dmdt} and following the principle of conservation of tracer molecules, we model the contrast agent concentration in a control volume $\Omega_i$ as
 	\begin{align}
 		& \int_{\Omega_i} \phi \frac{d c}{dt} \diffint \vx + \int_{ \partial \Omega_i}c(\vq \cdot \mathbf{n}) \diffint \mathbf{A}
 		 = \int_{\Omega_i}(\ca Q_{so} \diffint \vx + c Q_{si}) \diffint \vx.
@@ -863,17 +863,17 @@ More specifically, the common understanding of perfusion
 	However, it is not obvious that \eqref{eq:CBV} is valid also for a continuous one-compartment field model where the voxels are feeding each other. 
 	We will now show that this is indeed the case.
 
-	We have seen in Section~\ref{sec:NewAndOld} that for a voxel at location $i$ it holds $C_i'(t) = \phi_i (J_i\ast c_{\mathrm{in},i}(t))$,
+	We have seen in Section~\ref{sec:NewAndOld} that for a voxel at location $i$ it holds $C_i(t) = \phi_i (J_i\ast c_{\mathrm{in},i}(t))$,
 	where $c_{\mathrm{in},i}(t)$ is a weighted average of adjacent upstream voxels and the arterial input $\ca(t)$, if the voxel lies within the source field.
 	Since the area under the convolution of two functions equals the product of the area under the two factors and $\int_0^\infty J_i(s) \diffint s = 1$, it follows that
-	\[
+	\begin{equation}
 		\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty c_{\mathrm{in},i}(s) \diffint s.
-	\]
+	\end{equation}
 	Let us now show that $\int_0^\infty c_{\mathrm{in},i}(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then the claim follows.
 	Assuming a discrete setting, where voxel $i$ has upstream voxels at locations $j$, we find the following expansion of $c_{\mathrm{in},i}(t)$:
-	\[
+	\begin{equation}
 		c_{\mathrm{in},i}(t) = \tfrac{1}{\Perfv}\Big(p_0 \ca(t) + {\textstyle\sum\limits_{j\ge 1}} p_jc_j(t)\Big),
-	\]
+	\end{equation}
 	where $\Perfv=\sum_{j\ge 0} p_j$ and $p_0>0$ if $i$ lies within the source field.
 	Since $c_{j}(t) = (J_{j}\ast c_{\mathrm{in},j})(t)$, where $c_{\mathrm{in},j}$ is itself again the the weighted average of upstream voxels and the arterial input, the claim follows by recursion.
 
