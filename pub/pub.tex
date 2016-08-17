@@ -693,7 +693,7 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	Define the outward normal vector $n$ and areas (voxel faces) of inflow and outflow over the boundary as $S_{\mathrm{in}} := \{ \vx \in \partial \Omega_i: \ \vq \cdot \mathbf{n} < 0 \}$ and $S_{\mathrm{out}}:= \{ \vx \in \partial \Omega_i: \ \vq \cdot \mathbf{n} > 0 \}$ respectively.
 	For the domain $\Omega_i$ we define the arterial input $c_{\mathrm{in}}$ as the weighted average of the tracer flux across $S_{\mathrm{in}}$
 	\begin{equation}\label{eq:cin}
-	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}c(\vq \cdot \mathbf{n}) \diffint \mathbf{A}}{\int_{S_{\mathrm{in}}} \vq \cdot \mathbf{n} \diffint \mathbf{A}}.
+	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}c \cdot (\vq \cdot \mathbf{n}) \diffint \mathbf{A}}{\int_{S_{\mathrm{in}}} \vq \cdot \mathbf{n} \diffint \mathbf{A}}.
 	\end{equation}
 	We define perfusion $\Perfv$ within $\Omega_i$ in line with the definition as the total feeding fluid inflow divided by the volume,
 	\begin{equation}\label{eq:perflocal}
@@ -873,9 +873,9 @@ More specifically, the common understanding of perfusion
 	where $J_i,c_{\mathrm{in},i}:[0,\infty)\to \R$ will be specified in (A2).
 	\item In (A1) $J_i:[0,\infty)\to\R$ fulfills $\int_0^\infty J_i(s)\diffint s = 1$ and the local arterial input $c_{\mathrm{in},i}(t)$ is a weighted average of adjacent, upstream voxels $c_j(t)$, $J \subseteq \N$ and $\ca(t)$, if the voxel lies in the source field:
 	\begin{equation}
-		c_{\mathrm{in},i}(t) = \tfrac{1}{\Perfv}\Big(p_0 \ca(t) + {\textstyle\sum\limits_{j \in J}} p_jc_j(t)\Big),
+		c_{\mathrm{in},i}(t) = \tfrac{1}{P}\Big(p_0 \ca(t) + {\textstyle\sum\limits_{j \in J}} p_jc_j(t)\Big),
 	\end{equation}
-	where $\Perfv=p_0 + \sum_{j\in J} p_j$ and $p_0>0$ if $i$ lies within the source field.
+	where $P=p_0 + \sum_{j\in J} p_j$ and $p_0>0$ if $i$ lies within the source field.
 	\end{enumerate}
 	
 	\begin{lemma}
@@ -896,9 +896,9 @@ More specifically, the common understanding of perfusion
 		\begin{align*}	
 			\int_0^\infty c_i(s) \diffint s &\stackrel{\mathclap{\text{(A1)}}}{=} \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) \diffint s\\
 			&= \int_0^\infty c_{\mathrm{in},i}(s)\diffint s \\
-			&\stackrel{\mathclap{\text{(A2)}}}{=}  \tfrac{1}{\Perfv}\int_0^\infty \Big( p_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \Big) \diffint s,\\
-			&= \tfrac{1}{\Perfv} \Big(p_0 \int_0^\infty \ca(s) \diffint s + {\textstyle\sum\limits_{j\in J}} p_j \int_0^\infty c_{j}(s) \diffint s \Big) ,\\
-			&\stackrel{\mathclap{\text{I.A.}}}{=}\tfrac{1}{\Perfv} \Big( p_0 + {\textstyle\sum\limits_{j\in 1}} p_j\Big)  \int_0^\infty\ca(s)\diffint s, \\
+			&\stackrel{\mathclap{\text{(A2)}}}{=}  \tfrac{1}{P}\int_0^\infty \Big( p_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \Big) \diffint s,\\
+			&= \tfrac{1}{P} \Big(p_0 \int_0^\infty \ca(s) \diffint s + {\textstyle\sum\limits_{j\in J}} p_j \int_0^\infty c_{j}(s) \diffint s \Big) ,\\
+			&\stackrel{\mathclap{\text{I.A.}}}{=}\tfrac{1}{P} \Big( p_0 + {\textstyle\sum\limits_{j\in 1}} p_j\Big)  \int_0^\infty\ca(s)\diffint s, \\
 			&= \int_0^\infty\ca(s)\diffint s.
 		\end{align*}		
 		Hence the claim follows.
