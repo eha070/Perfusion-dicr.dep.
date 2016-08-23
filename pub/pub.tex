@@ -1119,7 +1119,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
  	Experimental results from Section \ref{sec:RecPhantom} indicate that application of the deconvolution model to patches of tissues would lead to over estimation of blood flow as compared to the overall flow within the volume of interest.
 	In order to illustrate that this effect also may be observed on a complete dataset, we applied the deconvolution model to a clinically acquired human perfusion CT dataset of a 56 years old male male admitted with suspicion of stroke to the Radboud University Medical Center in Nijmegen, the Netherlands.
 	The perfusion scan was obtained using a Toshiba Aquilon ONE scanner, pixel-size $\SI{0.43}{\milli\meter}\times\SI{0.43}{\milli\meter}$, slice thickness $\SI{0.5}{\milli\meter}$, contrast agent \SI{50}{\milli\litre} Xentix 300, total scan-time \SI{114}{\second}, time resolution ranging from \SI{2.1}{\second} in the early- to \SI{30}{\second} in the late phase of CA uptake.
-	Motion correction was performed with respect to the first timepoint using Euler transformations \cite{Manniesing16}.
+	Motion correction was performed with respect to the first timepoint using Euler transformations \cite{Mendrik11}.
 	The arterial input function was manually selected by a medical expert within the middle cerebral artery (MCA).
 	Since we expected to see local over estimation effects mainly for small voxel sizes, the data was processed at full resolution ($512\times512\times320$) voxels. 
 	However, in order to deal with noise it was necessary to apply a prior gaussian smoothing with standard deviation of $1$ voxel.	
