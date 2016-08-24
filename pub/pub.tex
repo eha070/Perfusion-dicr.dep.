@@ -706,6 +706,18 @@ The concepts are illustrated by simulations of flow in a tissue patch with one i
 	\begin{equation}\label{eq:singlevoxel}
 		(\phi c_i)'(t)  = \Perfv (c_\mathrm{in}(t)  - c_\mathrm{out}(t)).
 	\end{equation}
+	% COMPLETE CALCULATION:
+	% \begin{align}
+	% 	(\phi_ic_i)'(t)  &= \frac{1}{\Vol(\Omega_i)}\left(\sum_{j=0}^k p_j c_j(t) - \left(\sum_{j=0}^k p_j\right) c_i(t)\right)\\
+	% 	 				 &= \sum_{j=0}^k P_j c_{j}(t) - P c_i(t)\\
+	% 	         &= P(\tfrac{1}{P}\sum_{j=0}^k P_j c_{j}(t) - c_i(t))\\
+	% 			 &= P(c_{\mathrm{in}}(t) - c_i(t))\\
+	% \end{align}
+	% Here $p_j$ is absolute flow, $P_j:=p_j/\Vol(\Omega_i)$ the corresponding normalized perfusion for arterial input $j$ and $P:=\sum_{j=0}^k P_j$ the total perfusion for the voxel.
+	% Solving the above ODE leads to
+	% \[
+	% 	C_i(t) = \phi_i (J_i\ast c_{\mathrm{in}})(t), \text{ for }J_i(t) = \tfrac{P}{\phi_i}\exp(-(P/\phi_i)t).
+	% \]	
 	Note that the upwind-discretization described in Section~\ref{sec:transport} models each voxel as a well-mixed compartment: it is assumed that the CA concentration at the outflow $S_\mathrm{out}$ equals the concentration within the voxel and that the concentration at the inflow is the concentration within the adjacent voxels.
 
 	%I PROPOSE TO SHORTEN THE REST OF THIS SECTION. BY NOW I BELEVE THE READER IS CONFORTABLE WITH THE FACT THAT LOCAL FLOW IS DEPENDENT ON UPSTREAM VOXELS.
@@ -853,95 +865,82 @@ More specifically, the common understanding of perfusion
 	%--------------------------------------------------
 	% Subsection: Estimate the Porosity
 	%--------------------------------------------------	
-	\subsection{A Method to Estimate local Porosity}\label{sec:CBV}
+	\subsection{A Method to Estimate Local Porosity}\label{sec:CBV}
 
 	Porosity and CBV have the same definition, and we can therefore state that $\phi \equiv \mathrm{CBV}$. It is known from literature on traditional models \cite{sourbron13} for perfusion that CBV for the entire compartment can be expressed as
 	\begin{equation}
-		\phi = \frac{\int_0^\infty C \diffint t}{\int_0^\infty \ca \diffint t}.
+		\phi = \frac{\int_0^\infty C(s) \diffint s}{\int_0^\infty \ca(s) \diffint s}.
 		\label{eq:CBV}
 	\end{equation}
-	where $C(t)$ is the tracer concentration with respect to a well mixed compartment and $\ca(t)$ is the plasma concentration of the arterial input. 
-	However, it is not obvious that \eqref{eq:CBV} is valid also for a one-compartment field model where the voxels are feeding each other. 
+	% where $C(t)$ is the tracer concentration with respect to a well mixed compartment and $\ca(t)$ is the plasma concentration of the arterial input.
+	It is not obvious that \eqref{eq:CBV} is valid also for a one-compartment field model where the voxels are feeding each other. 
 	We will now show that this is indeed the case.
-
-	Let us switch to a discrete setting let the following assumptions hold (see Section~\ref{sec:NewAndOld} for details):
-	\begin{enumerate}[({A}1)]
-		\item The concentration in any voxel can be written as
-	\begin{equation}
-		\int_0^\infty c_i(s) \diffint s = \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) \diffint s.
-	\end{equation}
-	where $J_i,c_{\mathrm{in},i}:[0,\infty)\to \R$ will be specified in (A2).
-	\item In (A1) $J_i:[0,\infty)\to\R$ fulfills $\int_0^\infty J_i(s)\diffint s = 1$ and the local arterial input $c_{\mathrm{in},i}(t)$ is a weighted average of adjacent, upstream voxels $c_j(t)$, $J \subseteq \N$ and $\ca(t)$, if the voxel lies in the source field:
-	\begin{equation}
-		c_{\mathrm{in},i}(t) = \tfrac{1}{P}\Big(p_0 \ca(t) + {\textstyle\sum\limits_{j \in J}} p_jc_j(t)\Big),
-	\end{equation}
-	where $P=p_0 + \sum_{j\in J} p_j$ and $p_0>0$ if $i$ lies within the source field.
-	\end{enumerate}
 	
-	\begin{lemma}
-		Assume (A1),(A2). 
-		Then $\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty \ca(s) \diffint s$ for all voxels.
-	\end{lemma}
-	\begin{proof}
-		We use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then the claim follows.
-		Let $I_k \subset \N$ denote the set of voxels which have $k$ layers of upstream voxels.
+	Let us switch to a discrete setting.
+	Consistent with the considerations in Section~\ref{sec:NewAndOld} let us assume that the CA concentration in any voxel can be described by $C_i(t) = \phi_i(J_i\ast c_{\mathrm{in},i})(t)$, where the local arterial input is given by
+		$c_{\mathrm{in},i}(t) =1/p(p_0 \ca(t) + \sum_{j \in J} p_jc_j(t))$.
+	In this discrete version of \eqref{eq:cin}, $J$ is the set of all adjacent, upstream voxels and $p=p_0 + \sum_{j\in J} p_j$, where $p_0>0$ if voxel $i$ lies within the source field.
+	Furthermore let us assume that $\vq$ is a uni-directional flow field and that there is no flow between voxels in the same layer.
+		We now use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then \eqref{eq:CBV} follows.
+		Let $I_k$ denote the set of voxels which have $k$ layers of upstream voxels.
 		E.g. $I_0$ is the set of all voxels, which have no upstream voxels, $I_1$ is the set of voxels which are fed by $I_0$ and so on.
 		Induction will be carried out over $k$.\\
-		\textbf{Induction Basis:}\\
-		Let $k=0$ and let $i \in I_0$ be arbitrary. Following (A1) and (A2) it holds that $c_i(t) = (J_i\ast \ca)(t)$.
+		\textbf{Induction basis:}
+		Let $k=0$ and let $i \in I_0$ be arbitrary.
 		Since the area under the convolution of two functions equals the product of the area of its factors, $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$ and the claim follows.\\
-		\textbf{Induction Assumption:} The claim holds for arbitrary $k \in \N$.\\
-		\textbf{Induction Step:} $k \to k+1$\\
-		For any voxel at location $i \in I_{k+1}$ which has the voxels $J \subseteq I_{k}$ as their upstream neighbors, we find the following expression:
-		\begin{align*}	
-			\int_0^\infty c_i(s) \diffint s &\stackrel{\mathclap{\text{(A1)}}}{=} \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) \diffint s\\
-			&= \int_0^\infty c_{\mathrm{in},i}(s)\diffint s \\
-			&\stackrel{\mathclap{\text{(A2)}}}{=}  \tfrac{1}{P}\int_0^\infty \Big( p_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \Big) \diffint s,\\
-			&= \tfrac{1}{P} \Big(p_0 \int_0^\infty \ca(s) \diffint s + {\textstyle\sum\limits_{j\in J}} p_j \int_0^\infty c_{j}(s) \diffint s \Big) ,\\
-			&\stackrel{\mathclap{\text{I.A.}}}{=}\tfrac{1}{P} \Big( p_0 + {\textstyle\sum\limits_{j\in 1}} p_j\Big)  \int_0^\infty\ca(s)\diffint s, \\
-			&= \int_0^\infty\ca(s)\diffint s.
-		\end{align*}		
-		Hence the claim follows.
-\end{proof}
+		\textbf{Induction step:}
+		Consistent with our assumptions, for any voxel at location $i \in I_{k+1}$ which has the voxels $J \subseteq I_{k}$ as their upstream neighbors, we find the following expression:
+		\begin{equation}
+			\int_0^\infty c_i(s) \diffint s = \tfrac{1}{P}\int_0^\infty \Big(J_i\ast \big( p_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \big)\Big)(s) \diffint s
+		\end{equation}
+		Now \eqref{eq:CBV} follows from straight-forward calculations.
+	
 
-	% We have seen in Section~\ref{sec:NewAndOld} that for a voxel with adjacent upstream voxels at locations $j$ it holds that
-	% \[
-	% 	C'(t) = \phi\big( f_0 \ca(t) + \sum_{j\ge 1} f_jc_j(t) - F c(t) \big) = \phi J_i \ast c_{\mathrm{in}}(t),
-	% \]
-	% where $F=\sum_{j\ge 0} f_j$ and $f_0 > 0$ if the voxel is in the source-field and $c_{\mathrm{in}}$ is a weighted average.
-	% Since the area under the convolution of two functions equals the product of the area under the two factors and $\int_0^\infty J_i(s) \diffint s = 1$, it follows that
-	% \[
-	% 	\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty c_{\mathrm{in}} \diffint s.
-	% \]
-	% Here either $c_{\mathrm{in}}(t) = \ca(t)$ or $c_{\mathrm{in}}(t) = \sum_j\frac{f_j c_j(t)}{\sum_j f_j}$
+
+	%% LONG VERSION OF THE DISCRETE PROOF
+	% 	Let us switch to a discrete setting let the following assumptions hold (see Section~\ref{sec:NewAndOld} for details):
+	% 	\begin{enumerate}[({A}1)]
+	% 		\item The concentration in any voxel can be written as
+	% 	\begin{equation}
+	% 		\int_0^\infty c_i(s) \diffint s = \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) \diffint s.
+	% 	\end{equation}
+	% 	where $J_i,c_{\mathrm{in},i}:[0,\infty)\to \R$ will be specified in (A2).
+	% 	\item In (A1) $J_i:[0,\infty)\to\R$ fulfills $\int_0^\infty J_i(s)\diffint s = 1$ (straight forward calculation) and the local arterial input $c_{\mathrm{in},i}(t)$ is a weighted average of adjacent, upstream voxels $c_j(t)$, where $J$ is the set of adjcacent, upstream voxels and $\ca(t)$, if the voxel lies in the source field:
+	% 	\begin{equation}
+	% 		c_{\mathrm{in},i}(t) = \tfrac{1}{P}\Big(p_0 \ca(t) + {\textstyle\sum\limits_{j \in J}} p_jc_j(t)\Big),
+	% 	\end{equation}
+	% 	where $p=p_0 + \sum_{j\in J} p_j$ and $p_0>0$ if voxel $i$ lies within the source field.
+	% 	Consistent with \eqref{eq:cin} $p_j$ is absolute flow.
+	% 	\end{enumerate}
 	%
-	%
-	%
-	%
-	%
-	%
-	% Let us consider the recursive expression \eqref{eq:voxelcurve} for the contrast agent concentration.
-	% %, namely
-	% %\begin{equation}
-	% %	C_i(t) = \phi_i (J_1*\cdots *J_l)*\ca(t).
-	% %\end{equation}
-	% Following \cite{sourbron13} we first remark that it holds for $J_i(s):= 1/\phi_i\cdot I_i(s)$ and the special case $J_i(s):=P_i/\phi_i\exp(P_i/\phi_i s)$ that $\int_{0}^\infty J_i(s) \diffint s = 1$.
-	% Since the area under the convolution of two functions equals the product of the area under the two factors, this allows us to estimate the integral over $c_i = J_i*c_{\mathrm{in}}$ as follows:
-	% \begin{equation}
-	% 	\int_0^\infty c_i(s) \diffint s = \int_{0}^\infty (J_i*c_{\mathrm{in}})(s) \diffint s = \int_{0} ^ \infty c_\mathrm{in}(s)  \diffint s.
-	% \end{equation}
-	%  %\begin{align}
-	% % 	&\int_{0}^\infty (J_i*\ca)(s) \diffint s \\
-	% % 	&= \int_{0}^\infty J_i(u) \Big( \int_0^{\infty}   \ca(s-u)  \diffint s \Big) \diffint u \\
-	% % 	&= \Big( \int_{0}^\infty J_i(u) \diffint u\Big) \Big( \int_0^{\infty}   \ca(s)  \diffint s \Big)  = \int_{0} ^ \infty \ca(s)  \diffint s
-	%  %\end{align}
-	%  %where the first step is due to Fubini's theorem and $\ca(t)=0$ for $t<0$ and the second step follows since $\int_0^\infty \ca(s-u) \diffint u$ is constant in $s$.
-	% Combining this result recursively with the considerations around \eqref{eq:C_recur} yields
-	% \begin{equation}
-	% 	\int_0^\infty C_i(s)\diffint s = \phi_i \int_0^\infty \ca(s) \diffint s
-	% \end{equation}
-	% since $c_\mathrm{in}$ is a weighted average of the two directly connected upstream voxels.
-	% This yields \eqref{eq:CBV}.
+	% 	\begin{lemma}
+	% 		Assume (A1),(A2), a uni-directional flow over voxel faces and that there is no flow between voxels in the same layer.
+	% 		Then $\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty \ca(s) \diffint s$ for all voxels.
+	% 	\end{lemma}
+	% 	\begin{proof}
+	% 		We use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then the claim follows.
+	% 		Let $I_k$ denote the set of voxels which have $k$ layers of upstream voxels.
+	% 		E.g. $I_0$ is the set of all voxels, which have no upstream voxels, $I_1$ is the set of voxels which are fed by $I_0$ and so on.
+	% 		Induction will be carried out over $k$.\\
+	% 		\textbf{Induction Basis:}\\
+	% 		Let $k=0$ and let $i \in I_0$ be arbitrary. Following (A1) and (A2) it holds that $c_i(t) = (J_i\ast \ca)(t)$.
+	% 		Since the area under the convolution of two functions equals the product of the area of its factors, $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$ and the claim follows.\\
+	% 		\textbf{Induction Assumption:} The claim holds for arbitrary $k \in \N$.\\
+	% 		\textbf{Induction Step:}\\
+	% 		For any voxel at location $i \in I_{k+1}$ which has the voxels $J \subseteq I_{k}$ as their upstream neighbors, we find the following expression:
+	% 		\begin{align*}
+	% 			\int_0^\infty c_i(s) \diffint s &\stackrel{\mathclap{\text{(A1)}}}{=} \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) \diffint s\\
+	% 			&= \int_0^\infty c_{\mathrm{in},i}(s)\diffint s \\
+	% 			&\stackrel{\mathclap{\text{(A2)}}}{=}  \tfrac{1}{P}\int_0^\infty \Big( p_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \Big) \diffint s,\\
+	% 			&= \tfrac{1}{P} \Big(p_0 \int_0^\infty \ca(s) \diffint s + {\textstyle\sum\limits_{j\in J}} p_j \int_0^\infty c_{j}(s) \diffint s \Big) ,\\
+	% 			&\stackrel{\mathclap{\text{I.A.}}}{=}\tfrac{1}{P} \Big( p_0 + {\textstyle\sum\limits_{j\in 1}} p_j\Big)  \int_0^\infty\ca(s)\diffint s, \\
+	% 			&= \int_0^\infty\ca(s)\diffint s.
+	% 		\end{align*}
+	% 		Hence the claim \eqref{eq:CBV} follows.
+	% \end{proof}
+
+
+	% % CONTINUOUS VERSION OF THE PROOF
 	% % Returning to the local definition of fluid tracer concentration $c(\vx,t)$, outside the source and sink area where $Q(\vx)=0$ the PDE \eqref{eq:conteqlocal} is consistent with
 	% % \begin{equation}
 	% % 	\phi\frac{\partial c}{\partial t}  = - \vq \cdot \nabla c.
@@ -962,8 +961,6 @@ More specifically, the common understanding of perfusion
 	% Subsection: Modeling the Blood Flow
 	%--------------------------------------------------
 
-	%I HAVE CHANGED THIS SECTION TO THE STYLE OF AN ILUSTRATIVE EXAMPLE
-	%\subsection{Modelling Capillary Blood Flow}\label{sec:flow}
 	\subsection{Simulations of capillary flow}\label{sec:flow}
 	In this section we will describe how we simulate a flux field $\vq(\vx)$ driving the transport of fluid and tracer.
 	The modeling is in agreement with the assumption of stationary, incompressible flow at low Reynold numbers within the capillary system \cite{Cho2011} and also in agreement with previous work on capillary perfusion simulations \cite{Cookson2012,Michler2013}. 
@@ -1130,7 +1127,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	Voxelwise results are depicted in Figure~\ref{fig:RealData}.
 
 	\begin{figure*}[h!tb]\label{fig:RealData}
-		\fwd = .23\textwidth
+		\fwd = .215\textwidth
 		\centering
 		\begin{tabular}{ccc}
 		 {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
