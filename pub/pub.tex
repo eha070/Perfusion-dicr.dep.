@@ -877,13 +877,19 @@ More specifically, the common understanding of perfusion
 	We will now show that this is indeed the case.
 	
 	Let us switch to a discrete setting.
-	Consistent with the considerations in Section~\ref{sec:NewAndOld} let us assume that the CA concentration in any voxel can be described by $C_i(t) = \phi_i(J_i\ast c_{\mathrm{in},i})(t)$, where the local arterial input is given by
-		$c_{\mathrm{in},i}(t) =1/p(p_0 \ca(t) + \sum_{j \in J} p_jc_j(t))$.
-	In this discrete version of \eqref{eq:cin}, $J$ is the set of all adjacent, upstream voxels and $p=p_0 + \sum_{j\in J} p_j$, where $p_0>0$ if voxel $i$ lies within the source field.
-	Furthermore let us assume that $\vq$ is a uni-directional flow field and that there is no flow between voxels in the same layer.
-		We now use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then \eqref{eq:CBV} follows.
+	Consistent with the considerations in Section~\ref{sec:NewAndOld}, the CA concentration in any voxel can be described by $C_i(t) = \phi_i(J_i\ast c_{\mathrm{in},i})(t)$, where the local arterial input is given by
+		$c_{\mathrm{in},i}(t) =1/p(p_0 \ca(t) + \sum_{j \in J} p_jc_j(t))$ and $J_i(t)=(p/\phi_i)e^{- (p/\phi_i)t}$.
+	In $c_{\mathrm{in},i}(t)$, $J$ is the index set of all adjacent, upstream voxels and $p=p_0 + \sum_{j\in J} p_j$, where $p_0>0$ if voxel $i$ lies within the source field.
+	Furthermore, let us assume that $\vq$ is a uni-directional flow field across each voxel face.
+	%, and that there is no flow interaction between voxels in the same layer.
+		We will now use induction to show that 
+		\begin{equation}
+		\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s,
+		\label{eq:proofinduction}
+		\end{equation} 
+		and then \eqref{eq:CBV} follows.
 		Let $I_k$ denote the set of voxels which have $k$ layers of upstream voxels.
-		E.g. $I_0$ is the set of all voxels, which have no upstream voxels, $I_1$ is the set of voxels which are fed by $I_0$ and so on.
+		E.g. $I_0$ is the set of all voxels, which have no upstream voxels, $I_1$ is the set of voxels which are fed by $I_0$ and so on. As an assumption, the same voxel can not be member of several $I_k$, thus there is no flow interaction between voxels within the same $I_k$.
 		Induction will be carried out over $k$.\\
 		\textbf{Induction basis:}
 		Let $k=0$ and let $i \in I_0$ be arbitrary.
@@ -893,11 +899,12 @@ More specifically, the common understanding of perfusion
 		\begin{equation}
 			\int_0^\infty c_i(s) \diffint s = \tfrac{1}{P}\int_0^\infty \Big(J_i\ast \big( p_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \big)\Big)(s) \diffint s
 		\end{equation}
-		Now \eqref{eq:CBV} follows from straight-forward calculations.
+		 Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)\diffint s = 1$, as well as the definition of $p$ leads to \eqref{eq:proofinduction}.
 	
 
 
-	%% LONG VERSION OF THE DISCRETE PROOF
+
+	% LONG VERSION OF THE DISCRETE PROOF
 	% 	Let us switch to a discrete setting let the following assumptions hold (see Section~\ref{sec:NewAndOld} for details):
 	% 	\begin{enumerate}[({A}1)]
 	% 		\item The concentration in any voxel can be written as
