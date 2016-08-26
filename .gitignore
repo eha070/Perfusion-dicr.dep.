@@ -11,6 +11,7 @@
 #MAC-Ignores
 .DS_Store
 *~
+~*
 
 #Constantin sometimes saves his commit-messages in this file
 commit_msg
