@@ -879,9 +879,11 @@ More specifically, the common understanding of perfusion
 	Let us switch to a discrete setting.
 	Consistent with the considerations in Section~\ref{sec:NewAndOld}, the CA concentration in any voxel can be described by $C_i(t) = \phi_i(J_i\ast c_{\mathrm{in},i})(t)$, where the local arterial input is given by
 		$c_{\mathrm{in},i}(t) =1/P(P_0 \ca(t) + \sum_{j \in J} P_jc_j(t))$ and $J_i(t)=(P/\phi)e^{- (P/\phi)t}$.
-	In $c_{\mathrm{in},i}(t)$, $J$ is the index set of all adjacent, upstream voxels and $P=P_0 + \sum_{j\in J} P_j$, where $P_0>0$ if voxel $i$ lies within the source field.
+	In $c_{\mathrm{in},i}(t)$, $J$ is the index set of all adjacent, upstream voxels and $P=P_0 + \sum_{j\in J} P_j$.
+	Here $P_j$ is the normalized volume flow across voxel-face $j$ [\si{\siQmm}] and $P_0>0$ if voxel $i$ has arterial contribution.
 	Furthermore, let us assume that $\vq$ is a uni-directional flow field across each voxel face.
 	%, and that there is no flow interaction between voxels in the same layer.
+	
 		We will now use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then \eqref{eq:CBV} follows.
 		Let $I_k$ denote the set of voxels which have $k$ layers of upstream voxels.
 		E.g. $I_0$ is the set of all voxels, which have no upstream voxels, $I_1$ is the set of voxels which are fed by $I_0$ and so on. As an assumption, the same voxel can not be member of several $I_k$, thus there is no flow interaction between voxels within the same $I_k$.
@@ -894,7 +896,7 @@ More specifically, the common understanding of perfusion
 		\begin{equation}
 			\int_0^\infty c_i(s) \diffint s = \tfrac{1}{P}\int_0^\infty \Big(J_i\ast \big( P_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}P_j c_j(s) \big)\Big)(s) \diffint s
 		\end{equation}
-		 Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)\diffint s = 1$, as well as the definition of $p$ yields the claim.
+		 Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)\diffint s = 1$, as well as the definition of $P$ yields the claim.
 	
 
 
@@ -992,17 +994,17 @@ More specifically, the common understanding of perfusion
 	%
 	Here, $\mathbf{k} = \mathbf{k}(\vx)$ is the intrinsic permeability tensor, $p=p(\vx)$ is the pressure, and $\mu = \mu(\vx)$ is the viscosity of the fluid. 	
 	For simplicity, we will assume that $\mathbf{k}$ is a symmetric and positive definite tensor with only nonzero diagonal elements $\mathbf{k}_{ii} = k$, in accordance with a homogeneous porous medium.	
-	Equation \eqref{eq:syntcontsimp} can be combined, yielding the following elliptic partial differential equation in the pressure field $p$ within the closed domain $\Omega$,
+	Using \eqref{eq:syntcontsimp} yields the following elliptic partial differential equation in the pressure field $p$ within the closed domain $\Omega$,
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
-			\nabla \cdot \left( -\frac{\mathbf{k}}{\mu} \nabla p \right) &= Q,  \qquad &&\vx \in \Omega \\
-			\mathbf{n} \cdot \nabla p &=0, &&\vx \in \partial \Omega.
+			\nabla \cdot \left( -\frac{\mathbf{k}}{\mu} \nabla p \right) &= Q,  \qquad &&\vx \in \Omega, \\
+			\mathbf{n} \cdot \nabla p &=0, &&\vx \in \partial \Omega,
 		\end{alignedat}
 		\right\vert 
 		\label{eq:flowmodel}
 	\end{equation}
-	For the outward unit normal $\mathbf{n}=\mathbf{n}(\vx)$, Neuman boundary conditions are reflecting zero fluid flux $\vq(\vx)$ across the boundary $\partial \Omega$.
+	for the outward unit normal $\mathbf{n}=\mathbf{n}(\vx)$.
 	After solving \eqref{eq:flowmodel} for the pressure $p$, the flux field was estimated according to \eqref{eq:syntcontsimp} from the obtained pressure map. 
 
 	
@@ -1034,7 +1036,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 
 \begin{figure*}[h!tb]
 	\centering
-	\fwd = .24\textwidth
+	\fwd = .23\textwidth
 	\begin{tabular}{c c c}
 		\includegraphics[width=\fwd]{figs/qmat.pdf} & \includegraphics[width=\fwd]{figs/perfmat.pdf} & \includegraphics[width=\fwd]{figs/lperfmat.pdf}\\
 		(a) Synthetic flow field $\vq(\vx)$ & (b) Perfusion $\Perfs$ along the streamlines  & (c) Local perfusion $\Perfv$.
@@ -1125,13 +1127,13 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	Voxelwise results are depicted in Figure~\ref{fig:RealData}.
 
 	\begin{figure*}[h!tb]
-		\fwd = .25\textwidth
+		\fwd = .23\textwidth
 		\centering
 		\begin{tabular}{ccc}
 		 {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
 		 (a) & (b) & (c) 
 		\end{tabular}
-		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise scaled CBF-reconstruction [\si{\milli\litre\per\minute\per100\milli\gram}] for a 3D volume of interest demonstrating overestimation in major vessels, which is in-line with our theory. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}\label{fig:RealData}
+		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise scaled CBF-reconstruction [\si{\milli\litre\per\minute\per100\milli\gram}] for a 3D volume of interest. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}\label{fig:RealData}
 	\end{figure*}
 
 
