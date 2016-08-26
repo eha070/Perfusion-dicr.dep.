@@ -878,8 +878,8 @@ More specifically, the common understanding of perfusion
 	
 	Let us switch to a discrete setting.
 	Consistent with the considerations in Section~\ref{sec:NewAndOld}, the CA concentration in any voxel can be described by $C_i(t) = \phi_i(J_i\ast c_{\mathrm{in},i})(t)$, where the local arterial input is given by
-		$c_{\mathrm{in},i}(t) =1/p(p_0 \ca(t) + \sum_{j \in J} p_jc_j(t))$ and $J_i(t)=(p/\phi)e^{- (p/\phi)t}$.
-	In $c_{\mathrm{in},i}(t)$, $J$ is the index set of all adjacent, upstream voxels and $p=p_0 + \sum_{j\in J} p_j$, where $p_0>0$ if voxel $i$ lies within the source field.
+		$c_{\mathrm{in},i}(t) =1/P(P_0 \ca(t) + \sum_{j \in J} P_jc_j(t))$ and $J_i(t)=(P/\phi)e^{- (P/\phi)t}$.
+	In $c_{\mathrm{in},i}(t)$, $J$ is the index set of all adjacent, upstream voxels and $P=P_0 + \sum_{j\in J} P_j$, where $P_0>0$ if voxel $i$ lies within the source field.
 	Furthermore, let us assume that $\vq$ is a uni-directional flow field across each voxel face.
 	%, and that there is no flow interaction between voxels in the same layer.
 		We will now use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then \eqref{eq:CBV} follows.
@@ -892,10 +892,9 @@ More specifically, the common understanding of perfusion
 		\textbf{Induction step:}
 		Consistent with our assumptions, for any voxel at location $i \in I_{k+1}$ which has the voxels $J \subseteq I_{k}$ as their upstream neighbors, we find the following expression:
 		\begin{equation}
-			\int_0^\infty c_i(s) \diffint s = \tfrac{1}{P}\int_0^\infty \Big(J_i\ast \big( p_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \big)\Big)(s) \diffint s
+			\int_0^\infty c_i(s) \diffint s = \tfrac{1}{P}\int_0^\infty \Big(J_i\ast \big( P_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}P_j c_j(s) \big)\Big)(s) \diffint s
 		\end{equation}
-		Now the claim follows from a direct calculation.
-		 % Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)\diffint s = 1$, as well as the definition of $p$ leads to \eqref{eq:proofinduction}.
+		 Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)\diffint s = 1$, as well as the definition of $p$ yields the claim.
 	
 
 
@@ -966,15 +965,15 @@ More specifically, the common understanding of perfusion
 
 	\subsection{Simulations of capillary flow}\label{sec:flow}
 	In this section we will describe how we simulate a flux field $\vq(\vx)$ driving the transport of fluid and tracer.
-	The modeling is in agreement with the assumption of stationary, incompressible flow at low Reynold numbers within the capillary system \cite{Cho2011} and also in agreement with previous work on capillary perfusion simulations \cite{Cookson2012,Michler2013}. 
+	The modeling is in agreement with previous work on capillary perfusion simulations \cite{Cho2011,Cookson2012,Michler2013}. 
 
 	For the time being we will not consider contrast agent concentrations, but only the fluid flow in general.
-	In-line with standard theory for a steady-state of an incompressible fluid, we assume that the fluid-flow $\vq$ [\si{\siq}] obeys the following local PDE
+	In-line with standard theory for a steady-state flow of an incompressible fluid and with Darcy's law \cite{Darcy56}, we assume that the fluid-flow $\vq$ [\si{\siq}] obeys the following set of local PDEs
 	\begin{equation}
-		\nabla \cdot \vq = Q,
+		\nabla \cdot \vq = Q, \text{ where }\vq = -\frac{\mathbf{k}}{\mu} \nabla p.
 		\label{eq:syntcontsimp}
 	\end{equation}	
-	where $Q$ [\si{\siQmm}] is a user-defined source- and sink term, which we assume to be only non-zero within the source or the sink.
+	Here $Q$ [\si{\siQmm}] is a user-defined source- and sink term, which we assume to be only non-zero within the source or the sink.
 	% The fluid density is denoted by $\rho = \rho(x,t)$ [\si{\milli\gram\per\mm\cubed}].
 	% Fluid entering and leaving the system is described by a source- and sink term $\tilde{Q} = \tilde{Q}(x)$ [\si{\siQtilde}].
 	% The continuity equation assuring conservation of fluid mass states
@@ -991,14 +990,9 @@ More specifically, the common understanding of perfusion
 	% Here the right hand side is a volume flux, only non-zero within the source or the sink.
 	% Elsewhere, \eqref{eq:syntcontsimp} is concurrent with divergence free flow of an incompressible fluid.
 	%
-	Low velocity fluid flux in porous media is usually described by Darcy's law. 	Neglecting gravitational forces \cite{Darcy56} leads to
-	\begin{equation}
-		\vq = -\frac{\mathbf{k}}{\mu} \nabla p.
-		\label{eq:syntdarcysimp}
-	\end{equation}
 	Here, $\mathbf{k} = \mathbf{k}(\vx)$ is the intrinsic permeability tensor, $p=p(\vx)$ is the pressure, and $\mu = \mu(\vx)$ is the viscosity of the fluid. 	
 	For simplicity, we will assume that $\mathbf{k}$ is a symmetric and positive definite tensor with only nonzero diagonal elements $\mathbf{k}_{ii} = k$, in accordance with a homogeneous porous medium.	
-	Equations \eqref{eq:syntcontsimp} and \eqref{eq:syntdarcysimp} can be combined, yielding the following elliptic partial differential equation in the pressure field $p$ within the closed domain $\Omega$,
+	Equation \eqref{eq:syntcontsimp} can be combined, yielding the following elliptic partial differential equation in the pressure field $p$ within the closed domain $\Omega$,
 	\begin{equation}
 		\left\vert
 		\begin{alignedat}{2}
@@ -1009,7 +1003,7 @@ More specifically, the common understanding of perfusion
 		\label{eq:flowmodel}
 	\end{equation}
 	For the outward unit normal $\mathbf{n}=\mathbf{n}(\vx)$, Neuman boundary conditions are reflecting zero fluid flux $\vq(\vx)$ across the boundary $\partial \Omega$.
-	After solving \eqref{eq:flowmodel} for the pressure $p$, the flux field was estimated according to \eqref{eq:syntdarcysimp} from the obtained pressure map. 
+	After solving \eqref{eq:flowmodel} for the pressure $p$, the flux field was estimated according to \eqref{eq:syntcontsimp} from the obtained pressure map. 
 
 	
 
@@ -1040,7 +1034,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 
 \begin{figure*}[h!tb]
 	\centering
-	\fwd = .21\textwidth
+	\fwd = .24\textwidth
 	\begin{tabular}{c c c}
 		\includegraphics[width=\fwd]{figs/qmat.pdf} & \includegraphics[width=\fwd]{figs/perfmat.pdf} & \includegraphics[width=\fwd]{figs/lperfmat.pdf}\\
 		(a) Synthetic flow field $\vq(\vx)$ & (b) Perfusion $\Perfs$ along the streamlines  & (c) Local perfusion $\Perfv$.
@@ -1122,22 +1116,22 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	Motion correction was performed with respect to the first timepoint using Euler transformations \cite{Mendrik11}.
 	The arterial input function was manually selected by a medical expert within the middle cerebral artery (MCA).
 	Since we expected to see local over estimation effects mainly for small voxel sizes, the data was processed at full resolution ($512\times512\times320$) voxels. 
-	Note that noise removal by smoothing is difficult, since we expect local averaging to remove expected local overestimation.
-	We hence applied only minor prior gaussian smoothing with standard deviation of $1$ voxel.
+	% Note that noise removal by smoothing is difficult, since we expect local averaging to remove expected local overestimation.
+	To cope with noise effects, we applied gaussian smoothing with standard deviation of $1$ voxel and window size [5,5,5].
 	Relative concentrations were estimated from the CT signal assuming a spatially independent proportionality constant. 
 	The brain tissue was segmented automatically and used as ROI for the perfusion analysis.
 	CBF was then estimated voxelwise using a Matlab implementation of bSVD with the global threshold of $4\%$, yielding an average scaled CBF of \SI{64.357}{\milli\litre\per\minute\per100\milli\gram}.
 	Furthermore, we estimated the perfusion for the whole volume of interest by averaging the concentration values first and then performing the bSVD with the above configuration, yielding a total scaled CBF of \SI{24.791}{\milli\litre\per\minute\per100\milli\gram}.
 	Voxelwise results are depicted in Figure~\ref{fig:RealData}.
 
-	\begin{figure*}[h!tb]\label{fig:RealData}
-		\fwd = .215\textwidth
+	\begin{figure*}[h!tb]
+		\fwd = .25\textwidth
 		\centering
 		\begin{tabular}{ccc}
 		 {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
 		 (a) & (b) & (c) 
 		\end{tabular}
-		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise scaled CBF-reconstruction [\si{\milli\litre\per\minute\per100\milli\gram}] for a 3D volume of interest, cut-off for visualization. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}
+		\caption{Results from real-data experiments (see Sec. \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of the voxel-wise scaled CBF-reconstruction [\si{\milli\litre\per\minute\per100\milli\gram}] for a 3D volume of interest showing overestimation in major vessels. (c) Mean concentration curve for the complete 3D volume of interest and the curve approximation by bSVD.}\label{fig:RealData}
 	\end{figure*}
 
 
@@ -1196,7 +1190,7 @@ Locally, the correct distribution volume is not accounted for and the obtained p
 	We have illustrated this effect in detail in the case of high resolution images where the voxel size reaches the spatial dimension of the capillary systems, and also showed the effect on real data.
 		The reason for this shortcoming is not numerical instabilities in the deconvolution, but rather that perfusion becomes overestimated as traditional models will not account for the correct distribution volume.
   	This problem is expected to become more pronounced in future as imaging hardware is constantly improving in spatial resolution.
-	We expect to find overestimation also in pathological tissue, where fluid is passing through multiple, adjacent voxels, and recommend to be take this effect into consideration for clinical evaluation of such data. To account for this problem, the development of new field models for perfusion is therefore highly demanded, in line with approaches described in \cite{sourbron14,Michler2013}. 	
+	We expect to find overestimation also in pathological tissue, where fluid is passing through multiple, adjacent voxels, and recommend to be take this effect into consideration for clinical evaluation of such data. The development of new field models for perfusion is therefore highly demanded, in line with approaches described in \cite{sourbron14,Michler2013}. 	
 
 	
 	%--------------------------------------------------
