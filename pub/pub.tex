@@ -878,16 +878,11 @@ More specifically, the common understanding of perfusion
 	
 	Let us switch to a discrete setting.
 	Consistent with the considerations in Section~\ref{sec:NewAndOld}, the CA concentration in any voxel can be described by $C_i(t) = \phi_i(J_i\ast c_{\mathrm{in},i})(t)$, where the local arterial input is given by
-		$c_{\mathrm{in},i}(t) =1/p(p_0 \ca(t) + \sum_{j \in J} p_jc_j(t))$ and $J_i(t)=(p/\phi_i)e^{- (p/\phi_i)t}$.
+		$c_{\mathrm{in},i}(t) =1/p(p_0 \ca(t) + \sum_{j \in J} p_jc_j(t))$ and $J_i(t)=(p/\phi)e^{- (p/\phi)t}$.
 	In $c_{\mathrm{in},i}(t)$, $J$ is the index set of all adjacent, upstream voxels and $p=p_0 + \sum_{j\in J} p_j$, where $p_0>0$ if voxel $i$ lies within the source field.
 	Furthermore, let us assume that $\vq$ is a uni-directional flow field across each voxel face.
 	%, and that there is no flow interaction between voxels in the same layer.
-		We will now use induction to show that 
-		\begin{equation}
-		\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s,
-		\label{eq:proofinduction}
-		\end{equation} 
-		and then \eqref{eq:CBV} follows.
+		We will now use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty \ca(s) \diffint s$, then \eqref{eq:CBV} follows.
 		Let $I_k$ denote the set of voxels which have $k$ layers of upstream voxels.
 		E.g. $I_0$ is the set of all voxels, which have no upstream voxels, $I_1$ is the set of voxels which are fed by $I_0$ and so on. As an assumption, the same voxel can not be member of several $I_k$, thus there is no flow interaction between voxels within the same $I_k$.
 		Induction will be carried out over $k$.\\
@@ -899,7 +894,8 @@ More specifically, the common understanding of perfusion
 		\begin{equation}
 			\int_0^\infty c_i(s) \diffint s = \tfrac{1}{P}\int_0^\infty \Big(J_i\ast \big( p_0 \ca(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \big)\Big)(s) \diffint s
 		\end{equation}
-		 Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)\diffint s = 1$, as well as the definition of $p$ leads to \eqref{eq:proofinduction}.
+		Now the claim follows from a direct calculation.
+		 % Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)\diffint s = 1$, as well as the definition of $p$ leads to \eqref{eq:proofinduction}.
 	
 
 
@@ -1044,7 +1040,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 
 \begin{figure*}[h!tb]
 	\centering
-	\fwd = .23\textwidth
+	\fwd = .21\textwidth
 	\begin{tabular}{c c c}
 		\includegraphics[width=\fwd]{figs/qmat.pdf} & \includegraphics[width=\fwd]{figs/perfmat.pdf} & \includegraphics[width=\fwd]{figs/lperfmat.pdf}\\
 		(a) Synthetic flow field $\vq(\vx)$ & (b) Perfusion $\Perfs$ along the streamlines  & (c) Local perfusion $\Perfv$.
@@ -1122,13 +1118,14 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	\subsection{Reconstruction of perfusion within real data}\label{sec:RealData}
  	Experimental results from Section \ref{sec:RecPhantom} indicate that application of the deconvolution model to patches of tissues would lead to over estimation of blood flow as compared to the overall flow within the volume of interest.
 	In order to illustrate that this effect also may be observed on a complete dataset, we applied the deconvolution model to a clinically acquired human perfusion CT dataset of a 56 years old male male admitted with suspicion of stroke to the Radboud University Medical Center in Nijmegen, the Netherlands.
-	The perfusion scan was obtained using a Toshiba Aquilon ONE scanner, pixel-size $\SI{0.43}{\milli\meter}\times\SI{0.43}{\milli\meter}$, slice thickness $\SI{0.5}{\milli\meter}$, contrast agent \SI{50}{\milli\litre} Xentix 300, total scan-time \SI{114}{\second}, time resolution ranging from \SI{2.1}{\second} in the early- to \SI{30}{\second} in the late phase of CA uptake.
+	The perfusion scan was obtained using a Toshiba Aquilon ONE scanner, voxel-size $\SI{0.43}{\milli\meter}\times\SI{0.43}{\milli\meter}$, slice thickness $\SI{0.5}{\milli\meter}$, contrast agent \SI{50}{\milli\litre} Xentix 300, total scan-time \SI{114}{\second}, time resolution ranging from \SI{2.1}{\second} in the early- to \SI{30}{\second} in the late phase of CA uptake.
 	Motion correction was performed with respect to the first timepoint using Euler transformations \cite{Mendrik11}.
 	The arterial input function was manually selected by a medical expert within the middle cerebral artery (MCA).
 	Since we expected to see local over estimation effects mainly for small voxel sizes, the data was processed at full resolution ($512\times512\times320$) voxels. 
-	However, in order to deal with noise it was necessary to apply a prior gaussian smoothing with standard deviation of $1$ voxel.	
-	Relative concentrations were estimated from the CT signal assuming a spatially independent proportionality constant. The brain tissue was segmented automatically and used as ROI for the perfusion analysis.
-
+	Note that noise removal by smoothing is difficult, since we expect local averaging to remove expected local overestimation.
+	We hence applied only minor prior gaussian smoothing with standard deviation of $1$ voxel.
+	Relative concentrations were estimated from the CT signal assuming a spatially independent proportionality constant. 
+	The brain tissue was segmented automatically and used as ROI for the perfusion analysis.
 	CBF was then estimated voxelwise using a Matlab implementation of bSVD with the global threshold of $4\%$, yielding an average scaled CBF of \SI{64.357}{\milli\litre\per\minute\per100\milli\gram}.
 	Furthermore, we estimated the perfusion for the whole volume of interest by averaging the concentration values first and then performing the bSVD with the above configuration, yielding a total scaled CBF of \SI{24.791}{\milli\litre\per\minute\per100\milli\gram}.
 	Voxelwise results are depicted in Figure~\ref{fig:RealData}.
