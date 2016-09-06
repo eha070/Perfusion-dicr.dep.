@@ -6,14 +6,16 @@
 \RequirePackage{float} 			%exact placement of graphics with H
 \RequirePackage[utf8]{inputenc}
 \RequirePackage{datetime}
-\RequirePackage{color}
 \RequirePackage{ifdraft}
 \RequirePackage{lastpage}
 \RequirePackage{scrpage2}
 \RequirePackage{siunitx}
-\RequirePackage{todonotes}
 \RequirePackage{booktabs}
 \RequirePackage{pgfplots} 
+\RequirePackage{xargs}
+\RequirePackage{xcolor} 
+\RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
 
 
 
@@ -73,6 +75,16 @@
 
 %different commands
 \newcommand{\CHalert}[1]{\textcolor{red}{CH: #1}}
+
+%reviewers
+\newcommandx{\roNote}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{\textbf{R1:} #2}}
+\newcommand{\roAlert}[1]{\textcolor{red}{#1}}
+
+\newcommandx{\rtNote}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{\textbf{R2:} #2}}
+\newcommand{\rtAlert}[1]{\textcolor{blue}{#1}}
+
+\newcommandx{\rthNote}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,#1]{\textbf{R3:} #2}}
+\newcommand{\rthAlert}[1]{\textcolor{green}{#1}}
 
 %% define theorems
 \theoremstyle{plain} %theoremstyle theorem
