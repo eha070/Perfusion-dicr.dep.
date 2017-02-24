@@ -1,13 +1,12 @@
 % ------------------------------------------------------------------------- 
-%                            E109_ImagesDiss
+%                            E109_ImagesDissertation
 % 
 % 
 % 
 % 
 % 
-%                                      (c)Constantin Sandmann, 29-Mar-2016 
+%                                      (c)Constantin Sandmann, 24-Feb-2017
 %                                                http://mic.uni-luebeck.de
-%                                     See LICENSE.txt for copyright issues
 %-------------------------------------------------------------------------
 
 

@@ -1,10 +1,10 @@
 % ------------------------------------------------------------------------- 
-%                    E12h_CompareConcatinatedFlow
+%                    E105_CompareConcatenatedFlow
 % 
-% For a voxel in the top-row, a residue function 
+% For a voxel at location (1,l) in the top-row, a residue function 
 %
 %   I  := I1\conv...\conv Il is set up for
-%   Ii := Fi*exp(-Fi*t) and Fi a local flow constant.
+%   Ii := Fi*exp(-Gi*t) and Gi a local flow constant.
 %
 % Then Ci is setup by convolving I with aif and compared to Cmat(i).
 % Additionally I is compared to IRec, the recovered residue function from 
@@ -19,6 +19,7 @@ clc;
 close all;
 
 %setup parameters
+savePlotsForPublication = 0;
 l             = 20;
 OI            = 1e-2;
 
@@ -27,16 +28,16 @@ OI            = 1e-2;
 load smallDataSet;
 
 %timleine
-timelineH = linspace(0,90,5e6);
+timelineH = linspace(0,90,5e6); %for accurate results fine time sampling is crucial
 aif       = perfusion1c.getGammaAIF(timelineH'/60)*1e-6;
 
 %setup other parameters
 kH  = numel(timelineH);
 dtH = timelineH(2)-timelineH(1);
-hd  = prod(prm.h);   %voxel volume in mm^3
+hd  = prod(prm.h);
 
 
-%% setup local perfusion values G
+%% setup local perfusion values Gi
 
 I     = zeros(kH,l);
 FTrue = zeros(l,1);
@@ -60,7 +61,7 @@ end
 
 %% get analytic IR
 
-%analytic solution for n points
+%analytic solution for n points (see publication....????)
 IAna = zeros(numel(timelineH),1);
 for i = 1:l
     idx = (1:l); idx(i)=[];
@@ -100,40 +101,38 @@ figure(1);clf;
 plot(timeline,IRec,timelineH,phi(l)*IAna);
 legend('IRec','IAna');    
 
-return;
-
 %% pdf plots for paper
+if savePlotsForPublication
+    
+    figure(1);clf;
+    plot(timelineH(idxH),phi(l)*IAna(idxH),timeline(idx),IRec(idx),'--','linewidth',3);
+    set(gca,'fontsize',20);
+    legend('Analytic','Deconvolution');
+    xlabel('time [s]');
+    ylabel('Impuls Response [mmol/s/mm^3]');
+    export_fig IDecVsIAna.pdf -transparent
 
 
-figure(1);clf;
-plot(timelineH(idxH),phi(l)*IAna(idxH),timeline(idx),IRec(idx),'--','linewidth',3);
-set(gca,'fontsize',20);
-legend('Analytic','Deconvolution');
-xlabel('time [s]');
-ylabel('Impuls Response [mmol/s/mm^3]');
-export_fig IDecVsIAna.pdf -transparent
+    idx  = (1:numel(timeline));  idx  = idx(timeline<3);
+    idxH = (1:numel(timelineH)); idxH = idxH(timelineH<3);
+
+    step  = ceil(numel(idx)/100);
+    stepH = ceil(numel(idxH)/100);
+
+    idxT  = idx(1:step:end);
+    idxHT = idxH(1:stepH:end);
 
 
-%% tikz plots for paper
-idx  = (1:numel(timeline));  idx  = idx(timeline<3);
-idxH = (1:numel(timelineH)); idxH = idxH(timelineH<3);
+    IAnaT = IAna(idxHT);
+    IRecT = IRec(idxT);
+    IAnaT(IAnaT<1e-12) = 0;
+    IRecT(IRecT<1e-12)=0;
 
-step  = ceil(numel(idx)/100);
-stepH = ceil(numel(idxH)/100);
-
-idxT  = idx(1:step:end);
-idxHT = idxH(1:stepH:end);
-
-
-IAnaT = IAna(idxHT);
-IRecT = IRec(idxT);
-IAnaT(IAnaT<1e-12) = 0;
-IRecT(IRecT<1e-12)=0;
-
-%TIKZ
-figure(1);clf;
-plot(timelineH(idxHT),phi(l)*IAnaT,timeline(idxT),IRecT,'--');
-legend('Analytic','Deconvolution');
-xlabel('time [s]');
-ylabel('Impuls Response [mmol/s/mm^3]');
-matlab2tikz('IDecVsIAna.tikz','width', '\fwd');
+    %TIKZ
+    figure(1);clf;
+    plot(timelineH(idxHT),phi(l)*IAnaT,timeline(idxT),IRecT,'--');
+    legend('Analytic','Deconvolution');
+    xlabel('time [s]');
+    ylabel('Impuls Response [mmol/s/mm^3]');
+    matlab2tikz('IDecVsIAna.tikz','width', '\fwd');
+end

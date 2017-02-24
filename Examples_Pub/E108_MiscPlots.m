@@ -1,13 +1,11 @@
 % ------------------------------------------------------------------------- 
-%                               E106_MiscPlots 
+%                               E108_MiscPlots 
 % 
 % Miscellaneous plots
 %
 % 1) Quiver-Plot for qmat
 % 2) Image of perfmat
 % 3) Surface of pressure
-% 
-% 
 % 
 %                                          (c)Constantin Heck, 23-Feb-2015 
 %                                                http://mic.uni-luebeck.de
@@ -20,9 +18,9 @@ clc;
 close all;
 clear;
 
-plotqmat      = 0;
-plotPerfmat   = 0;
-plotLperfmat  = 1;
+plotqmat = 0;
+plotPerfmat = 0;
+plotLperfmat = 1;
 
 
 %% setup data

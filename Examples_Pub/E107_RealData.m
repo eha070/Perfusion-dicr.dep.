@@ -1,11 +1,11 @@
 % ------------------------------------------------------------------------- 
-%                               CTP-Analysis 
+%                               E107_RealData
+% Perfusion estimation on real data.
 % 
 % 
 % 
 % 
-% 
-%                                          (c)Constantin Heck, 07-Aug-2015 
+%                                      (c)Constantin Sandmann, 24-Feb-2017 
 %                                                http://mic.uni-luebeck.de
 % ------------------------------------------------------------------------- 
 
@@ -29,23 +29,22 @@ sd       = .5;           %sd for prior smoothing
 fsize    = [3,3,3];   
 thres    = .04;         %global threshold for svd
 memorySave = false;
-
 %}
 
 
-
+%these are the paramerts used for the publication
 %parameters for 512x512x320
 % {
 dataset  = 'D2';
 m        = [512,512,320];
 k        = 24;
 
-maskMode = 'awesome';  %mask where to do the deconvolution
-tRes     = 5;          %time resolution after interpolation
-sd       = 1.5;          %sd for prior smoothing
-fsize    = [5,5,5];   
-thres    = .04;        %global threshold for svd
-memorySave = true;
+maskMode = 'awesome'; %mask where to do the deconvolution (the one Erlend created)
+tRes     = 5; %time resolution after interpolation
+sd       = 1.5;     %standard deviation for prior smoothing
+fsize    = [5,5,5]; %size of gaussian kernel for prior smoothing
+thres    = .04; %global threshold for svd
+memorySave = true; %constantly clear unused data from memory
 %}
 
 fpath = '/Volumes/Macintosh_home/check/Documents/data/CTP-Matlab/';
@@ -113,7 +112,6 @@ sfac     = rho*(1-HctSmall)/(1-HctLarge);
 
 
 %% smooth input data
-
 if sd>0
     fprintf('Smoothing data...');tic;
     D = data;
@@ -235,10 +233,7 @@ end
 
 % figure(1);clf; plot(timeline,aif);
 
-%% interpolation to regulary spaced timeline
-
-
-
+%% interpolation of data to regulary spaced timeline
 
 fprintf('Starting interpolation....');tic;
 
@@ -252,7 +247,6 @@ aifNew = T*aif(:);
 CNew   = C*T';
 
 fprintf('...done. Elapsed time: %1.3fs.\n\n',toc);
-
 
 if memorySave
     clear('C','aif');
