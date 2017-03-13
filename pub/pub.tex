@@ -758,18 +758,19 @@ Also, the impulse response function obtained by convolution of the global arteri
 This clearly demonstrates that the perfusion which is recovered by traditional models will depend on all upstream flow.
 However, for meaningful interpretation of the perfusion the entire streamline length within the capillary system needs to be taken into consideration, where the blood is providing the tissue with nutrients and oxygen. 
 %These results also support the idea presented in the next section that pointwise perfusion can be regarded a globally constant quantity along the streamlines, as it can only be estimated when the entire streamline characteristics are known.
-	\fwd = .4\textwidth
-	\fht = .1\textheight	
-	\begin{figure*}
-		{
-		\small
-		% \begin{tabular}{p{\fwd} p{\fwd}}
-		\begin{tabular}{c c}
-			\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
-		\end{tabular}
-		}
-		\caption{Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental value of $\Perfv=\SI{5328}{\siPml}$ at the given location and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: \roAlert{Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function.} Blue curve shows the analytic impulse response function given by a convolution over all upstream flow. The two curves have an almost perfect overlap. These numerical experiments support that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
-	\end{figure*}
+% PUT BACK:
+%	\fwd = .4\textwidth
+%	\fht = .1\textheight	
+%	\begin{figure*}
+%		{
+%		\small
+%		% \begin{tabular}{p{\fwd} p{\fwd}}
+%		\begin{tabular}{c c}
+%			\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
+%		\end{tabular}
+%		}
+%		\caption{Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental value of $\Perfv=\SI{5328}{\siPml}$ at the given location and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: \roAlert{Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function.} Blue curve shows the analytic impulse response function given by a convolution over all upstream flow. The two curves have an almost perfect overlap. These numerical experiments support that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
+%	\end{figure*}
 
 
 	%--------------------------------------------------
@@ -1010,6 +1011,16 @@ According to the common understanding of perfusion,
 	After solving \eqref{eq:flowmodel} for the pressure $p$, the flux field was estimated according to \eqref{eq:syntcontsimp} from the obtained pressure map. 
 
 	
+    \begin{figure*}[h!tb]
+    	\centering
+    	\fwd = .46\textwidth
+    	\begin{tabular}{c c}
+    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv.eps}\\
+    		(a) Global perfusion $P_s$ & (b) Local perfusion $P_v$
+    	\end{tabular}
+    	\caption{Comparing reconstructed perfusion to ground truth perfusion as a function of varying voxel size. Dashed, blue lines are absolute perfusion values (left axis), solid, red lines are relative errors (right axis). (a) Global perfusion $P_s$ is independent of discretization. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the reconstructed perfusion maps $P_{bSVD}$ and $P_{MS}$ are close to the ground truth perfusion $P_s$. Subdivision of the domain with smaller voxel sizes leads to a substantial over-estimation of perfusion for both reconstruction methods. (b) Local perfusion $P_v$ is depending on discretization. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the reconstructed perfusion maps $P_{bSVD}$ and $P_{MS}$ are close to the ground truth perfusion $P_s$. A further subdividion of the domain leads to substantial under-estimation of perfusion for both reconstruction methods.}
+            \label{fig:flowpressureperfusion}
+    \end{figure*}
 
 	
 	
@@ -1038,10 +1049,10 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 
 \begin{figure*}[h!tb]
 	\centering
-	\fwd = .23\textwidth
+	\fwd = .30\textwidth
 	\begin{tabular}{c c c}
 		\includegraphics[width=\fwd]{figs/qmat.pdf} & \includegraphics[width=\fwd]{figs/perfmat.pdf} & \includegraphics[width=\fwd]{figs/lperfmat.pdf}\\
-		(a) Synthetic flow field $\vq(\vx)$ & (b) Perfusion $\Perfs$ along the streamlines  & (c) Local perfusion $\Perfv$.
+		(a) Synthetic flow field $\vq(\vx)$ & (b) Global perfusion $\Perfs$. & (c) Local perfusion $\Perfv$.
 	\end{tabular}
 	\caption{Porous media (PM) flow model with a source in the upper left corner and a sink in the lower right corner. (a) Flow field by the PDE model used to simulate distribution of the contrast agent. (b) Perfusion along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion according to \eqref{eq:perflocal}.}
         \label{fig:flowpressureperfusion}
@@ -1062,7 +1073,7 @@ A voxel size of $\SI{0.05}{\milli\meter} \times\SI{0.05}{\milli\meter}\times\SI{
 	We tested the convolution based traditional model (bSVD) \eqref{eq:conv} as well as maximum-slope (MS) model \eqref{eq:MS} for their capability to recover perfusion, and both models were compared to ground truth perfusion values.}
 	Prior to reconstruction, the CA concentration map $C(\mathbf{x}_i,t_j)$ was downsampled to a time-resolution of $\SI{.1}{\second}$.
 	In order to simulate different spatial resolutions of the scanning process, the data was averaged using different block-sizes ranging from $(1,1)$ pixel (i.e. same resolution as the PDE model) to $(64,64)$ pixels (i.e. entire domain).		
-	Success of restoration was measured in terms of averaged relative error of the recovered perfusion with respect to the ground truth perfusion, $RE :=  (\Perf_{\mathrm{rec}} - \Perf_{\mathrm{true}})/\Perf_{\mathrm{true}}\cdot 100\%$.
+	Success of restoration was measured in terms of average, absolute, relative error of the recovered perfusion with respect to the ground truth perfusion, $RE :=  |\Perf_{\mathrm{rec}} - \Perf_{\mathrm{true}}|/\Perf_{\mathrm{true}}\cdot 100\%$.
 	The recovered perfusion $\Perf_{\mathrm{rec}}$ was compared against the two perfusion maps $\Perf_{\mathrm{true}}=\{\Perfv,\Perfs\}$ depicted in Figure~\ref{fig:flowpressureperfusion}.
 
 	The local perfusion map $\Perfv$ was computed according to \eqref{eq:perflocal}. 
