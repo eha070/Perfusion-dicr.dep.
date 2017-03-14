@@ -470,7 +470,7 @@
 	%ABSTRACT MODIFIED TO FOCUS ON THE ANALYSIS AND NOT THE NUERICAL EXPERIMENTS OR THE POROUS MEDIA FLOW.
 	\begin{abstract}
 		\textbf{Objective:}
-		In perfusion imaging the usage of discretization dependent one-compartment models for estimation of haemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we set up a mathematical framework for quantification of the error occurring related to perfusion recovery.
+		In perfusion imaging the usage of discretization dependent one-compartment models for estimation of haemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we quantify the error occurring related to perfusion recovery for various discretization levels.
 		\textbf{Methods:}
 		%Theoretical details for the transitional understanding of perfusion are derived for the case then image resolution goes beyond the spatial scale of the capillary tissue. 
 		%To achieve this, a continuous flow model for propagation of a tracer for such tissue was developed, and the signal intensity map was used for perfusion estimation by traditional models.
@@ -498,12 +498,17 @@
 	Quantitative measurements of hemodynamic medical parameters based on tracer kinetic modeling are widespread both in research and in clinical practice \cite{sourbron13,Feng2013,Chen2011}. 
 	%\rtAlert{In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from dynamic image data using intravascular tracers.} 
 	%While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. Examples of estimated parameter maps can be found in \cite{Feng2013,Chen2011}. We expect the development to continue and that imaging systems will reach a resolution where a single capillary system spans over several voxels. Capillary tissue is here understood as tissue perfused by capillaries.
-	Quantitative perfusion maps, as well as other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information and have proven to be of particular value in e.g. stroke studies or localization of trauma.
+	Perfusion maps, as well as other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information and have proven to be of particular value in e.g. stroke studies or localization of trauma.
 	Among the physiological parameters obtainable from tracer kinetic modeling, CBF has been found particularly difficult to describe reliably on a voxel-basis \cite{kudo10}.
 	These limitations are caused by issues of the numerical implementation \cite{kudo10}, but might also depend on over-simplified dynamic models, which were originally designed to describe larger volumes of interest \cite{zierler00}.	
 	%Most commonly, perfusion can be understood as the delivery of arterial blood to the capillary system.
 	%Another issue is the problematic usage of perfusion as a volume flow within a coupled system, and there have been several approaches to clarify the concept of perfusion in a continuous sense. 
-	In the current work we want to focus on the problem of perfusion as a discretization dependent measure. This fundamental problem of perfusion as defined within traditional one-compartment models was previously identified by several authors \cite{Henkelman1990,Guibert2013,sourbron14}. Perfusion defined as flow entering a voxel will scale with voxel size, and this notion of perfusion is therefore inappropriate. This limitation has not been sufficiently well addressed in clinical studies on absolute perfusion. 
+	
+	In the current work we want to focus on the fundamental problem of perfusion as a discretization dependent measure. Perfusion within traditional compartment modeling is defined as a volume-normalized flow and will scale with voxel size. This problem has been previously identified by several authors \cite{Henkelman1990,Guibert2013,sourbron14} and it is easily demonstrated for a control volume (cfr. Fig. \ref{fig:perfusion-problem}). As a consequence, obtained perfusion values will on an absolute scale depend on the chosen discretization. This limitation has not been sufficiently well addressed in clinical studies on absolute perfusion. Still, normalized perfusion values can provide valuable information about pathological conditions although it is not known to what extent the discretization dependent error is homogeneously distributed within the organ of interest, or whether it depends on local geometry, capillary density, anisotropy or other conditions affecting delivery of arterial blood to the capillary system. This makes it difficult to claim that the normalization problem of perfusion is easily solvable by a global scaling constant.
+
+	
+	%and show that this definition is not rotational invariant and thus highly geometry dependent.
+	
 	%In \cite{calamante03}, dispersion of the arterial input function was simulated using Navier-Stokes equations.
 	%It was shown that neglecting to account for dispersion can have adverse impact on perfusion measurements.
 	%In \cite{Henkelman1990}, the problem of scale dependent continuous perfusion was discussed. 
@@ -513,20 +518,21 @@
 
 	% THE TWO FOLLOWING PARAGAPHS ARE SWOPED 
 
-	In this work we focus on the validity of traditional perfusion models.
-	We  demonstrate that traditional models like deconvolution or the maximum slope model are able to recover the perfusion accurately if applied to the entire domain fed by the incoming flow.
-	However, when applying the traditional models to isolated parts of the full system, we find that local perfusion in coupled systems is not straightforward to define.
-	In order to highlight this issue, two theoretical definitions of voxel-wise perfusion are presented: A definition $\Perfv$ describing the local inflow into a voxel, but otherwise not fulfilling the traditional ideas of perfusion, and then a tailored definition of perfusion $\Perfs$ for continuous models.
-
-The concepts are illustrated by simulations of flow in a tissue patch with one inlet, one outlet, and a capillary system in between.
-	A directional flow field for the patch is set up according to Darcy's law from porous media flow \cite{Darcy56}.
-	Contrast agent propagation in this patch is simulated using transport equations.
-	We show that a discretized version of the continous flow system can be equivalently described by a coupled set of multiple traditional one-compartment models, in line with the physical environment where each control volume is feeding its direct neighbors.
+	%In this work we focus on the validity of traditional perfusion models.
+	Traditional one-compartment models like deconvolution or the maximum slope model are able to recover the perfusion accurately if applied to the entire domain fed by the incoming flow.
+	However, when applying the traditional models to isolated parts of the full system we are able to confirm that local perfusion in coupled systems is indeed discretization dependent and not physically correct to be used as a measure of arterial blood delivery. In order to highlight this issue, two theoretical definitions of voxel-wise perfusion are presented: A definition $\Perfv$ describing the local inflow into a voxel, but otherwise not fulfilling the traditional ideas of perfusion, and then a tailored definition of perfusion $\Perfs$ for continuous models. The main aim of our work is to quantify the expected error between a numerical ground truth and perfusion as measured using traditional one-compartment models. A thorough quantification of the error is valuable information for a critical interpretation of obtained perfusion values in clinical studies. In particular, the results of our work are valuable in the design of multi-center studies on perfusion, which are particularly exposed to various discretizations arising from the usage of different acquisition protocols and post-processing tools, and where the interpretation of absolute perfusion values therefore should be undertaken with special care.
+	
+%	In \cite{Guibert2013} the discretization dependency of perfusion was quantified within a simulated network of arteries, capillaries and venes. The authors claim that normalization of the absolute flow to the voxel surface area is a discretization independent measure and therefore a more appropriate measure of arterial blood delivery than volume-normalized perfusion. In our work we challenge this claim. 
+		
+%The concepts are illustrated by simulations of flow in a tissue patch with one inlet, one outlet, and a capillary system in between.
+	%A directional flow field for the patch is set up according to Darcy's law from porous media flow \cite{Darcy56}.
+	%Contrast agent propagation in this patch is simulated using transport equations.
+	%We show that a discretized version of the continous flow system can be equivalently described by a coupled set of multiple traditional one-compartment models, in line with the physical environment where each control volume is feeding its direct neighbors.
 
 	
-	Our results show that traditional models tend to overestimate perfusion if they are applied only to parts of the full system.
-	Analytic results are given, which show how the recovered perfusion depends on all upstream flow and not only on the local value.
-	We also show results indicating that overestimation of perfusion due to coupling might also be present in real data.
+	%Our results show that traditional models tend to overestimate perfusion if they are applied only to parts of the full system.
+	%Analytic results are given, which show how the recovered perfusion depends on all upstream flow and not only on the local value.
+	%We also show results indicating that overestimation of perfusion due to coupling might also be present in real data.
 
 	
 	%--------------------------------------------------
