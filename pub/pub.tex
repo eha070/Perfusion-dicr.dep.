@@ -470,19 +470,22 @@
 	%ABSTRACT MODIFIED TO FOCUS ON THE ANALYSIS AND NOT THE NUERICAL EXPERIMENTS OR THE POROUS MEDIA FLOW.
 	\begin{abstract}
 		\textbf{Objective:}
-		In perfusion imaging the usage of traditional one-compartment models to estimate haemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we set up a mathematical framework revealing limitations of traditional models related to perfusion recovery.
+		In perfusion imaging the usage of discretization dependent one-compartment models for estimation of haemodynamic parameters like perfusion, blood volume and mean transit times is widespread. In this paper we set up a mathematical framework for quantification of the error occurring related to perfusion recovery.
 		\textbf{Methods:}
-		Theoretical details for the transitional understanding of perfusion are derived for the case then image resolution goes beyond the spatial scale of the capillary tissue. 
-		To achieve this, a continuous flow model for propagation of a tracer for such tissue was developed, and the signal intensity map was used for perfusion estimation by traditional models.
+		%Theoretical details for the transitional understanding of perfusion are derived for the case then image resolution goes beyond the spatial scale of the capillary tissue. 
+		%To achieve this, a continuous flow model for propagation of a tracer for such tissue was developed, and the signal intensity map was used for perfusion estimation by traditional models.
+		A continuous flow model for propagation of a tracer within the capillary tissue was developed. The obtained signal intensity map was used for inverse perfusion recovery by traditional models for various discretization levels.
 		\textbf{Results:}
-		Traditional one-compartment models are equivalent to the continuous flow model if upstream effects can be accounted for.
-		It is demonstrated that traditional models are accurately recovering perfusion when applied to the entire domain but are not meaningful when applied to smaller portions of the system, resulting in overestimation of perfusion.
-		Evidence of real patient data is provided, indicating that this effect might also be observed in real-life applications.
+		%Traditional one-compartment models are equivalent to the continuous flow model if upstream effects can be accounted for.
+		%It is further demonstrated that t
+		Traditional models are accurately recovering perfusion when applied to the entire domain, but lead to substantial over-estimation of perfusion when applied to smaller portions of the system. This effect is also observed for a resolution present in clinical scanners. Evidence of real patient data is provided, indicating that over-estimation of perfusion is also observed in real-life applications.
 		\textbf{Conclusion:}
-		Results indicate that traditional models for perfusion overestimate blood flow when applied to only parts of a coupled system. Estimation of the blood volume is stable and can also be applied in coupled systems.
-		\textbf{Significance:}
+		Our results demonstrate that traditional models are substantially biased by discretization level and that over-estimation of perfusion will occur when applied to only parts of a coupled system of capillaries. 
+		%\textbf{Significance:}
 		%Results indicate that clinical perfusion results will be accurate, as long as the control volume consists of capillary tissue and has direct arterial and venous connection.
-		Awareness should be draw to uncertainties in voxel wise perfusion estimates when coupled flow is expected. For future perfusion studies the development of continuous and coupled PDE models are highly recommended.
+		%Error estimates of perfusion as a function of various discretization levels indicate that perfusion levels using traditional compartment models is substantially biased by the discretization level. 
+		Common usage of compartment models is as such in violation with the initial model assumptions and a more careful interpretation of absolute perfusion values in clinical studies is recommended.
+		%Awareness should be draw to uncertainties in voxel wise perfusion estimates when coupled flow is expected. For future perfusion studies the development of continuous and coupled PDE models are highly recommended.
 	\end{abstract}
 
 	%--------------------------------------------------
@@ -493,23 +496,20 @@
 	\section{Introduction}
 
 	Quantitative measurements of hemodynamic medical parameters based on tracer kinetic modeling are widespread both in research and in clinical practice \cite{sourbron13,Feng2013,Chen2011}. 
-	\rtNote{Highlighted that model is valid for intravascular contrast agents.}
-	\rtAlert{In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from dynamic image data using intravascular tracers.} 
-
-	While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. Examples of estimated parameter maps can be found in \cite{Feng2013,Chen2011}. We expect the development to continue and that imaging systems will reach a resolution where a single capillary system spans over several voxels. Capillary tissue is here understood as tissue perfused by capillaries.
+	%\rtAlert{In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from dynamic image data using intravascular tracers.} 
+	%While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. Examples of estimated parameter maps can be found in \cite{Feng2013,Chen2011}. We expect the development to continue and that imaging systems will reach a resolution where a single capillary system spans over several voxels. Capillary tissue is here understood as tissue perfused by capillaries.
 	Quantitative perfusion maps, as well as other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information and have proven to be of particular value in e.g. stroke studies or localization of trauma.
 	Among the physiological parameters obtainable from tracer kinetic modeling, CBF has been found particularly difficult to describe reliably on a voxel-basis \cite{kudo10}.
 	These limitations are caused by issues of the numerical implementation \cite{kudo10}, but might also depend on over-simplified dynamic models, which were originally designed to describe larger volumes of interest \cite{zierler00}.	
-
-	Most commonly, perfusion can be understood as the delivery of arterial blood to the capillary system.
-	There have been several approaches to clarify this concept in a continuous sense.
-	In \cite{calamante03}, dispersion of the arterial input function was simulated using Navier-Stokes equations.
-	It was shown that neglecting to account for dispersion can have adverse impact on perfusion measurements.
-	In \cite{Henkelman1990}, the problem of scale dependent continuous perfusion was discussed. Perfusion defined as flow entering a voxel will scale with voxel size, 
-	%  as volume flow (perfusion) scales differently than surface flow (flux). 
-	and this notion of perfusion is therefore inappropriate.	
-	More recently a two-compartment model was introduced as a precise definition of local perfusion \cite{sourbron14}.	
-	However, evaluation of the proposed modeling is still pending.
+	%Most commonly, perfusion can be understood as the delivery of arterial blood to the capillary system.
+	%Another issue is the problematic usage of perfusion as a volume flow within a coupled system, and there have been several approaches to clarify the concept of perfusion in a continuous sense. 
+	In the current work we want to focus on the problem of perfusion as a discretization dependent measure. This fundamental problem of perfusion as defined within traditional one-compartment models was previously identified by several authors \cite{Henkelman1990,Guibert2013,sourbron14}. Perfusion defined as flow entering a voxel will scale with voxel size, and this notion of perfusion is therefore inappropriate. This limitation has not been sufficiently well addressed in clinical studies on absolute perfusion. 
+	%In \cite{calamante03}, dispersion of the arterial input function was simulated using Navier-Stokes equations.
+	%It was shown that neglecting to account for dispersion can have adverse impact on perfusion measurements.
+	%In \cite{Henkelman1990}, the problem of scale dependent continuous perfusion was discussed. 
+		
+	%More recently a two-compartment model was introduced as a precise definition of local perfusion \cite{sourbron14}.	
+	%However, evaluation of the proposed modeling is still pending.
 
 	% THE TWO FOLLOWING PARAGAPHS ARE SWOPED 
 
@@ -1011,17 +1011,28 @@ According to the common understanding of perfusion,
 	After solving \eqref{eq:flowmodel} for the pressure $p$, the flux field was estimated according to \eqref{eq:syntcontsimp} from the obtained pressure map. 
 
 	
+For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the reconstructed perfusion maps $P_{bSVD}$ and $P_{MS}$ are close to the ground truth perfusion $P_s$.
     \begin{figure*}[h!tb]
     	\centering
     	\fwd = .46\textwidth
     	\begin{tabular}{c c}
-    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv.eps}\\
-    		(a) Global perfusion $P_s$ & (b) Local perfusion $P_v$
+    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none.eps}\\	
+    		(a) Comparison to global perfusion $P_s$. & (b) Comparison to local perfusion $P_v$. \\
     	\end{tabular}
-    	\caption{Comparing reconstructed perfusion to ground truth perfusion as a function of varying voxel size. Dashed, blue lines are absolute perfusion values (left axis), solid, red lines are relative errors (right axis). (a) Global perfusion $P_s$ is independent of discretization. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the reconstructed perfusion maps $P_{bSVD}$ and $P_{MS}$ are close to the ground truth perfusion $P_s$. Subdivision of the domain with smaller voxel sizes leads to a substantial over-estimation of perfusion for both reconstruction methods. (b) Local perfusion $P_v$ is depending on discretization. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the reconstructed perfusion maps $P_{bSVD}$ and $P_{MS}$ are close to the ground truth perfusion $P_s$. A further subdividion of the domain leads to substantial under-estimation of perfusion for both reconstruction methods.}
+    	\caption{Comparison of reconstructed perfusion to volume normalized (\SI{}{\milli\liter\per\minute\per 100\milli\liter}) ground truth perfusion as a function of varying voxel size. Dashed, blue lines are absolute perfusion values (left axis). Solid, red lines are relative errors (right axis) as measured to global perfusion $P_s$. (a) Global perfusion $P_s$ is independent of discretization.  Subdivision of the domain into smaller cells leads to a substantial over-estimation of perfusion for both reconstruction methods. (b) Local perfusion $P_v$ is dependent on discretization level. A subdivision of the domain leads to substantial under-estimation of perfusion for both reconstruction methods.}
             \label{fig:flowpressureperfusion}
     \end{figure*}
 
+    \begin{figure*}[h!tb]
+    	\centering
+    	\fwd = .46\textwidth
+    	\begin{tabular}{c c}
+    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-S.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-S.eps}\\	
+    		(a) Comparison to global perfusion $P_s$. & (b) Comparison to local perfusion $P_v$.
+    	\end{tabular}
+    	\caption{Comparison of reconstructed perfusion to surface normalized (\SI{}{\milli\liter\per\minute\per\milli\meter\squared}) ground truth perfusion as a function of varying voxel size. Dashed, blue lines are absolute perfusion values (left axis). Solid, red lines are relative errors (right axis) as measured to global perfusion $P_s$. (a) Surface normalized global perfusion $P_s$ is  now dependent on discretization level.  Subdivision of the domain into smaller cells leads to a substantial over-estimation of perfusion for both reconstruction methods, but for very small voxels approaching the ground truth perfusion. (b) Local perfusion $P_v$ is dependent on discretization level. A subdivision of the domain leads to substantial under-estimation of perfusion for both reconstruction methods.}
+            \label{fig:flowpressureperfusion}
+    \end{figure*}
 	
 	
 		
