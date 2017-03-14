@@ -51,7 +51,7 @@ klow    = numel(idxsamp);
 nVoxelSizes = length(voxelSizeFactorList);
 
 %store relative errors
-zeroVec = zeros(nVoxelSizes, 1);
+% zeroVec = zeros(nVoxelSizes, 1);
 % meanREs = struct('DeconvPerf', zeroVec, 'MSPerf', zeroVec, 'DeconvPerfLoc', zeroVec, 'MSPerfLoc', zeroVec);
 % stdREs = struct('DeconvPerf', zeroVec, 'MSPerf', zeroVec, 'DeconvPerfLoc', zeroVec, 'MSPerfLoc', zeroVec);
 
@@ -152,7 +152,8 @@ for vs = (1:nVoxelSizes)
     results.CBFCirc{vs} = CBFCirc;
     results.CBFMS{vs} = CBFMS;
     results.P{vs} = P;
-    results.PLocal{vs} = PLocal;
+    results.PLocal{vs} = PLocal;    
+    
 %     RECirc = abs(CBFCirc-P)./P;
 %     REMS = (CBFMS-P)./P;
 %     results.DeconvPerf{vs} = RECirc(:);
