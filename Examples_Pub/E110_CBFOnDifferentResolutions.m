@@ -35,7 +35,7 @@ timeline = D.timeline;
 prm = D.prm;
 
 %prepare sizes
-m       = [size(Cmat,1),size(Cmat,2)];
+m = [size(Cmat,1),size(Cmat,2)];
 % n       = prod(m); %number of datapoints
 % mk      = [m,k]; %...
 
@@ -62,6 +62,7 @@ for vs = (1:nVoxelSizes)
     %setup an empty image do display the blocks
     voxelSizeFactor = voxelSizeFactorList(vs);
     OI = OIList(vs);
+    
 
     %determine number of blocks in i and j direction, determine blocksize
     blockSize = voxelSizeFactor*[1,1];
@@ -70,6 +71,7 @@ for vs = (1:nVoxelSizes)
     nBlocksj = ceil(m(2)/blockSize(2));
     nBlocks  = nBlocksi*nBlocksj;
 %     numBlock = prod(blockSize);
+
 
     % setup area where to run the deconvolution
     %initialize variables to store resultss
@@ -154,6 +156,7 @@ for vs = (1:nVoxelSizes)
     results.P{vs} = P;
     results.PLocal{vs} = PLocal;    
     
+    
 %     RECirc = abs(CBFCirc-P)./P;
 %     REMS = (CBFMS-P)./P;
 %     results.DeconvPerf{vs} = RECirc(:);
@@ -173,6 +176,7 @@ end
 
 results.voxelSizeFactorList = voxelSizeFactorList;
 results.prm = prm;
+results.m = m;
 pathsave = [mfilename '-' 'results.mat'];
 save(pathsave,'results');
 msg = ['Saving ' pathsave];
