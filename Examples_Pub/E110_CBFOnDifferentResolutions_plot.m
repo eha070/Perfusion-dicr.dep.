@@ -59,7 +59,7 @@ for i = 1 : n
         % From ml/min to ml/min/mm^2
         scaling = scaling/S;        
         
-        ylab1 = '$$\overline{F}/S$$ $$(ml/min/mm^2)$$';                
+        ylab1 = '$$[ml/min/mm^2]$$';                
         
     elseif isequal(scaleto,'none')
         
@@ -75,7 +75,7 @@ for i = 1 : n
         % From ml/min/ml to ml/min/100ml
         scaling = scaling*100;
         
-        ylab1 = '$$\overline{F}/100ml$$ $$(ml/min/100ml)$$';
+        ylab1 = 'Perfusion $$[ml/min/100ml]$$';
     else
         error('Use option none or S for scaling');
     end;
@@ -212,7 +212,7 @@ for i = 1 : n
     end;
     perf.ms(i,1) = mean(val(:));    
     
-    pause
+
     
     %
     % Error
@@ -236,7 +236,7 @@ for i = 1 : n
     a = 100*(CBFMS - PLocal)./PLocal;
     err.ms.PLocal.relerror(i,1) = mean(a(:));          
     err.ms.PLocal.absrelerror(i,1) = mean(abs(a(:)));
-    pause
+
 end;
 
 % Plot errors
@@ -273,7 +273,7 @@ set(handleplot, 'MarkerFaceColor', get(handleplot, 'Color'));
 hold on;
 
 xlabel('Voxel size ($$mm$$)','Interpreter','latex');
-ylabel(ylab1,'Interpreter','latex')
+ylabel(['Surface normalized flow ' ylab1],'Interpreter','latex')
 
 % Right side
 yyaxis right
@@ -287,7 +287,7 @@ i = i + 1;
 handleplot = plot(H,err.ms.P.absrelerror,symb{i});
 set(handleplot, 'MarkerFaceColor', get(handleplot, 'Color'));
 hold on;
-ylabel('Average reconstruction error RE (\%)','Interpreter','latex')
+ylabel('RE (\%)','Interpreter','latex')
 
 if islegend
     legend('P_s','P_{bSVD}','P_{MS}','RE(bSVD)','RE(MS)')
@@ -328,7 +328,8 @@ hold on;
 
 set(get(handleplot,'Parent'),'YScale','log');
 xlabel('Voxel size (mm)','Interpreter','latex');
-ylabel(['Logarithm of ' ylab1],'Interpreter','latex');
+ylabel(['Surface normalized flow ' ylab1],'Interpreter','latex')
+ylim([5e-6,1.5e-3]);
 
 % Right side
 yyaxis right
@@ -344,7 +345,7 @@ set(handleplot, 'MarkerFaceColor', get(handleplot, 'Color'));
 hold on;
 
 set(get(handleplot,'Parent'),'YScale','log');
-ylabel('Logarithm of average reconstruction error RE (\%)','Interpreter','latex')
+ylabel('RE (\%)','Interpreter','latex')
 
 if islegend
     legend('P_v','P_{bSVD}','P_{MS}','RE(bSVD)','RE(MS)')

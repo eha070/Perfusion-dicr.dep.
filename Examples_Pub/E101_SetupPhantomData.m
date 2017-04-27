@@ -20,9 +20,9 @@ clear
 setupPDE = 1;
 makeStreamlinePerfusion = 1;
 makeLocalPerfusion = 1;
-saveOriginalData = 0;
-saveDownsampledData = 0;
-showDynamicFlow = 0;
+saveOriginalData = 1;
+saveDownsampledData = 1;
+showDynamicFlow = 1;
 
 %list of variables to save
 varSave = {'Cmat','timeline','aifval','k','n','Hd','qmat','prm','phimat','Fmat','pmat','h','m'};
@@ -39,7 +39,7 @@ aif = 'gamma';
 
 %setup spatial-temporal domain
 m        = [64,64,1];       %matrix size
-omega    = [0,3,0,3,0,3];   %domain in mm
+omega    = [0,2,0,2,0,2];   %domain in mm
 Tmax     = 90;              %max time in seconds
 dt       = 0.001;           %time resolution of simulation
 tSamp    = .1;              %sampling rate (in seconds)
