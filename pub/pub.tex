@@ -125,7 +125,7 @@
 
 
 \begin{abstract}
-One-compartment models are widely used to quantify hemodynamic parameters such as perfusion, blood volume and mean transit times. These parameters are routinely used for clinical diagnosis and monitoring of disease development and are thus of high relevance. However, it is known that common estimation techniques are discretization dependent and values can be erroneous. In this paper we present a new model that enables the quantification of discretization errors. Specifically, we introduce a continuous flow model for tracer propagation within the capillary tissue, used to analyze state-of-the-art one-compartment models. We demonstrate that one-compartment models are capable of recovering perfusion accurately when applied to only one compartment, i.e. the whole region of interest. However, substantial overestimation of perfusion occurs when applied to fractions of a compartment, and values of the observed overestimation are provided for various discretization levels. We also show that overestimation can be observed in real-life applications. Common practice of using compartment models for fractions of tissue violates model assumptions and careful interpretation is needed when using the computed values for diagnosis and treatment planning.
+One-compartment models are widely used to quantify hemodynamic parameters such as perfusion, blood volume and mean transit time. These parameters are routinely used for clinical diagnosis and monitoring of disease development and are thus of high relevance. However, it is known that common estimation techniques are discretization dependent and values can be erroneous. In this paper we present a new model that enables a systematic quantification of discretization errors. Specifically, we introduce a continuous flow model for tracer propagation within the capillary tissue, used to analyze state-of-the-art one-compartment models. We demonstrate that one-compartment models are capable of recovering perfusion accurately when applied to only one compartment, i.e. the whole region of interest. However, substantial overestimation of perfusion occurs when applied to fractions of a compartment. We further provide values of the estimated overestimation for various discretization levels, and also show that overestimation can be observed in real-life applications. Common practice of using compartment models for fractions of tissue violates model assumptions and careful interpretation is needed when using the computed values for diagnosis and treatment planning.
 \end{abstract}
 
 \begin{keyword}
@@ -153,9 +153,9 @@ perfusion \sep DCE-MRI \sep Darcy flow \sep compartment modeling
 	%Most commonly, perfusion can be understood as the delivery of arterial blood to the capillary system.
 	%Another issue is the problematic usage of perfusion as a volume flow within a coupled system, and there have been several approaches to clarify the concept of perfusion in a continuous sense. 
 	
-In the current work we focus on the fundamental problem of perfusion as a discretization dependent measure, meaning that perfusion as measured within traditional compartment models will scale with voxelsize. This problem was previously identified by several authors \cite{Henkelman1990,Guibert2013,sourbron14} but has not been sufficiently well addressed in clinical studies on perfusion. Still, normalized perfusion values can provide valuable information about pathological conditions although it is not known to what extent the discretization dependent error is homogeneously distributed or whether it depends on local geometry, capillary density, anisotropy or other conditions affecting delivery of arterial blood to the capillary system. %This makes it difficult to claim that the normalization problem of perfusion is solvable by a global scaling constant.
+In the current work we focus on the fundamental problem of perfusion as a discretization dependent measure, meaning that perfusion as measured within traditional compartment models will scale with voxel size. This problem was previously identified by several authors \cite{Henkelman1990,Guibert2013,sourbron14} but has not been sufficiently well addressed in clinical studies on perfusion. Still, normalized perfusion values can provide valuable information about pathological conditions although it is not known to what extent the discretization dependent error is homogeneously distributed or whether it depends on local geometry, capillary density, anisotropy or other conditions affecting delivery of arterial blood to the capillary system. %This makes it difficult to claim that the normalization problem of perfusion is solvable by a global scaling constant.
 
-Traditional 1C models like deconvolution or the maximum slope model are able to recover the perfusion accurately if applied to the entire domain fed by the incoming flow. However, when applying the traditional models to isolated parts of the full system we are able to confirm that local perfusion in coupled systems is indeed discretization dependent and not physically correct to be used as a measure of arterial blood delivery. In order to highlight this issue, two ground truth values of voxelwise perfusion are presented: A definition $P_{\mathrm{v}}$ describing the local inflow into a voxel, but otherwise not fulfilling the traditional ideas of perfusion, and then a tailored definition of perfusion $P_{\mathrm{s}}$ for continuous models. 
+Traditional one-compartment (1C) models like deconvolution or the maximum slope model are able to recover perfusion accurately if applied to the entire domain fed by the incoming flow. However, when applying the traditional models to isolated parts of the full system we are able to confirm that local perfusion in coupled systems is indeed discretization dependent and not physically correct to be used as a measure of arterial blood delivery. In order to highlight this issue, two ground truth values of voxelwise perfusion are presented: A definition $P_{\mathrm{v}}$ describing the local inflow into a voxel, but otherwise not fulfilling the traditional ideas of perfusion, and then a tailored definition of perfusion $P_{\mathrm{s}}$ for continuous models. 
 	
 Using these definitions on perfusion, the main aim of our work is to quantify the discrepancy between a numerical ground truth and perfusion as measured using traditional 1C models. A thorough quantification of the error is valuable information for a critical interpretation of obtained perfusion values in clinical studies. In particular, the results of our work are useful within multi-centre studies on perfusion. Such studies are particularly susceptible to various discretizations arising from the usage of different hardware, acquisition protocols and post-processing tools, and where the interpretation and comparison of absolute perfusion values therefore should be undertaken with particular care.
 	
@@ -182,13 +182,13 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 
 
 	\subsection{Traditional one-compartment models}\label{sec:traditional}
-	Two widely used one-compartment (1C) pharmacokinetic models for measurements of CBF and CBV  are the deconvolution- and the maximum slope model \cite{Feng2013,Chen2011,kudo10}.
+	Two widely used 1C pharmacokinetic models for measurements of CBF and CBV  are the deconvolution- and the maximum slope model \cite{Feng2013,Chen2011,kudo10}.
 	For the remaining, they are referred to as \emph{traditional} models.	Let $\Omega_i$ be an arbitrary control volume with one inlet and one outlet, and let $C(t)$ denote the average contrast agent (CA) concentration within $\Omega_i$ at timepoint $t$.
 	The traditional models assume that the change of concentration at timepoint $t$ can be described by the ordinary differential equation 
 	\begin{equation}\label{eq:classicgeneral}
 		C'(t) = P_{\mathrm{a}}c_\mathrm{a}(t) - P_{\mathrm{v}}c_{\mathrm{v}}(t), \quad C(0) = 0.
 	\end{equation}
-	Here, $c_\mathrm{a},c_{\mathrm{v}}$ are the plasma CA concentrations at the inlet and outlet of $\Omega_i$ and $P_{\mathrm{a}},P_{\mathrm{v}}$ is the flow at these locations.
+	Here, $c_\mathrm{a},c_{\mathrm{v}}$ are the plasma CA concentrations at the inlet and outlet of $\Omega_i$ and $P_{\mathrm{a}},P_{\mathrm{v}}$ is the normalized flow [\si{\milli\meter\cubed\per\second\per\milli\meter\cubed}] at these locations.
 	In the following, it is assumed that the plasma tracer concentration $c_\mathrm{a}$ at the inlet is known.
 	In clinical practice this can be accounted for by measuring $c_\mathrm{a}$ in a feeding artery \cite{ostergaard96}.
 	Since $c_{\mathrm{v}}$ is usually unknown, additional assumptions need to be made if one wants to reconstruct the perfusion $P_{\mathrm{a}}$ from a given tissue curve $C$. The convolution model and the maximum slope (MS) model diverge in further assumptions.
@@ -248,7 +248,7 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 	%--------------------------------------------------	
 	\subsection{A synthetic model for capillary flow}\label{sec:synthetic}
 
-	The validity of the traditional models relies on a control volume with only one inlet and one outlet, and that the control volumes are not feeding each other.
+	The validity of traditional 1C models relies on a control volume with only one inlet and one outlet, and that the control volumes are not feeding each other.
 	These assumptions may be violated when we locally describe CA propagation through a larger volume.
 	For this type of model system we instead expect a set of coupled equations where each voxel can be regarded as an inlet for surrounding voxels.
 
@@ -318,7 +318,7 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 		\right\vert
 		\label{eq:conteqlocal}
 	\end{equation}
-	for the initial condition $c(\mathbf{x},0) = 0$ consistent with no initial tracer at $t = 0$.
+	for the initial condition $c(\mathbf{x},0) = 0$ in accordance with no initial tracer at $t = 0$.
 	Equation \eqref{eq:conteqlocal} is a linear transport equation in $c(\mathbf{x},t)$. 
 	Following \cite{evans98}, \eqref{eq:conteqlocal} admits a unique local solution.
 
@@ -345,9 +345,9 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 	Given incompressible flow, the rate of fluid entering the region is the same as the rate of fluid leaving it. 
 	Further, let $c_i(t)$ denote the average fluid CA concentration within $\Omega_i$.
 	%Further assume that the tracer concentration is constant within a voxel $\Omega_i$, leading to the notation $c(x,t) = c_i(t) ~\forall ~ x \in \Omega_i$.
-	Then it holds that $P_{\mathrm{v}}=P_{\mathrm{out}}$ and we can describe $c_i$ by the traditional model \eqref{eq:classicgeneral},
+	Then it holds that $P_{\mathrm{v}}=P_{\mathrm{out}}$ and we can describe $c_i$ by the traditional model \eqref{eq:classicgeneral}
 	\begin{equation}\label{eq:singlevoxel}
-		(\phi c_i)'(t)  = P_{\mathrm{v}} (c_\mathrm{in}(t)  - c_\mathrm{out}(t)).
+		(\phi c_i)'(t)  = P_{\mathrm{v}} (c_\mathrm{in}(t)  - c_\mathrm{i}(t))
 	\end{equation}
 	% COMPLETE CALCULATION:
 	% \begin{align}
@@ -363,11 +363,11 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 	% \]	
 	%Note that the upwind-discretization described in Section~\ref{sec:transport} models each voxel as a well-mixed compartment: it is assumed that the CA concentration at the outflow $S_\mathrm{out}$ equals the concentration within the voxel and that the concentration at the inflow is the concentration within the adjacent voxels.
 	%I PROPOSE TO SHORTEN THE REST OF THIS SECTION. BY NOW I BELEVE THE READER IS CONFORTABLE WITH THE FACT THAT LOCAL FLOW IS DEPENDENT ON UPSTREAM VOXELS.
-	In this case it follows that \eqref{eq:singlevoxel} reduces to $(\phi c_i)'(t) = P_{\mathrm{v}} (c_\mathrm{in}(t) - c_i(t))$ 
+	%In this case it follows that \eqref{eq:singlevoxel} reduces to $(\phi c_i)'(t) = P_{\mathrm{v}} (c_\mathrm{in}(t) - c_i(t))$ 
 	with solution
 	\begin{equation}\label{eq:voxelcurve}
 		C_i(t) = \phi_i(J_i*c_{\mathrm{in}})(t)
-			\text{  with  } J_i(t)=(P_{\mathrm{v}}/\phi_i)e^{- (P_{\mathrm{v}}/\phi_i)t}.
+			\text{ where  } J_i(t)=(P_{\mathrm{v}}/\phi_i)e^{- (P_{\mathrm{v}}/\phi_i)t}.
 	\end{equation}
 	The arterial input $c_{\mathrm{in}}$ is determined by \eqref{eq:cin}, which recursively depends on all upstream voxels until the global arterial input is reached.
 	To verify this relationship numerically, we simulated a tissue curve $C_i(t)$ using both the continuous PDE model as well as analytical recursive convolution by \eqref{eq:voxelcurve}.
@@ -675,12 +675,12 @@ From the porous media model using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal
 
 
 	Prior to reconstruction of perfusion using traditional models, the CA concentration map $C(\mathbf{x}_i,t_j)$ was downsampled to a time-resolution of $\SI{.1}{\second}$.
-	In order to simulate different spatial resolutions of the scanning process, the data was averaged into blocks of $\{1,2,4,8,16,32,64\}$ voxels with corresponding voxelsizes.
-	Success of restoration was measured in terms of absolute, relative reconstruction error, $\mathrm{RE}(a,b) :=  |a - b|/b\cdot 100\%$, where $a$ is reconstructed values and $b$ is ground truth values. 
-	Local perfusion map $P_{\mathrm{v}}$ was computed according to \eqref{eq:perflocal}. 
-	%Since normalization is performed with respect to voxelsize, the values are unrealistically high and will vary with the discretization.
+	In order to simulate different spatial resolutions of the scanning process, the data was averaged into blocks of $\{1,2,4,8,16,32,64\}$ voxels with corresponding voxel sizes.
+	Success of restoration was measured in terms of absolute, relative reconstruction error, $\mathrm{RE}(a,b) :=  100\% \cdot |a - b|/b$, where $a$ is reconstructed values and $b$ is ground truth values. 
+	Local perfusion $P_{\mathrm{v}}$ was computed according to \eqref{eq:perflocal}. 
+	%Since normalization is performed with respect to voxel size, the values are unrealistically high and will vary with the discretization.
 	%As \eqref{eq:voxelcurve} shows, this can nevertheless be regarded a valid definition of perfusion since it models the feeding of arterial blood to a control region.
-	Global perfusion map $P_{\mathrm{s}}$ was computed according to the streamline definition \eqref{eq:flux2perf}.
+	Global perfusion $P_{\mathrm{s}}$ was computed according to the streamline definition \eqref{eq:flux2perf}.
 	%However, we do not expect the traditional models to be able to recover these values either.
 	%To quantify the errors occurring by traditional methods, the global arterial input function was used for the deconvolution, as measured in the source.
 
@@ -692,7 +692,7 @@ From the porous media model using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal
 	%\roNote{Details on motion correction.}	
 	Motion correction was performed with respect to the first timepoint using Euler transformations \cite{Mendrik11}.
 	The arterial input function was manually selected within the middle cerebral artery (MCA) by a medical expert.
-	Since we expected to see local overestimation effects mainly for small voxelsizes, the data was processed at full resolution ($512\times512\times320$ voxels). 
+	Since we expected to see local overestimation effects mainly for small voxel sizes, the data was processed at full resolution ($512\times512\times320$ voxels). 
 	% Note that noise removal by smoothing is difficult, since we expect local averaging to remove expected local overestimation.
 	To cope with noise, we applied gaussian smoothing with standard deviation of $1$ voxel and window size [5,5,5].
 	Relative concentrations were estimated from the CT signal assuming a spatially independent proportionality constant. 
@@ -705,7 +705,7 @@ From the porous media model using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal
 	%\rthNote{Emphasized that experimental comparison was performed for both models.}
 	
 	%The flux field obtained by the PDE model is visualized in Figure~\ref{fig:flowpressureperfusion} (a). 
-	Tracer dilution in the flux-field was simulated and from the resulting intensity time curves we tested the convolution based traditional model (bSVD) \eqref{eq:conv} as well as the maximum-slope (MS) model \eqref{eq:MS} for their capability to recover perfusion. Recovered perfusion maps $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ were compared against the two ground truth perfusion maps $P_{\mathrm{s}}$ and $P_{\mathrm{v}}$ depicted in Figure~\ref{fig:perfusionmaps}. As an internal control, the average $P_{\mathrm{s}}$ at maximal resolution was found to be \SI{49.59}{\milli\litre\per\minute\per100\milli\litre}, for all practical means identical to the global input perfusion of $\SI{50}{\milli\litre\per\minute\per100\milli\litre}$ mediated through the source.	Results from reconstruction of the porosity $\phi$ (i.e. CBV) according to \eqref{eq:CBV} resulted in reconstruction errors of $<1\%$ for all voxelsizes. 
+	Tracer dilution in the flux-field was simulated and from the resulting intensity time curves we tested the convolution based traditional model (bSVD) \eqref{eq:conv} as well as the maximum-slope (MS) model \eqref{eq:MS} for their capability to recover perfusion. Recovered perfusion maps $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ were compared against the two ground truth perfusion maps $P_{\mathrm{s}}$ and $P_{\mathrm{v}}$ depicted in Figure~\ref{fig:perfusionmaps}. As an internal control, the average $P_{\mathrm{s}}$ at maximal resolution was found to be \SI{49.59}{\milli\litre\per\minute\per100\milli\litre}, for all practical means identical to the global input perfusion of $\SI{50}{\milli\litre\per\minute\per100\milli\litre}$ mediated through the source.	Results from reconstruction of the porosity $\phi$ (i.e. CBV) according to \eqref{eq:CBV} resulted in reconstruction errors of $<1\%$ for all voxel sizes. 
 	
 \begin{figure*}[h!tb]
 	\centering
@@ -715,7 +715,7 @@ From the porous media model using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal
 		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none-raw.eps}
 		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-bSVD-scaleto-none-raw.eps}
 		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-MS-scaleto-none-raw.eps}\\
-		(a) $P_{\mathrm{s}}(\mathbf{x})$. & (b) $P_{\mathrm{v}}(\mathbf{x})$ & (b) $P_{\mathrm{bSVD}}(\mathbf{x})$. & (b) $P_{\mathrm{MS}}(\mathbf{x})$.
+		(a) $P_{\mathrm{s}}(\mathbf{x})$. & (b) $P_{\mathrm{v}}(\mathbf{x})$ & (c) $P_{\mathrm{bSVD}}(\mathbf{x})$. & (d) $P_{\mathrm{MS}}(\mathbf{x})$.
 	\end{tabular}
 	\caption{Ground truth (a-b) and reconstructed (c-d) perfusion maps [\SI{}{\milli\litre\per\minute\per 100\milli\litre}] at the lowest discretization scale. The reconstructed perfusion maps have substantially varying characteristics compared to any of the two grond truth perfusion maps. (a) Global perfusion $P_{\mathrm{s}}(\mathbf{x})$ along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion $P_{\mathrm{v}}(\mathbf{x})$ according to \eqref{eq:perflocal}. (c) Reconstructed perfusion $P_{\mathrm{bSVD}}$ according to \eqref{eq:conv}. (d) Reconstructed perfusion $P_{\mathrm{MS}}$ according to \eqref{eq:MS}.} 
         \label{fig:perfusionmaps}
@@ -732,7 +732,7 @@ From the porous media model using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal
 %\end{figure*}	
 	%This definition most accurately reflects the physical perfusion at a given location and shows plausible perfusion values, cf. Figure~\ref{fig:flowpressureperfusion}. 
 	We performed two different normalizations of the restored flow, a normalization (i) with respect to volume, and (ii) with respect to surface.  %Average flow over the entire domain $\Omega$ is denoted $\overline{F}$. 
-The volume normalization (i) implies normalizing the flow to  [\SI{}{\milli\litre\per\minute\per100\milli\litre}]. A comparison of ground truth perfusion to reconstructed perfusion using volume normalization is shown in Figure \ref{fig:volnormperf}. For a voxelsize corresponding to the entire ROI (voxelsize = \SI{3}{\milli\meter}) the reconstructed perfusion of $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ is close to the ground truth perfusion $P_{\mathrm{s}}$ and $P_{\mathrm{v}}$. For any voxelsize smaller than the entire domain the relative error increases inversely with voxelsize, in particular for reconstruction by bSVD. Global perfusion $P_{\mathrm{s}}$ is not depending on voxelsize.
+The volume normalization (i) implies normalizing the flow to  [\SI{}{\milli\litre\per\minute\per100\milli\litre}]. A comparison of ground truth perfusion to reconstructed perfusion using volume normalization is shown in Figure \ref{fig:volnormperf}. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the reconstructed perfusion of $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ is close to the ground truth perfusion $P_{\mathrm{s}}$ and $P_{\mathrm{v}}$. For any voxel size smaller than the entire domain the relative error increases inversely with voxel size, in particular for reconstruction by bSVD. Global perfusion $P_{\mathrm{s}}$ is not depending on voxel size.
     \begin{figure*}[!htb]
     	\centering
     	\fwd = .46\textwidth
@@ -740,12 +740,12 @@ The volume normalization (i) implies normalizing the flow to  [\SI{}{\milli\litr
     		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none.eps}\\	
     		(a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$. \\
     	\end{tabular}
-    	\caption{Comparison of restored perfusion with ground truth perfusion as a function of varying voxelsize. Dotted, blue lines show average perfusion (left axis). Solid, red lines are average, relative errors (RE) of restored perfusion as compared to ground truth perfusion (right axis). (a) Global perfusion $P_{\mathrm{s}}$ is independent of discretization.  Subdivision of the domain into smaller cells leads to a substantial overestimation of perfusion for both reconstruction methods. (b) Local perfusion $P_{\mathrm{v}}$ is dependent on discretization level. A subdivision of the domain leads to substantial underestimation of perfusion when compared to $P_{\mathrm{v}}$ for both reconstruction methods.}
+    	\caption{Comparison of restored perfusion with ground truth perfusion as a function of varying voxel size. Dotted, blue lines show average perfusion (left axis). Solid, red lines are average, relative errors (RE) of restored perfusion as compared to ground truth perfusion (right axis). (a) Global perfusion $P_{\mathrm{s}}$ is independent of discretization.  Subdivision of the domain into smaller cells leads to a substantial overestimation of perfusion for both reconstruction methods. (b) Local perfusion $P_{\mathrm{v}}$ is dependent on discretization level. A subdivision of the domain leads to substantial underestimation of perfusion when compared to $P_{\mathrm{v}}$ for both reconstruction methods.}
             \label{fig:volnormperf}
     \end{figure*}
     
 For surface normalization (ii) we first computed the absolute flow $F$ [\SI{}{\milli\litre\per\second}] of ground truth perfusion as well as reconstructed perfusion, and then normalized the flow to the surface area of the distribution volume $F/S$ (e.g. surface area of grid cell), here referred to as surface normalized flow. 
-Reconstruction results of surface normalized flow is shown in Figure \ref{fig:surfnormperf}. For a voxelsize corresponding to the entire ROI (voxelsize = \SI{3}{\milli\meter}) the surface normalized flow of $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ is close to the ground truth. For any voxelsize smaller than the entire domain the relative error increases inversely with voxelsize, in particular for reconstruction by bSVD. Both global perfusion $P_{\mathrm{s}}$ and local perfusion $P_{\mathrm{v}}$ are dependent on voxelsize.
+Reconstruction results of surface normalized flow is shown in Figure \ref{fig:surfnormperf}. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the surface normalized flow of $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ is close to the ground truth. For any voxel size smaller than the entire domain the relative error increases inversely with voxel size, in particular for reconstruction by bSVD. Both global perfusion $P_{\mathrm{s}}$ and local perfusion $P_{\mathrm{v}}$ are dependent on voxel size.
     \begin{figure*}[!htb]
     	\centering
     	\fwd = .46\textwidth
@@ -753,7 +753,7 @@ Reconstruction results of surface normalized flow is shown in Figure \ref{fig:su
     		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-S.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-S.eps}\\	
     		(a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$.
     	\end{tabular}
-    	\caption{Comparison of surface normalized reconstructed flow [\SI{}{\milli\litre\per\minute/\milli\meter\squared}] to the ground truth as a function of varying voxelsize. Dotted, blue lines show surface normalized flow (left axis). Solid, red lines are average, relative errors as compared to flow estimated from ground truth perfusion (right axis). (a) Black, dotted line with filled squares shows that surface normalized flow estimated from ground truth perfusion $P_{\mathrm{s}}$ is dependent on discretization level. Subdivision of the domain into smaller voxels leads to substantial overestimation of surface normalized flow for both reconstruction methods bSVD and MS. (b) Black, dotted line with filled squares shows that surface normalized flow estimated from local perfusion $P_{\mathrm{v}}$ is also dependent on discretization level. A further subdivision of the domain leads to substantial underestimation of the flow for both reconstruction methods bSVD and MS.}
+    	\caption{Comparison of surface normalized reconstructed flow [\SI{}{\milli\litre\per\minute/\milli\meter\squared}] to the ground truth as a function of varying voxel size. Dotted, blue lines show surface normalized flow (left axis). Solid, red lines are average, relative errors as compared to flow estimated from ground truth perfusion (right axis). (a) Black, dotted line with filled squares shows that surface normalized flow estimated from ground truth perfusion $P_{\mathrm{s}}$ is dependent on discretization level. Subdivision of the domain into smaller voxels leads to substantial overestimation of surface normalized flow for both reconstruction methods bSVD and MS. (b) Black, dotted line with filled squares shows that surface normalized flow estimated from local perfusion $P_{\mathrm{v}}$ is also dependent on discretization level. A further subdivision of the domain leads to substantial underestimation of the flow for both reconstruction methods bSVD and MS.}
             \label{fig:surfnormperf}
     \end{figure*}
 %	Results from deconvolution by traditional methods are displayed in Table~\ref{tab:resultsSim}. 
@@ -822,24 +822,24 @@ Reconstruction results of surface normalized flow is shown in Figure \ref{fig:su
 	%--------------------------------------------------	
 	\section{Discussion}\label{sec:conclusion}
 
-It has previously been shown that perfusion reconstructed from traditional 1C models in a coupled system is discretization dependent (cfr. Figure \ref{fig:perfusion-problem}) \cite{Henkelman1990,Guibert2013,sourbron14}. As a consequence, the obtained results will strongly depend on acquisitions parameters and post-processing tools. It is unknown to which extent the pharmacokinetic modelling overestimates perfusion and whether the error is homogeneously distributed or not. Considering this, the shortcoming of existing perfusion formulations has not been sufficiently well accounted for within clinical studies \cite{Mokin16,Kickingereder15}. To clarify the potential impact of limitations seen within existing perfusion models, our main contribution of the current work is to quantify the observed error. To the best of or knowledge, such quantification has not been carried out previously.
+It has previously been shown that perfusion reconstructed from traditional 1C models in a coupled system is discretization dependent (cfr. Figure \ref{fig:perfusion-problem}) \cite{Henkelman1990,Guibert2013,sourbron14}. As a consequence, the obtained results will strongly depend on acquisitions parameters and post-processing tools. It is unknown to which extent the pharmacokinetic modelling overestimates perfusion and whether the error is homogeneously distributed or not. Considering this, the shortcoming of existing perfusion formulations has not been sufficiently well accounted for within clinical studies \cite{Mokin16,Kickingereder15}. To clarify the potential impact of limitations seen within existing perfusion models, our main contribution of the current work is to quantify the observed error. To the best of our knowledge, such quantification has not been carried out previously.
 	%To establish ground truth values, we developed a PDE based digital phantom to simulate blood flow as porous media flow within a slab of capillary tissue.
 	%We have justified that the discretized PDE problem can be equivalently described as a system of coupled traditional one-compartment models.	
 
 	% \roNote{Paragraph highlighting the relevancy for the community.}	
-	Our results strongly support the usage of traditional 1C models for entire regions exclusively fed by the measured arterial input. Moreover, our results also show that if traditional models are applied only to parts of the system, the measured perfusion is overestimated (cfr. Figure \ref{fig:volnormperf}, black and blue curves). Observed error in perfusion for a characteristic voxelsize typically present in modern MR scanners of $\sim$\SI{2}{\milli\meter} was found to be $\sim$$40\%$ for reconstruction by bSVD and $\sim$$20\%$ for reconstruction by MS (cfr. Figure \ref{fig:volnormperf}). The error is expected to increase in future acquisitions along with hardware and software improvements leading to higher spatial sampling.
+	Our results strongly support the usage of traditional 1C models for entire regions exclusively fed by the measured arterial input. Moreover, our results also show that if traditional models are applied only to parts of the system, the measured perfusion is overestimated (cfr. Figure \ref{fig:volnormperf}, black and blue curves). Observed error in perfusion for a characteristic voxel size typically present in modern MR scanners of $\sim$\SI{2}{\milli\meter} was found to be $\sim$$40\%$ for reconstruction by bSVD and $\sim$$20\%$ for reconstruction by MS (cfr. Figure \ref{fig:volnormperf}). The error is expected to increase in future acquisitions along with hardware and software improvements leading to higher spatial sampling.
 	%These limitations are only partly known within the community, and studies reporting voxelwise perfusion maps without discussing their possible limitations are continuously published \cite{Mokin16,Kickingereder15}. 
 	%Thus, a major motivation for our study is to stimulate the awareness around this topic and to push the development of more appropriate models for future applications.
 		%The reason for this is that traditional models do not take into account the correct distribution volume and therefore become discretization dependent.
 		
 	There are at least two reasons for overestimation of perfusion in traditional 1C models. The first reason is that blood passing through a voxel without being locally delivered to the capillary tissue will contribute to artificially high perfusion values. This issue has not been accounted for in our digital model. The second reason is thoroughly described here, and relates to estimation of an incorrect distribution volume used for computing the perfusion. 
 %In the presence of coupled flow between adjacent voxels, the correct distribution volume used for normalizing the absolute flow into perfusion is not known and overestimation of perfusion will occur. 
-	%Using local arterial input functions is no remedy for this problem, since the resulting perfusion will depend heavily on the voxelsize and overestimate the actual flow, cf. Figure~\ref{fig:perfusion-problem} and \eqref{eq:voxelcurve}.
+	%Using local arterial input functions is no remedy for this problem, since the resulting perfusion will depend heavily on the voxel size and overestimate the actual flow, cf. Figure~\ref{fig:perfusion-problem} and \eqref{eq:voxelcurve}.
 %	In fact, in the most extreme example we measured overestimated perfusion values which were on average up to $753\%$.
 	%JUST ONE NOTE: WE COULD GET ANY VALUE HERE. IF WE GO TO AN EVEN FINER SCALE THE ERROR WIL BE LARGER. WE CAN EVEN PROVE THAT THE ERROR GOES TO INF. WHEN WE APPROACH THE CONTINIOUS SCALE. 
 	Overestimation of perfusion obtained within the digital phantom was also confirmed by real data experiments, where we showed local overestimation of perfusion for voxelwise estimates as compared to an averaging of concentrations for the entire volume of interest (cfr. Section \ref{sec:resultsrealdata}). 
 	
-	In order to demonstrate our results we introduced two definitions of voxelwise perfusion, global perfusion $P_{\mathrm{s}}$ and local perfusion $P_{\mathrm{v}}$. Local perfusion $P_{\mathrm{v}}$ is in line with \cite{Guibert2013} where the authors demonstrated a discretization dependent flow without connecting it mathematically perfusion. Theory and examples in our work show that this definition of perfusion does not comply with the physical understanding of perfusion as a feeding arterial blood flow. The correct distribution volume is not accounted for and the obtained perfusion will be strongly overestimated compared to the actual perfusion. However, our analyses show that traditional models would restore this local flow value if the local arterial input function was selected, implying that traditional models are accurate as long as the model assumptions are not violated. The coupling between the continuous porous media model and the convolution model in Section \ref{sec:NewAndOld} demonstrates that there is no contradiction between these two models. The problematic issue of traditional models is related to physical interpretation and normalization with respect to incorrect distribution volume.
+	In order to demonstrate our results we introduced two definitions of voxelwise perfusion, global perfusion $P_{\mathrm{s}}$ and local perfusion $P_{\mathrm{v}}$. Local perfusion $P_{\mathrm{v}}$ is in line with \cite{Guibert2013} where the authors demonstrated a discretization dependent flow without connecting it mathematically to perfusion. Theory and examples in our work show that this definition of perfusion does not comply with the physical understanding of perfusion as a feeding arterial blood flow. The correct distribution volume is not accounted for and the obtained perfusion will be strongly overestimated compared to the actual perfusion. However, our analyses show that traditional models would restore this local flow value if the local arterial input function was selected, implying that traditional models are accurate as long as the model assumptions are not violated. The coupling between the continuous porous media model and the convolution model in Section \ref{sec:NewAndOld} demonstrates that there is no contradiction between these two models. The problematic issue of traditional models is related to physical interpretation and normalization with respect to incorrect distribution volume.
 
 	% We have additionally analyzed, both analytically and experimentally, the impact of selecting a further upstream arterial input function.
 	%Specifically, we have justified that traditional perfusion measurements based on convolution will identify the recursive impulse response function for all upstream voxels (see Section~\ref{sec:NewAndOld}). 
@@ -857,16 +857,16 @@ It was previously suggested to normalize the flow by surface instead of volume \
 %\rthNote{Elaborated on relationship of continuous and discrete model.}
 
 %There are at least two reasons for the discrepancy between recovered and actual perfusion in our numerical experiments. First, w
-We have shown there is a global error directly scaling with smaller voxelsizes (cfr. Figure \ref{fig:volnormperf}). A comparison between individual scans with otherwise equal acquisition parameters and post-processing chains should ideally adjust for the global error in the interpretation of absolute perfusion values. As such, voxelwise maps of perfusion could still be of high clinical value as the main goal is a comparison of perfusion between patients or between repeated scans of individuals. However, particular care should be undertaken in the case of comparing perfusion data of various resolution. Notably, multicenter or retrospective studies are particularly susceptible to this situation where data collected from various sources are different with respect to hardware, resolution and post-processing tools that can affect the discretization level. Future study design should account for this limitation and special care should be undertaken to ensure equal level of discretization in perfusion estimates. 
+We have shown there is a global error directly scaling with smaller voxel sizes (cfr. Figure \ref{fig:volnormperf}). A comparison between individual scans with otherwise equal acquisition parameters and post-processing chains should ideally adjust for the global error in the interpretation of absolute perfusion values. As such, voxelwise maps of perfusion could still be of high clinical value as the main goal is a comparison of perfusion between patients or between repeated scans of individuals. However, particular care should be undertaken in the case of comparing perfusion data of various resolution. Multicenter or retrospective studies are particularly susceptible to this situation where data collected from various sources are different with respect to hardware, resolution and post-processing tools that can affect the discretization level. Future study design should account for this limitation and special care should be undertaken to ensure equal level of discretization in perfusion estimates. 
 
 In addition to the observed global error we also observed inhomogeneous reconstruction errors within the capillary system. This becomes clear in Figure \ref{fig:perfusionmaps} where the reconstructed perfusion maps $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ are strongly unlike the ground truth perfusion maps of $P_{\mathrm{s}}$ and $P_{\mathrm{v}}$. This inhomogeneity leads to locally inaccurate estimates of perfusion within a patch, even if the global average value within the patch were correct. 
 %The reason for this discrepancy is dispersion of the AIF within the capillary system, not accounted for in traditional 1C models. 
 In analyses of voxelwise perfusion with high resolution the local error can become large within each capillary patch.
  
-	Regarding the CBV estimates, estimation of blood volume is stable, and varying voxelsize had little impact on the results. These results are in agreement with the analyses in Section \ref{sec:CBV} supporting the usage of \eqref{eq:CBV} for computing voxelwise CBV with high accuracy for any voxelsize.
+	Regarding the CBV estimates, estimation of blood volume is stable, and varying voxel size had little impact on the results. These results are in agreement with the analyses in Section \ref{sec:CBV} supporting the usage of \eqref{eq:CBV} for computing voxelwise CBV with high accuracy for any voxel size.
 	
 	\section{Conclusion}
-	Our experiments show that traditional 1C models for perfusion perform well if they are applied to the entire domain.
+	Our experiments confirm that traditional 1C models for perfusion perform well if they are applied to the entire domain.
 	However, when they are applied to fractions within a coupled domain, perfusion becomes scale dependent.
 	We quantified substantial and increasing reconstruction errors of perfusion as a function of smaller voxel size, and we also found similar effects in real data. The observed reconstruction error for a resolution found in clinical MR scanners was between $\sim$$20\%$ to $\sim$$40\%$. The reason for the observed errors is not numerical instabilities in the deconvolution but rather that traditional 1C models will not account for correct distribution volume within smaller fractions of the region of interest. As a consequence, interpretation of absolute perfusion for the purpose of diagnosis and disease monitoring must be undertaken with care, and comparison of perfusion values from individual dynamic data sets with different resolution is not recommended. 
 	%The scale-dependency is expected to become more pronounced in future as imaging hardware is constantly improving in spatial resolution.
