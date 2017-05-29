@@ -1,147 +1,268 @@
-%% 
-%% Copyright 2007, 2008, 2009 Elsevier Ltd
-%% 
-%% This file is part of the 'Elsarticle Bundle'.
-%% ---------------------------------------------
-%% 
-%% It may be distributed under the conditions of the LaTeX Project Public
-%% License, either version 1.2 of this license or (at your option) any
-%% later version.  The latest version of this license is in
-%%    http://www.latex-project.org/lppl.txt
-%% and version 1.2 or later is part of all distributions of LaTeX
-%% version 1999/12/01 or later.
-%% 
-%% The list of all files belonging to the 'Elsarticle Bundle' is
-%% given in the file `manifest.txt'.
-%% 
+% Template for PLoS
+% Version 3.4 January 2017
+%
+% % % % % % % % % % % % % % % % % % % % % %
+%
+% -- IMPORTANT NOTE
+%
+% This template contains comments intended 
+% to minimize problems and delays during our production 
+% process. Please follow the template instructions
+% whenever possible.
+%
+% % % % % % % % % % % % % % % % % % % % % % % 
+%
+% Once your paper is accepted for publication, 
+% PLEASE REMOVE ALL TRACKED CHANGES in this file 
+% and leave only the final text of your manuscript. 
+% PLOS recommends the use of latexdiff to track changes during review, as this will help to maintain a clean tex file.
+% Visit https://www.ctan.org/pkg/latexdiff?lang=en for info or contact us at latex@plos.org.
+%
+%
+% There are no restrictions on package use within the LaTeX files except that 
+% no packages listed in the template may be deleted.
+%
+% Please do not include colors or graphics in the text.
+%
+% The manuscript LaTeX source should be contained within a single file (do not use \input, \externaldocument, or similar commands).
+%
+% % % % % % % % % % % % % % % % % % % % % % %
+%
+% -- FIGURES AND TABLES
+%
+% Please include tables/figure captions directly after the paragraph where they are first cited in the text.
+%
+% DO NOT INCLUDE GRAPHICS IN YOUR MANUSCRIPT
+% - Figures should be uploaded separately from your manuscript file. 
+% - Figures generated using LaTeX should be extracted and removed from the PDF before submission. 
+% - Figures containing multiple panels/subfigures must be combined into one image file before submission.
+% For figure citations, please use "Fig" instead of "Figure".
+% See http://journals.plos.org/plosone/s/figures for PLOS figure guidelines.
+%
+% Tables should be cell-based and may not contain:
+% - spacing/line breaks within cells to alter layout or alignment
+% - do not nest tabular environments (no tabular environments within tabular environments)
+% - no graphics or colored text (cell background color/shading OK)
+% See http://journals.plos.org/plosone/s/tables for table guidelines.
+%
+% For tables that exceed the width of the text column, use the adjustwidth environment as illustrated in the example table in text below.
+%
+% % % % % % % % % % % % % % % % % % % % % % % %
+%
+% -- EQUATIONS, MATH SYMBOLS, SUBSCRIPTS, AND SUPERSCRIPTS
+%
+% IMPORTANT
+% Below are a few tips to help format your equations and other special characters according to our specifications. For more tips to help reduce the possibility of formatting errors during conversion, please see our LaTeX guidelines at http://journals.plos.org/plosone/s/latex
+%
+% For inline equations, please be sure to include all portions of an equation in the math environment.  For example, x$^2$ is incorrect; this should be formatted as $x^2$ (or $\mathrm{x}^2$ if the romanized font is desired).
+%
+% Do not include text that is not math in the math environment. For example, CO2 should be written as CO\textsubscript{2} instead of CO$_2$.
+%
+% Please add line breaks to long display equations when possible in order to fit size of the column. 
+%
+% For inline equations, please do not include punctuation (commas, etc) within the math environment unless this is part of the equation.
+%
+% When adding superscript or subscripts outside of brackets/braces, please group using {}.  For example, change "[U(D,E,\gamma)]^2" to "{[U(D,E,\gamma)]}^2". 
+%
+% Do not use \cal for caligraphic font.  Instead, use \mathcal{}
+%
+% % % % % % % % % % % % % % % % % % % % % % % % 
+%
+% Please contact latex@plos.org with any questions.
+%
+% % % % % % % % % % % % % % % % % % % % % % % %
 
-%% Template article for Elsevier's document class `elsarticle'
-%% with numbered style bibliographic references
-%% SP 2008/03/01
+\documentclass[10pt]{article}
+\usepackage[top=0.85in,left=2.75in,footskip=0.75in]{geometry}
 
-%\documentclass[preprint,12pt]{elsarticle}
+% amsmath and amssymb packages, useful for mathematical formulas and symbols
+\usepackage{amsmath,amssymb}
 
-%% Use the option review to obtain double line spacing
-%% \documentclass[authoryear,preprint,review,12pt]{elsarticle}
+% Use adjustwidth environment to exceed column width (see example table in text)
+\usepackage{changepage}
 
-%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
-%% for a journal layout:
-%%\documentclass[final,1p,times]{elsarticle}
-%\documentclass[final,1p,times,twocolumn]{elsarticle}
-%% \documentclass[final,3p,times]{elsarticle}
-%% \documentclass[final,3p,times,twocolumn]{elsarticle}
-%% \documentclass[final,5p,times]{elsarticle}
- \documentclass[final,5p,times,twocolumn]{elsarticle}
+% Use Unicode characters when possible
+\usepackage[utf8x]{inputenc}
 
-%% For including figures, graphicx.sty has been loaded in
-%% elsarticle.cls. If you prefer to use the old commands
-%% please give \usepackage{epsfig}
+% textcomp package and marvosym package for additional characters
+\usepackage{textcomp,marvosym}
 
-%% The amssymb package provides various useful mathematical symbols
+% cite package, to clean up citations in the main text. Do not remove.
+\usepackage{cite}
+
+% Use nameref to cite supporting information files (see Supporting Information section for more info)
+\usepackage{nameref,hyperref}
+
+% line numbers
+\usepackage[right]{lineno}
+
+% ligatures disabled
+\usepackage{microtype}
+\DisableLigatures[f]{encoding = *, family = * }
+
+% color can be used to apply background shading to table cells only
+\usepackage[table]{xcolor}
+
+% array package and thick rules for tables
+\usepackage{array}
+
 \usepackage{amssymb}
-\usepackage{check-short}
+%\usepackage{check-short}
 \usepackage{overpic}
 \usepackage{multirow}
 \usepackage{enumerate}
+\usepackage{siunitx}
+\usepackage{tikz,pgfplots}
+%\usepackage{here}
+\usepackage{endfloat}
+\renewcommand{\floatpagefraction}{0.1}
 
-%% The lineno packages adds line numbers. Start line numbering with
-%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
-%% for the whole article with \linenumbers.
-%% \usepackage{lineno}
+% create "+" rule type for thick vertical lines
+\newcolumntype{+}{!{\vrule width 2pt}}
 
-\journal{Computerized Medical Imaging and Graphics}
+% create \thickcline for thick horizontal lines of variable length
+\newlength\savedwidth
+\newcommand\thickcline[1]{%
+  \noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 2pt}%
+  \cline{#1}%
+  \noalign{\vskip\arrayrulewidth}%
+  \noalign{\global\arrayrulewidth\savedwidth}%
+}
+
+% \thickhline command for thick horizontal lines that span the table
+\newcommand\thickhline{\noalign{\global\savedwidth\arrayrulewidth\global\arrayrulewidth 2pt}%
+\hline
+\noalign{\global\arrayrulewidth\savedwidth}}
+
+
+% Remove comment for double spacing
+%\usepackage{setspace} 
+%\doublespacing
+
+% Text layout
+\raggedright
+\setlength{\parindent}{0.5cm}
+\textwidth 5.25in 
+\textheight 8.75in
+
+% Bold the 'Figure #' in the caption and separate it from the title/caption with a period
+% Captions will be left justified
+\usepackage[aboveskip=1pt,labelfont=bf,labelsep=period,justification=raggedright,singlelinecheck=off]{caption}
+\renewcommand{\figurename}{Fig}
+
+% Use the PLoS provided BiBTeX style
+\bibliographystyle{plos2015}
+
+% Remove brackets from numbering in List of References
+\makeatletter
+\renewcommand{\@biblabel}[1]{\quad#1.}
+\makeatother
+
+% Leave date blank
+\date{}
+
+% Header and Footer with logo
+\usepackage{lastpage,fancyhdr,graphicx}
+\usepackage{epstopdf}
+\pagestyle{myheadings}
+\pagestyle{fancy}
+\fancyhf{}
+\setlength{\headheight}{27.023pt}
+\lhead{\includegraphics[width=2.0in]{PLOS-submission.eps}}
+\rfoot{\thepage/\pageref{LastPage}}
+\renewcommand{\footrule}{\hrule height 2pt \vspace{2mm}}
+\fancyheadoffset[L]{2.25in}
+\fancyfootoffset[L]{2.25in}
+\lfoot{\sf PLOS}
+
+%% Include all macros below
+
+%\newcommand{\lorem}{{\bf LOREM}}
+%\newcommand{\ipsum}{{\bf IPSUM}}
+
+%% END MACROS SECTION
+
 
 \begin{document}
+\vspace*{0.2in}
 
-\begin{frontmatter}
+% Title must be 250 characters or less.
+\begin{flushleft}
+{\Large
+\textbf\newline{Accuracy of perfusion measurements in coupled systems} % Please use "sentence case" for title and headings (capitalize only the first word in a title (or heading), the first word in a subtitle (or subheading), and any proper nouns).
+}
+\newline
+% Insert author names, affiliations and corresponding author email (do not include titles, positions, or degrees).
+\\
+Constantin Sandmann\textsuperscript{1},
+Erik A. Hanson\textsuperscript{2},
+Alexander Malyshev\textsuperscript{2},
+Arvid Lundervold\textsuperscript{3,4},
+Jan Modersitzki\textsuperscript{1},
+Erlend Hodneland\textsuperscript{5,6*}
+\\
+\bigskip
+\textbf{1} Institute of Mathematics and Image Computing, University of L\"ubeck, Germany
+\\
+\textbf{2} Department of Mathematics, University of Bergen, Norway
+\\
+\textbf{3} Department of Biomedicine, University of Bergen, Norway
+\\
+\textbf{4} Department of Radiology, Haukeland University Hospital, Norway
+\\
+\textbf{5} Christian Michelsen Research, Bergen, Norway
+\\
+\textbf{6} MedViz Research Cluster, University of Bergen, Norway
+\\
+\bigskip
 
-%% Title, authors and addresses
+% Insert additional author notes using the symbols described below. Insert symbol callouts after author names as necessary.
+% 
+% Remove or comment out the author notes below if they aren't used.
+%
+% Primary Equal Contribution Note
+%\Yinyang These authors contributed equally to this work.
 
-%% use the tnoteref command within \title for footnotes;
-%% use the tnotetext command for theassociated footnote;
-%% use the fnref command within \author or \address for footnotes;
-%% use the fntext command for theassociated footnote;
-%% use the corref command within \author for corresponding author footnotes;
-%% use the cortext command for theassociated footnote;
-%% use the ead command for the email address,
-%% and the form \ead[url] for the home page:
-%% \title{Title\tnoteref{label1}}
-%% \tnotetext[label1]{}
-%% \author{Name\corref{cor1}\fnref{label2}}
-%% \ead{email address}
-%% \ead[url]{home page}
-%% \fntext[label2]{}
-%% \cortext[cor1]{}
-%% \address{Address\fnref{label3}}
-%% \fntext[label3]{}
+% Additional Equal Contribution Note
+% Also use this double-dagger symbol for special authorship notes, such as senior authorship.
+%\ddag These authors also contributed equally to this work.
 
-\title{Accuracy of perfusion measurements in coupled systems}
+% Current address notes
+%\textcurrency Current Address: Dept/Program/Center, Institution Name, City, State, Country % change symbol to "\textcurrency a" if more than one current address note
+% \textcurrency b Insert second current address 
+% \textcurrency c Insert third current address
 
-%% use optional labels to link authors explicitly to addresses:
-%% \author[label1,label2]{}
-%% \address[label1]{}
-%% \address[label2]{}
+% Deceased author note
+%\dag Deceased
 
-\author[1]{Constantin Sandmann}
-\author[2]{Erik A. Hanson}
-\author[2]{Alexander Malyshev}
-\author[3,4]{Arvid Lundervold}
-\author[1]{Jan Modersitzki}
-\author[5,6]{Erlend Hodneland}
+% Group/Consortium Author Note
+%\textpilcrow Membership list can be found in the Acknowledgments section.
 
-\address[1]{Institute of Mathematics and Image Computing, University of L\"ubeck, Germany}
-\address[2]{Department of Mathematics, University of Bergen, Norway}
-\address[3]{Department of Biomedicine, University of Bergen, Norway}
-\address[4]{Department of Radiology, Haukeland University Hospital, Norway}
-\address[5]{Christian Michelsen Research, Bergen, Norway}
-\address[6]{MedViz Research Cluster, University of Bergen, Norway}
+% Use the asterisk to denote corresponding authorship and provide email address in note below.
+* erlend.hodneland@cmr.no
 
-
-
-%define SI-units, since we want to be able to easily change them
-% \newcommand{\kilo\pascal\second}{kP_{\mathrm{a}}scal$\cdot$\second} %CH: I have problems compiling with the cdot
-%\newcommand{\kilo\pascal\second}{\kiloP_{\mathrm{a}}scal\second}
-%\newcommand{\milli\meter\cubed\per\second}{\milli\meter\cubed\per\second}
-%\newcommand{\siFml}{\milli\litre\per\second}
-%\newcommand{\milli\meter\cubed\per\second\per\milli\meter\squaredmm}{\milli\meter\cubed\per\second\per\milli\meter\cubed}
-%\newcommand{\milli\litre\per\minute\per100\milli\litre}{\milli\litre\per\minute\per100\milli\litre}
-%\newcommand{\milli\meter\cubed\per\second\per\milli\meter\squared}{\milli\meter\cubed\per\second\per\milli\meter\squared}
-%\newcommand{\siml}{\milli\litre}
-%\newcommand{\milli\meter\cubed\per\milli\meter\cubedmm}{\milli\meter\cubed\per\milli\meter\cubed}
-%\newcommand{\siJ}{\milli\mol\per\second\per\milli\meter\squared}
-%\newcommand{\milli\meter\cubed\per\milli\meter\cubed}{\milli\meter\cubed\per\milli\meter\cubed}
-%\newcommand{\sirho}{\milli\litre\per\milli\meter\cubed}
-%\newcommand{\milli\meter\cubed\per\second\per\milli\meter\squaredtilde}{\milli\litre\per\second\per\milli\meter\cubed}
-%\newcommand{\sic}{\milli\mol\per\milli\meter\cubed}
-%\newcommand{\milli\meter\cubed}{\milli\meter\cubed}
-
+\end{flushleft}
 
 \newcommand{\missingsource}{\textcolor{red}{[?]}}
 \newlength{\fwd}
 \newlength{\fht}
 
-
-\begin{abstract}
+% Please keep the abstract below 300 words
+\section{Abstract}
 One-compartment models are widely used to quantify hemodynamic parameters such as perfusion, blood volume and mean transit time. These parameters are routinely used for clinical diagnosis and monitoring of disease development and are thus of high relevance. However, it is known that common estimation techniques are discretization dependent and values can be erroneous. In this paper we present a new model that enables a systematic quantification of discretization errors. Specifically, we introduce a continuous flow model for tracer propagation within the capillary tissue, used to analyze state-of-the-art one-compartment models. We demonstrate that one-compartment models are capable of recovering perfusion accurately when applied to only one compartment, i.e. the whole region of interest. However, substantial overestimation of perfusion occurs when applied to fractions of a compartment. We further provide values of the estimated overestimation for various discretization levels, and also show that overestimation can be observed in real-life applications. Common practice of using compartment models for fractions of tissue violates model assumptions and careful interpretation is needed when using the computed values for diagnosis and treatment planning.
-\end{abstract}
 
-\begin{keyword}
-%% keywords here, in the form: keyword \sep keyword
-perfusion \sep DCE-MRI \sep Darcy flow \sep compartment modeling
-%% PACS codes here, in the form: P_{\mathrm{a}}CS code \sep code
 
-%% MSC codes here, in the form: \MSC code \sep code
-%% or \MSC[2008] code \sep code (2000 is the default)
+% Please keep the Author Summary between 150 and 200 words
+% Use first person. PLOS ONE authors please skip this step. 
+% Author Summary not valid for PLOS ONE submissions.   
+%\section{Author summary}
+%Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget porta erat. Morbi consectetur est vel gravida pretium. Suspendisse ut dui eu ante cursus gravida non sed sem. Nullam sapien tellus, commodo id velit id, eleifend volutpat quam. Phasellus mauris velit, dapibus finibus elementum vel, pulvinar non tellus. Nunc pellentesque pretium diam, quis maximus dolor faucibus id. Nunc convallis sodales ante, ut ullamcorper est egestas vitae. Nam sit amet enim ultrices, ultrices elit pulvinar, volutpat risus.
 
-\end{keyword}
+\linenumbers
 
-\end{frontmatter}
-
-%% \linenumbers
-
-%% main text
+% Use "Eq" instead of "Equation" for equation citations.
 \section{Introduction}
-	Quantitative measurements of hemodynamic medical parameters based on tracer kinetic modeling are widespread both in research and in clinical practice \cite{sourbron13,Feng2013,Chen2011}. 
+Quantitative measurements of hemodynamic medical parameters based on tracer kinetic modeling are widespread both in research and in clinical practice \cite{sourbron13,Feng2013,Chen2011}. 
 	%\rtAlert{In the present work, we focus on mathematical models to estimate blood perfusion (cerebral blood flow, CBF), blood volume (cerebral blood volume, CBV), and mean transit time (MTT) of the brain from dynamic image data using intravascular tracers.} 
 	%While hardware limitations in medical imaging for decades have confined studies to only handle larger tissue regions or full organs, modern imaging technology and voxel based analysis give rise to aspirations about detailed perfusion maps with sub-millimeter precision. Examples of estimated parameter maps can be found in \cite{Feng2013,Chen2011}. We expect the development to continue and that imaging systems will reach a resolution where a single capillary system spans over several voxels. Capillary tissue is here understood as tissue perfused by capillaries.
 	Perfusion maps, as well as other parameter maps arising from tracer kinetic modeling, can be combined with anatomical information and have proven to be of particular value in e.g. stroke studies or localization of trauma.
@@ -169,13 +290,9 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 	%We also show results indicating that overestimation of perfusion due to coupling might also be present in real data.
 
 	
-	%--------------------------------------------------
-	%--------------------------------------------------
-	% Section: Traditional models
-	%--------------------------------------------------
-	%--------------------------------------------------
 
-	\section{Methods} 
+\section{Materials and methods}
+
 
 
 	\subsection{Traditional one-compartment models}\label{sec:traditional}
@@ -199,7 +316,7 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 	For derivation of the deconvolution model, one approach is to assume there is an unknown probability distribution of transit times $h$ through $\Omega_i$, cf. \cite{sourbron13}. 
 	This leads to
 	\begin{equation}
-		P_{\mathrm{v}}c_{\mathrm{v}}(t) = P_{\mathrm{a}}(h\ast c_\mathrm{a})(t) := P_{\mathrm{a}}\int_0^t c_\mathrm{a}(s) h(t-s) \diffint s.
+		P_{\mathrm{v}}c_{\mathrm{v}}(t) = P_{\mathrm{a}}(h\ast c_\mathrm{a})(t) := P_{\mathrm{a}}\int_0^t c_\mathrm{a}(s) h(t-s) d s.
 	\end{equation}
 	Combining this with \eqref{eq:classicgeneral} yields $C'(t) = P_{\mathrm{a}}c_\mathrm{a}(t)-P_{\mathrm{a}} (h\ast c_\mathrm{a})(t)$.
 	Integrating and using basic properties of the convolution one obtains the general solution
@@ -207,7 +324,7 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 		C(t) = (I\ast c_\mathrm{a})(t)
 		\label{eq:conv}
 	\end{equation}
-	where the \emph{impulse response function} $I$ is defined as $I(t) := P_{\mathrm{a}}(1-\int_0^t h(s) \diffint s)$.
+	where the \emph{impulse response function} $I$ is defined as $I(t) := P_{\mathrm{a}}(1-\int_0^t h(s) d s)$.
 	The task of identifying $I(t)$ given a tissue curve $C(t)$ and an arterial input function $c_\mathrm{a}(t)$ is a deconvolution problem.
 	If $I(t)$ is recovered, $P_{\mathrm{a}}$ can subsequently be estimated as $P_{\mathrm{a}} = \max_{t} I(t)$.
 	There are several methods to perform the deconvolution.
@@ -283,7 +400,7 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 	By definition, we obtain the relation $C(\mathbf{x},t) = \phi(\mathbf{x})  c(\mathbf{x},t)$.
 	The rate of change of tracer molecules within a control volume $\Omega_i$ can hence be phrased as
 	\begin{equation}
-		\frac{d}{dt} \int_{\Omega_i}C  \diffint \mathbf{x} = \int_{\Omega_i}	\frac{d}{dt} (\phi c) \diffint \mathbf{x} = \int_{\Omega_i} \phi \frac{d c}{dt} \diffint \mathbf{x},
+		\frac{d}{dt} \int_{\Omega_i}C  d \mathbf{x} = \int_{\Omega_i}	\frac{d}{dt} (\phi c) d \mathbf{x} = \int_{\Omega_i} \phi \frac{d c}{dt} d \mathbf{x},
 		\label{eq:dmdt}
 	\end{equation}	
 	where the assumption of stationary $\phi(\mathbf{x})$ was used.
@@ -292,15 +409,15 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 	Note that $\int_\Omega Q  \mathbf{dx} = 0$. 
 	% The change in contrast agent at time point $t$ from fluid entering the control volume can be written as
 	% \begin{equation}
-	% 	-\int_{ P_{\mathrm{a}}rtial \Omega_i}c(\mathbf{q} \cdot n)\diffint s + \int_{\Omega_i}c_\mathrm{a} Q_{so} \diffint x + \int_{\Omega_i}cQ_{si} \diffint x,
+	% 	-\int_{ P_{\mathrm{a}}rtial \Omega_i}c(\mathbf{q} \cdot n)d s + \int_{\Omega_i}c_\mathrm{a} Q_{so} d x + \int_{\Omega_i}cQ_{si} d x,
 	% 	\label{eq:surfflux}
 	% \end{equation}
 	% where $n(x)$ is the outward unit normal on $P_{\mathrm{a}}rtial \Omega_i$.
 	% In standard pharmacokinetic modeling, $c_\mathrm{a} = c_\mathrm{a}(x,t)$ is referred to as the arterial input function (AIF).
 	Using \eqref{eq:dmdt} and following the principle of conservation of tracer molecules, the rate of change of contrast agent in a control volume $\Omega_i$ is modelled as
 	\begin{align}
-		& \int_{\Omega_i} \phi \frac{d c}{dt} \diffint \mathbf{x} + \int_{\partial \Omega_i}c(\mathbf{q} \cdot \mathbf{n}) \diffint \mathbf{A}
-		 = \int_{\Omega_i}(c_\mathrm{a} Q_{so} \diffint \mathbf{x} + c Q_{si}) \diffint \mathbf{x}.
+		& \int_{\Omega_i} \phi \frac{d c}{dt} d \mathbf{x} + \int_{\partial \Omega_i}c(\mathbf{q} \cdot \mathbf{n}) d \mathbf{A}
+		 = \int_{\Omega_i}(c_\mathrm{a} Q_{so} d \mathbf{x} + c Q_{si}) d \mathbf{x}.
 		\label{eq:conteq}
 	\end{align}
 	where $\mathbf{n}(\mathbf{x})$ is the outward unit normal on $\partial \Omega_i$.
@@ -333,11 +450,11 @@ Using these definitions on perfusion, the main aim of our work is to quantify th
 	Define the outward normal vector $\mathbf{n}$ and voxel face areas of inflow and outflow over the boundary as $S_{\mathrm{in}} := \{ \mathbf{x} \in \partial \Omega_i: \ \mathbf{q} \cdot \mathbf{n} < 0 \}$ and $S_{\mathrm{out}}:= \{ \mathbf{x} \in \partial \Omega_i: \ \mathbf{q} \cdot \mathbf{n} > 0 \}$ respectively.
 	For the domain $\Omega_i$ we define the arterial input $c_{\mathrm{in}}$ as the weighted average of the tracer flux across $S_{\mathrm{in}}$
 	\begin{equation}\label{eq:cin}
-	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}c (\mathbf{q} \cdot \mathbf{n}) \diffint \mathbf{A}}{\int_{S_{\mathrm{in}}} \mathbf{q} \cdot \mathbf{n} \diffint \mathbf{A}}.
+	 	c_{\mathrm{in}}(t):= \frac{\int_{S_{\mathrm{in}}}c (\mathbf{q} \cdot \mathbf{n}) d \mathbf{A}}{\int_{S_{\mathrm{in}}} \mathbf{q} \cdot \mathbf{n} d \mathbf{A}}.
 	\end{equation}
 	We define local perfusion $P_{\mathrm{v}}$ within $\Omega_i$ as the total feeding fluid inflow divided by the volume,
 	\begin{equation}\label{eq:perflocal}
-		P_{\mathrm{v}} :=-\frac{1}{|\Omega_i|}\int_{S_{\mathrm{in}}} \mathbf{q} \cdot \mathbf{n} \diffint \mathbf{A}.
+		P_{\mathrm{v}} :=-\frac{1}{|\Omega_i|}\int_{S_{\mathrm{in}}} \mathbf{q} \cdot \mathbf{n} d \mathbf{A}.
 	\end{equation}
 	Given incompressible flow, the rate of fluid entering the region is the same as the rate of fluid leaving it. 
 	Further, let $c_i(t)$ denote the average fluid CA concentration within $\Omega_i$.
@@ -395,18 +512,26 @@ However, for meaningful interpretation of the perfusion the entire streamline le
 %, where the blood is providing the tissue with nutrients and oxygen. 
 %These results also support the idea presented in the next section that pointwise perfusion can be regarded a globally constant quantity along the streamlines, as it can only be estimated when the entire streamline characteristics are known.
 % PUT BACK:
-	\fwd = .4\textwidth
-	\fht = .1\textheight	
-	\begin{figure*}
-		{
-		\small
-		% \begin{tabular}{p{\fwd} p{\fwd}}
-		\begin{tabular}{c c}
-			\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
-		\end{tabular}
-		}
-		\caption{Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental value of $P_{\mathrm{v}}=\SI{5328}{\milli\litre\per\minute\per100\milli\litre}$ at the given location and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by a convolution over all upstream flow. The two curves have an almost perfect overlap. These numerical experiments support that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
-	\end{figure*}
+
+\begin{figure}[!h]
+\caption{{\bf Upstream dependency within traditional models.}
+Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental value of $P_{\mathrm{v}}=\SI{5328}{\milli\litre\per\minute\per100\milli\litre}$ at the given location and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by a convolution over all upstream flow. The two curves have an almost perfect overlap. These numerical experiments support that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}
+\label{fig:VoxelComp}
+\end{figure}
+
+
+%	\fwd = .4\textwidth
+%	\fht = .1\textheight	
+%	\begin{figure*}
+%		{
+%		\small
+%		% \begin{tabular}{p{\fwd} p{\fwd}}
+%		\begin{tabular}{c c}
+%			\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
+%		\end{tabular}
+%		}
+%		\caption{Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental value of $P_{\mathrm{v}}=\SI{5328}{\milli\litre\per\minute\per100\milli\litre}$ at the given location and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by a convolution over all upstream flow. The two curves have an almost perfect overlap. These numerical experiments support that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}\label{fig:VoxelComp}
+%	\end{figure*}
 
 
 	%--------------------------------------------------
@@ -439,38 +564,46 @@ According to the common understanding of perfusion,
 	A discretization dependent perfusion estimate is not recommendable, and the perfusion estimate of $P_{2}$ is clearly wrong. 
 	%This problematic issue was previously identified by \cite{Henkelman1990}, stating that an incorrect normalization will lead to multiple counting of the same flow, and hence an overestimation of perfusion.
 
-	\begin{figure}[!htb]
-	    \centering
-	    \begin{overpic}[scale=0.3]{figs/perfusion-problem.eps}
-	    	\put(10,70){\color{black}$F_0$}
-			\put(48,70){\color{black}$F_0$}
-			\put(84,70){\color{black}$\Delta F_0$}
-			\put(10,33){\color{black}$2V$}
-			\put(49,20){\color{black}$V$}
-			\put(49,45){\color{black}$V$}
-			\put(91,42){\color{black}$\Delta V$}
-		\end{overpic}
-	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ [$\si{\milli\meter\cubed\per\second}$] of fluid. By definition, the perfusion within this compartment becomes $P_{1} = F_0/(2V)$. Middle: The same volume is divided into two compartments (e.g. voxels), and the perfusion for each of the compartments becomes $P_{2} = F_0/V = 2P_{1}$. Discrepancy between the two discretizations occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we rather pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area in this 2D sketch) which is fed with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/\Delta V$. The entire compartment can further be divided into similar infinitesimal distribution volumes, thus providing locally correct perfusion estimates.}
-	    \label{fig:perfusion-problem}
-	\end{figure}
+\begin{figure}[!h]
+\caption{{\bf Perfusion as a discretization dependent measure.}
+Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ [$\si{\milli\meter\cubed\per\second}$] of fluid. By definition, the perfusion within this compartment becomes $P_{1} = F_0/(2V)$. Middle: The same volume is divided into two compartments (e.g. voxels), and the perfusion for each of the compartments becomes $P_{2} = F_0/V = 2P_{1}$. Discrepancy between the two discretizations occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we rather pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area in this 2D sketch) which is fed with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/\Delta V$. The entire compartment can further be divided into similar infinitesimal distribution volumes, thus providing locally correct perfusion estimates.}
+\label{fig:perfusion-problem}
+\end{figure}
+
+
+
+%	\begin{figure}[!htb]
+%	    \centering
+%	    \begin{overpic}[scale=0.3]{figs/perfusion-problem.eps}
+%	    	\put(10,70){\color{black}$F_0$}
+%			\put(48,70){\color{black}$F_0$}
+%			\put(84,70){\color{black}$\Delta F_0$}
+%			\put(10,33){\color{black}$2V$}
+%			\put(49,20){\color{black}$V$}
+%			\put(49,45){\color{black}$V$}
+%			\put(91,42){\color{black}$\Delta V$}
+%		\end{overpic}
+%	    \caption{Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ [$\si{\milli\meter\cubed\per\second}$] of fluid. By definition, the perfusion within this compartment becomes $P_{1} = F_0/(2V)$. Middle: The same volume is divided into two compartments (e.g. voxels), and the perfusion for each of the compartments becomes $P_{2} = F_0/V = 2P_{1}$. Discrepancy between the two discretizations occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we rather pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area in this 2D sketch) which is fed with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/\Delta V$. The entire compartment can further be divided into similar infinitesimal distribution volumes, thus providing locally correct perfusion estimates.}
+%	    \label{fig:perfusion-problem}
+%	\end{figure}
 
 	In the following we introduce a meaningful notion of perfusion for the fine scale continuous model.
 	To do this, we will consider distribution volumes which are following the streamlines, as shown in Figure \ref{fig:perfusion-problem} (right). 	
 	For each point of a streamline we will select a small perpendicular disk with radius chosen in such a way that the total flow over each disk is constant along the streamline.
 
-	More precisely, let us consider an arbitrary streamline $S \subseteq \Omega \subseteq \R^3$ of length $l>0$ and parametrization $s:[0,l] \to S$.
+	More precisely, let us consider an arbitrary streamline $S \subseteq \Omega \subseteq \mathbb{R}^3$ of length $l>0$ and parametrization $s:[0,l] \to S$.
 	We start by calculating the total flow over a small 2D disc perpendicular to the streamline.
 	Let $\mathbf{y} \in S$ be an arbitrary location along the streamline. 
-	The total flow $F$ over a 2D disc $B(\mathbf{y},R(\mathbf{y}))$ perpendicular to the flow field $\mathbf{q}(\mathbf{y})$, centered at $\mathbf{y}$ and with radius $R:S\to\R^+$, is given by
+	The total flow $F$ over a 2D disc $B(\mathbf{y},R(\mathbf{y}))$ perpendicular to the flow field $\mathbf{q}(\mathbf{y})$, centered at $\mathbf{y}$ and with radius $R:S\to\mathbb{R}^+$, is given by
 	\begin{equation}
-		F(\mathbf{y},R(\mathbf{y})) = \int_{B(\mathbf{y},R(\mathbf{y}))} \mathbf{q}(\mathbf{x}) \cdot \mathbf{n} \diffint \mathbf{x} \text{ where }\mathbf{n} := \mathbf{q}(\mathbf{y})/\vert \mathbf{q}(\mathbf{y}) \vert.
+		F(\mathbf{y},R(\mathbf{y})) = \int_{B(\mathbf{y},R(\mathbf{y}))} \mathbf{q}(\mathbf{x}) \cdot \mathbf{n} d \mathbf{x} \text{ where }\mathbf{n} := \mathbf{q}(\mathbf{y})/\vert \mathbf{q}(\mathbf{y}) \vert.
 		\label{eq:Fdisc}
 	\end{equation}
 	In order to calculate the perfusion, we need to establish the volume of a small tube around the streamline.
-	We will not consider a tube with constant radius, but one with spatially varying radii $r:[0,l] \to \R^+$.
+	We will not consider a tube with constant radius, but one with spatially varying radii $r:[0,l] \to \mathbb{R}^+$.
 	The total volume of such a tube is given by
 	\begin{equation}
-		V(r) = \int_0^l r(u)^2 \pi \diffint u.
+		V(r) = \int_0^l r(u)^2 \pi d u.
 	\end{equation}
         Note that $R(\mathbf{y}):=r(u)$ for some $u \in [0,l]$.
         % satisfying $\mathbf{y}=s(u)$. 
@@ -484,19 +617,19 @@ According to the common understanding of perfusion,
 	To see this, let us assume that $\mathbf{q}$ is differentiable with Jacobian $J$.
 	Using a Taylor expansion of $\mathbf{q}(\mathbf{x})$ around $\mathbf{y}$, the Lagrange remainder theorem, as well as a change of coordinates $\mathbf{z} = (\mathbf{x}-\mathbf{y})/(\varepsilon R)$ yields 
 	 % \begin{align*}
-	 % 	F(y,\varepsilon R(y))&=\int_{B(y,\varepsilon R(y))} \nu^\top q(x) \diffint x \\
-	 % 	&= \int_{B(y,\varepsilon R(y))} \nu^\top q(y)  + \nu^\top J(\xi) (x-y) \diffint x \\
-	 % 	&= \varepsilon^2 \pi  + \int_{B(0,1)} \nu^\top J(\zeta) z(\varepsilon R(y))^3 \diffint z \\
-	 % 	&= \varepsilon^2 \left(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)z R(y)^3 \diffint z\right)
+	 % 	F(y,\varepsilon R(y))&=\int_{B(y,\varepsilon R(y))} \nu^\top q(x) d x \\
+	 % 	&= \int_{B(y,\varepsilon R(y))} \nu^\top q(y)  + \nu^\top J(\xi) (x-y) d x \\
+	 % 	&= \varepsilon^2 \pi  + \int_{B(0,1)} \nu^\top J(\zeta) z(\varepsilon R(y))^3 d z \\
+	 % 	&= \varepsilon^2 \left(\pi + \varepsilon \int_{B(0,1)} \nu^\top J(\zeta)z R(y)^3 d z\right)
 	 % \end{align*}
 	\begin{equation}
 		F(\mathbf{y},\varepsilon R(\mathbf{y}))
-		= \varepsilon^2 \Big(\pi + \varepsilon \int_{B(0,1)} \mathbf{n}^\top J(\zeta)zR(\mathbf{y})^3 \diffint \mathbf{z} \Big)
+		= \varepsilon^2 \Big(\pi + \varepsilon \int_{B(0,1)} \mathbf{n}^\top J(\zeta)zR(\mathbf{y})^3 d \mathbf{z} \Big)
 	\end{equation}
 	where $\zeta_i \in (0,z_i)$ for every vector element $i$, and simplifications are due to $R(\mathbf{y}) = 1/\sqrt{\vert \mathbf{q}(\mathbf{y})} \vert$ and $\mathbf{n}:=\mathbf{q}(\mathbf{y})/\vert \mathbf{q}(\mathbf{y}) \vert$.
 	Combining this result with \eqref{eq:perfusiondef} yields what we refer to as global perfusion
 	\begin{equation}\label{eq:flux2perf}
-		P_s(\mathbf{y}) = \left(\int_0^l r(u)^2 \diffint u\right)^{-1}.
+		P_s(\mathbf{y}) = \left(\int_0^l r(u)^2 d u\right)^{-1}.
 	\end{equation}
 	Note that \eqref{eq:flux2perf} is independent of the spatial location $\mathbf{y}$ along the streamline, and is an explicit formula for converting flux into perfusion, showing that the perfusion scales with the streamline length $l$, as well as with the geometry of the domain, represented by the radii $r(u)$.
 
@@ -508,7 +641,7 @@ According to the common understanding of perfusion,
 
 	Porosity and CBV have the same definition, and we can therefore state that $\phi \equiv \mathrm{CBV}$. It is known from literature on traditional models \cite{sourbron13} for perfusion that CBV for the entire compartment can be expressed as
 	\begin{equation}
-		\phi = \frac{\int_0^\infty C(s) \diffint s}{\int_0^\infty c_\mathrm{a}(s) \diffint s}.
+		\phi = \frac{\int_0^\infty C(s) d s}{\int_0^\infty c_\mathrm{a}(s) d s}.
 		\label{eq:CBV}
 	\end{equation}
 	% where $C(t)$ is the tracer concentration with respect to a well mixed compartment and $c_\mathrm{a}(t)$ is the plasma concentration of the arterial input.
@@ -523,19 +656,19 @@ According to the common understanding of perfusion,
 	Furthermore, let us assume that $\mathbf{q}$ is a uni-directional flow field across each voxel face.
 	%, and that there is no flow interaction between voxels in the same layer.
 	
-		We will now use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty c_\mathrm{a}(s) \diffint s$, and then \eqref{eq:CBV} follows.
+		We will now use induction to show that $\int_0^\infty c_i(s) d s = \int_0^\infty c_\mathrm{a}(s) d s$, and then \eqref{eq:CBV} follows.
 		Let $I_k$ denote the set of voxels which have $k$ layers of upstream voxels.
 		E.g. $I_0$ is the set of all voxels, which have no upstream voxels, $I_1$ is the set of voxels which are fed by $I_0$ and so on. As an assumption, the same voxel can not be member of several $I_k$, thus there is no flow interaction between voxels within the same $I_k$.
 		Induction will be carried out over $k$.\\
 		\textbf{Induction basis:}
 		Let $k=0$ and let $i \in I_0$ be arbitrary.
-		Since the area under the convolution of two functions equals the product of the area of its factors, $\int_0^\infty c_i(s) \diffint s = \int_0^\infty c_\mathrm{a}(s) \diffint s$ and the claim follows.\\
+		Since the area under the convolution of two functions equals the product of the area of its factors, $\int_0^\infty c_i(s) d s = \int_0^\infty c_\mathrm{a}(s) d s$ and the claim follows.\\
 		\textbf{Induction step:}
 		Consistent with our assumptions, for any voxel at location $i \in I_{k+1}$ which has the voxels $J \subseteq I_{k}$ as their upstream neighbors, we find the following expression:
 		\begin{equation}
-			\int_0^\infty c_i(s) \diffint s = \frac{1}{P}\int_0^\infty \Big(J_i\ast \big( P_0 c_\mathrm{a}(s) + {\textstyle\sum\limits_{j \in J}}P_j c_j(s) \big)\Big)(s) \diffint s
+			\int_0^\infty c_i(s) d s = \frac{1}{P}\int_0^\infty \Big(J_i\ast \big( P_0 c_\mathrm{a}(s) + {\textstyle\sum\limits_{j \in J}}P_j c_j(s) \big)\Big)(s) d s
 		\end{equation}
-		 Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)\diffint s = 1$, as well as the definition of $P$ yields the claim.
+		 Splitting the convolution integrals into separate factors, applying $\int_0^{\infty}J_i(s)d s = 1$, as well as the definition of $P$ yields the claim.
 	
 
 
@@ -545,10 +678,10 @@ According to the common understanding of perfusion,
 %	 	\begin{enumerate}[({A}1)]
 %	 		\item The concentration in any voxel can be written as
 %	 	\begin{equation}
-% 		\int_0^\infty c_i(s) \diffint s = \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) \diffint s.
+% 		\int_0^\infty c_i(s) d s = \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) d s.
 %	 	\end{equation}
-%	 	where $J_i,c_{\mathrm{in},i}:[0,\infty)\to \R$ will be specified in (A2).
-%	 	\item In (A1) $J_i:[0,\infty)\to\R$ fulfills $\int_0^\infty J_i(s)\diffint s = 1$ (straight forward calculation) and the local arterial input $c_{\mathrm{in},i}(t)$ is a weighted average of adjacent, upstream voxels $c_j(t)$, where $J$ is the set of adjcacent, upstream voxels and $c_\mathrm{a}(t)$, if the voxel lies in the source field:
+%	 	where $J_i,c_{\mathrm{in},i}:[0,\infty)\to \mathbb{R}$ will be specified in (A2).
+%	 	\item In (A1) $J_i:[0,\infty)\to\mathbb{R}$ fulfills $\int_0^\infty J_i(s)d s = 1$ (straight forward calculation) and the local arterial input $c_{\mathrm{in},i}(t)$ is a weighted average of adjacent, upstream voxels $c_j(t)$, where $J$ is the set of adjcacent, upstream voxels and $c_\mathrm{a}(t)$, if the voxel lies in the source field:
 %	 	\begin{equation}
 %	 		c_{\mathrm{in},i}(t) = \tfrac{1}{P}\Big(p_0 c_\mathrm{a}(t) + {\textstyle\sum\limits_{j \in J}} p_jc_j(t)\Big),
 %	 	\end{equation}
@@ -558,26 +691,26 @@ According to the common understanding of perfusion,
 %	
 %	 	\begin{lemma}
 %	 		Assume (A1),(A2), a uni-directional flow over voxel faces and that there is no flow between voxels in the same layer.
-%	 		Then $\int_0^\infty C_i(s) \diffint s = \phi_i \int_0^\infty c_\mathrm{a}(s) \diffint s$ for all voxels.
+%	 		Then $\int_0^\infty C_i(s) d s = \phi_i \int_0^\infty c_\mathrm{a}(s) d s$ for all voxels.
 %	 	\end{lemma}
 %	 	\begin{proof}
-%	 		We use induction to show that $\int_0^\infty c_i(s) \diffint s = \int_0^\infty c_\mathrm{a}(s) \diffint s$, then the claim follows.
+%	 		We use induction to show that $\int_0^\infty c_i(s) d s = \int_0^\infty c_\mathrm{a}(s) d s$, then the claim follows.
 %	 		Let $I_k$ denote the set of voxels which have $k$ layers of upstream voxels.
 %	 		E.g. $I_0$ is the set of all voxels, which have no upstream voxels, $I_1$ is the set of voxels which are fed by $I_0$ and so on.
 %	 		Induction will be carried out over $k$.\\
 %	 		\textbf{Induction Basis:}\\
 %	 		Let $k=0$ and let $i \in I_0$ be arbitrary. Following (A1) and (A2) it holds that $c_i(t) = (J_i\ast c_\mathrm{a})(t)$.
-%	 		Since the area under the convolution of two functions equals the product of the area of its factors, $\int_0^\infty c_i(s) \diffint s = \int_0^\infty c_\mathrm{a}(s) \diffint s$ and the claim follows.\\
+%	 		Since the area under the convolution of two functions equals the product of the area of its factors, $\int_0^\infty c_i(s) d s = \int_0^\infty c_\mathrm{a}(s) d s$ and the claim follows.\\
 %	 		\textbf{Induction Assumption:} The claim holds for arbitrary $k \in \N$.\\
 %	 		\textbf{Induction Step:}\\
 %	 		For any voxel at location $i \in I_{k+1}$ which has the voxels $J \subseteq I_{k}$ as their upstream neighbors, we find the following expression:
 %	 		\begin{align*}
-%	 			\int_0^\infty c_i(s) \diffint s &\stackrel{\mathclap{\text{(A1)}}}{=} \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) \diffint s\\
-%	 			&= \int_0^\infty c_{\mathrm{in},i}(s)\diffint s \\
-%	 			&\stackrel{\mathclap{\text{(A2)}}}{=}  \tfrac{1}{P}\int_0^\infty \Big( p_0 c_\mathrm{a}(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \Big) \diffint s,\\
-%	 			&= \tfrac{1}{P} \Big(p_0 \int_0^\infty c_\mathrm{a}(s) \diffint s + {\textstyle\sum\limits_{j\in J}} p_j \int_0^\infty c_{j}(s) \diffint s \Big) ,\\
-%	 			&\stackrel{\mathclap{\text{I.A.}}}{=}\tfrac{1}{P} \Big( p_0 + {\textstyle\sum\limits_{j\in 1}} p_j\Big)  \int_0^\infty c_\mathrm{a}(s)\diffint s, \\
-%	 			&= \int_0^\infty c_\mathrm{a}(s)\diffint s.
+%	 			\int_0^\infty c_i(s) d s &\stackrel{\mathclap{\text{(A1)}}}{=} \int_0^\infty (J_i\ast c_{\mathrm{in},i})(s) d s\\
+%	 			&= \int_0^\infty c_{\mathrm{in},i}(s)d s \\
+%	 			&\stackrel{\mathclap{\text{(A2)}}}{=}  \tfrac{1}{P}\int_0^\infty \Big( p_0 c_\mathrm{a}(s) + {\textstyle\sum\limits_{j \in J}}p_j c_j(s) \Big) d s,\\
+%	 			&= \tfrac{1}{P} \Big(p_0 \int_0^\infty c_\mathrm{a}(s) d s + {\textstyle\sum\limits_{j\in J}} p_j \int_0^\infty c_{j}(s) d s \Big) ,\\
+%	 			&\stackrel{\mathclap{\text{I.A.}}}{=}\tfrac{1}{P} \Big( p_0 + {\textstyle\sum\limits_{j\in 1}} p_j\Big)  \int_0^\infty c_\mathrm{a}(s)d s, \\
+%	 			&= \int_0^\infty c_\mathrm{a}(s)d s.
 %	 		\end{align*}
 %	 		Hence the claim \eqref{eq:CBV} follows.
 %	 \end{proof}
@@ -589,7 +722,7 @@ According to the common understanding of perfusion,
 	% % 	\phi\frac{P_{\mathrm{a}}rtial c}{P_{\mathrm{a}}rtial t}  = - \mathbf{q} \cdot \nabla c.
 	% % 	\label{eq:1cmodel}
 	% % \end{equation}
-	% % Integrating, using the boundary conditions $c(\mathbf{x},0) = c(\mathbf{x},\infty) = 0$ and defining $E(\mathbf{x}):= \int_0^\infty c(\mathbf{x},t) \diffint t$ leads to
+	% % Integrating, using the boundary conditions $c(\mathbf{x},0) = c(\mathbf{x},\infty) = 0$ and defining $E(\mathbf{x}):= \int_0^\infty c(\mathbf{x},t) d t$ leads to
 	% % \begin{equation}
 	% % 	0 = \mathbf{q} \cdot \nabla  E(\mathbf{x}).
 	% % 	\label{eq:streamlinezero}
@@ -696,63 +829,87 @@ From the porous media model using \eqref{eq:flowmodel} and \eqref{eq:conteqlocal
 	The brain tissue was segmented automatically and used as ROI for the perfusion analysis.
 
 
-	\section{Numerical results}	
-	\subsection{Reconstruction of perfusion within synthetic data}\label{sec:RecPhantom}
+
+
+% Results and Discussion can be combined.
+\section{Results}
+
+\subsection{Reconstruction of perfusion within synthetic data}\label{sec:RecPhantom}
 
 	%\rthNote{Emphasized that experimental comparison was performed for both models.}
 	
 	%The flux field obtained by the PDE model is visualized in Figure~\ref{fig:flowpressureperfusion} (a). 
 	Tracer dilution in the flux-field was simulated and from the resulting intensity time curves we tested the convolution based traditional model (bSVD) \eqref{eq:conv} as well as the maximum-slope (MS) model \eqref{eq:MS} for their capability to recover perfusion. Recovered perfusion maps $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ were compared against the two ground truth perfusion maps $P_{\mathrm{s}}$ and $P_{\mathrm{v}}$ depicted in Figure~\ref{fig:perfusionmaps}. As an internal control, the average $P_{\mathrm{s}}$ at maximal resolution was found to be \SI{49.59}{\milli\litre\per\minute\per100\milli\litre}, for all practical means identical to the global input perfusion of $\SI{50}{\milli\litre\per\minute\per100\milli\litre}$ mediated through the source.	Results from reconstruction of the porosity $\phi$ (i.e. CBV) according to \eqref{eq:CBV} resulted in reconstruction errors of $<1\%$ for all voxel sizes. 
+
 	
-\begin{figure*}[h!tb]
-	\centering
-	\fwd = .23\textwidth
-	\begin{tabular}{c c c c}
-		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none-raw.eps} 
-		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none-raw.eps}
-		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-bSVD-scaleto-none-raw.eps}
-		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-MS-scaleto-none-raw.eps}\\
-		(a) $P_{\mathrm{s}}(\mathbf{x})$. & (b) $P_{\mathrm{v}}(\mathbf{x})$ & (c) $P_{\mathrm{bSVD}}(\mathbf{x})$. & (d) $P_{\mathrm{MS}}(\mathbf{x})$.
-	\end{tabular}
-	\caption{Ground truth (a-b) and reconstructed (c-d) perfusion maps [\SI{}{\milli\litre\per\minute\per 100\milli\litre}] at the lowest discretization scale. The reconstructed perfusion maps have substantially varying characteristics compared to any of the two grond truth perfusion maps. (a) Global perfusion $P_{\mathrm{s}}(\mathbf{x})$ along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion $P_{\mathrm{v}}(\mathbf{x})$ according to \eqref{eq:perflocal}. (c) Reconstructed perfusion $P_{\mathrm{bSVD}}$ according to \eqref{eq:conv}. (d) Reconstructed perfusion $P_{\mathrm{MS}}$ according to \eqref{eq:MS}.} 
-        \label{fig:perfusionmaps}
-\end{figure*}	
+\begin{figure}[!h]
+\caption{{\bf Ground truth and reconstructed perfusion maps.}
+Ground truth (a-b) and reconstructed (c-d) perfusion maps [\SI{}{\milli\litre\per\minute\per 100\milli\litre}] at the lowest discretization scale. The reconstructed perfusion maps have substantially varying characteristics compared to any of the two grond truth perfusion maps. (a) Global perfusion $P_{\mathrm{s}}(\mathbf{x})$ along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion $P_{\mathrm{v}}(\mathbf{x})$ according to \eqref{eq:perflocal}. (c) Reconstructed perfusion $P_{\mathrm{bSVD}}$ according to \eqref{eq:conv}. (d) Reconstructed perfusion $P_{\mathrm{MS}}$ according to \eqref{eq:MS}.}
+\label{fig:perfusionmaps}
+\end{figure}
+
+
+
 %\begin{figure*}[h!tb]
 %	\centering
-%	\fwd = .30\textwidth
-%	\begin{tabular}{c c c}
-%		\includegraphics[width=\fwd]{figs/qmat.pdf} & \includegraphics[width=\fwd]{figs/perfmat.pdf} & \includegraphics[width=\fwd]{figs/lperfmat.pdf}\\
-%		(a) Flux field $\vq(\mathbf{x})$ & (b) Global perfusion $Ps(\mathbf{x})$. & (c) Local perfusion $P_{\mathrm{v}}(\mathbf{x})$.
+%	\fwd = .23\textwidth
+%	\begin{tabular}{c c c c}
+%		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none-raw.eps} 
+%		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none-raw.eps}
+%		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-bSVD-scaleto-none-raw.eps}
+%		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-MS-scaleto-none-raw.eps}\\
+%		(a) $P_{\mathrm{s}}(\mathbf{x})$. & (b) $P_{\mathrm{v}}(\mathbf{x})$ & (c) $P_{\mathrm{bSVD}}(\mathbf{x})$. & (d) $P_{\mathrm{MS}}(\mathbf{x})$.
 %	\end{tabular}
-%	\caption{Porous media flow model for indicator dilution with a source term in the upper left corner and a sink term in the lower right corner. (a) Flux field by the PDE model used to simulate distribution of the contrast agent. (b) Global perfusion (\SI{}{\milli\litre\per\minute\per 100\milli\litre}) along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion (\SI{}{\milli\litre\per\minute\per 100\milli\litre}) according to \eqref{eq:perflocal}.}
-%        \label{fig:flowpressureperfusion}
+%	\caption{Ground truth (a-b) and reconstructed (c-d) perfusion maps [\SI{}{\milli\litre\per\minute\per 100\milli\litre}] at the lowest discretization scale. The reconstructed perfusion maps have substantially varying characteristics compared to any of the two grond truth perfusion maps. (a) Global perfusion $P_{\mathrm{s}}(\mathbf{x})$ along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion $P_{\mathrm{v}}(\mathbf{x})$ according to \eqref{eq:perflocal}. (c) Reconstructed perfusion $P_{\mathrm{bSVD}}$ according to \eqref{eq:conv}. (d) Reconstructed perfusion $P_{\mathrm{MS}}$ according to \eqref{eq:MS}.} 
+%        \label{fig:perfusionmaps}
 %\end{figure*}	
+
 	%This definition most accurately reflects the physical perfusion at a given location and shows plausible perfusion values, cf. Figure~\ref{fig:flowpressureperfusion}. 
 	We performed two different normalizations of the restored flow, a normalization (i) with respect to volume, and (ii) with respect to surface.  %Average flow over the entire domain $\Omega$ is denoted $\overline{F}$. 
 The volume normalization (i) implies normalizing the flow to  [\SI{}{\milli\litre\per\minute\per100\milli\litre}]. A comparison of ground truth perfusion to reconstructed perfusion using volume normalization is shown in Figure \ref{fig:volnormperf}. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the reconstructed perfusion of $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ is close to the ground truth perfusion $P_{\mathrm{s}}$ and $P_{\mathrm{v}}$. For any voxel size smaller than the entire domain the relative error increases inversely with voxel size, in particular for reconstruction by bSVD. Global perfusion $P_{\mathrm{s}}$ is not depending on voxel size.
-    \begin{figure*}[!htb]
-    	\centering
-    	\fwd = .46\textwidth
-    	\begin{tabular}{c c}
-    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none.eps}\\	
-    		(a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$. \\
-    	\end{tabular}
-    	\caption{Comparison of restored perfusion with ground truth perfusion as a function of varying voxel size. Dotted, blue lines show average perfusion (left axis). Solid, red lines are average, relative errors (RE) of restored perfusion as compared to ground truth perfusion (right axis). (a) Global perfusion $P_{\mathrm{s}}$ is independent of discretization.  Subdivision of the domain into smaller cells leads to a substantial overestimation of perfusion for both reconstruction methods. (b) Local perfusion $P_{\mathrm{v}}$ is dependent on discretization level. A subdivision of the domain leads to substantial underestimation of perfusion when compared to $P_{\mathrm{v}}$ for both reconstruction methods.}
-            \label{fig:volnormperf}
-    \end{figure*}
+
+
+\begin{figure}[!h]
+\caption{{\bf Restored perfusion as a function of voxel size}
+Comparison of restored perfusion with ground truth perfusion as a function of varying voxel size. Dotted, blue lines show average perfusion (left axis). Solid, red lines are average, relative errors (RE) of restored perfusion as compared to ground truth perfusion (right axis). (a) Global perfusion $P_{\mathrm{s}}$ is independent of discretization.  Subdivision of the domain into smaller cells leads to a substantial overestimation of perfusion for both reconstruction methods. (b) Local perfusion $P_{\mathrm{v}}$ is dependent on discretization level. A subdivision of the domain leads to substantial underestimation of perfusion when compared to $P_{\mathrm{v}}$ for both reconstruction methods.}
+\label{fig:volnormperf}
+\end{figure}
+
+
+%    \begin{figure*}[!htb]
+%    	\centering
+%    	\fwd = .46\textwidth
+%    	\begin{tabular}{c c}
+%    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none.eps}\\	
+%    		(a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$. \\
+%    	\end{tabular}
+%    	\caption{Comparison of restored perfusion with ground truth perfusion as a function of varying voxel size. Dotted, blue lines show average perfusion (left axis). Solid, red lines are average, relative errors (RE) of restored perfusion as compared to ground truth perfusion (right axis). (a) Global perfusion $P_{\mathrm{s}}$ is independent of discretization.  Subdivision of the domain into smaller cells leads to a substantial overestimation of perfusion for both reconstruction methods. (b) Local perfusion $P_{\mathrm{v}}$ is dependent on discretization level. A subdivision of the domain leads to substantial underestimation of perfusion when compared to $P_{\mathrm{v}}$ for both reconstruction methods.}
+%            \label{fig:volnormperf}
+%    \end{figure*}
     
 For surface normalization (ii) we first computed the absolute flow $F$ [\SI{}{\milli\litre\per\second}] of ground truth perfusion as well as reconstructed perfusion, and then normalized the flow to the surface area of the distribution volume $F/S$ (e.g. surface area of grid cell), here referred to as surface normalized flow. 
-Reconstruction results of surface normalized flow is shown in Figure \ref{fig:surfnormperf}. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter}) the surface normalized flow of $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ is close to the ground truth. For any voxel size smaller than the entire domain the relative error increases inversely with voxel size, in particular for reconstruction by bSVD. Both global perfusion $P_{\mathrm{s}}$ and local perfusion $P_{\mathrm{v}}$ are dependent on voxel size.
-    \begin{figure*}[!htb]
-    	\centering
-    	\fwd = .46\textwidth
-    	\begin{tabular}{c c}
-    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-S.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-S.eps}\\	
-    		(a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$.
-    	\end{tabular}
-    	\caption{Comparison of surface normalized reconstructed flow [\SI{}{\milli\litre\per\minute/\milli\meter\squared}] to the ground truth as a function of varying voxel size. Dotted, blue lines show surface normalized flow (left axis). Solid, red lines are average, relative errors as compared to flow estimated from ground truth perfusion (right axis). (a) Black, dotted line with filled squares shows that surface normalized flow estimated from ground truth perfusion $P_{\mathrm{s}}$ is dependent on discretization level. Subdivision of the domain into smaller voxels leads to substantial overestimation of surface normalized flow for both reconstruction methods bSVD and MS. (b) Black, dotted line with filled squares shows that surface normalized flow estimated from local perfusion $P_{\mathrm{v}}$ is also dependent on discretization level. A further subdivision of the domain leads to substantial underestimation of the flow for both reconstruction methods bSVD and MS.}
-            \label{fig:surfnormperf}
-    \end{figure*}
+Reconstruction results of surface normalized flow is shown in Figure \ref{fig:surfnormperf}. For a voxel size corresponding to the entire ROI (voxel size = \SI{3}{\milli\meter} isotropic) the surface normalized flow of $P_{\mathrm{bSVD}}$ and $P_{\mathrm{MS}}$ is close to the ground truth. For any voxel size smaller than the entire domain the relative error increases inversely with voxel size, in particular for reconstruction by bSVD. Both global perfusion $P_{\mathrm{s}}$ and local perfusion $P_{\mathrm{v}}$ are dependent on voxel size.
+
+
+\begin{figure}[!h]
+\caption{{\bf Surface normalized flow.}
+Comparison of surface normalized reconstructed flow [\SI{}{\milli\litre\per\minute/\milli\meter\squared}] to the ground truth as a function of varying voxel size. Dotted, blue lines show surface normalized flow (left axis). Solid, red lines are average, relative errors as compared to flow estimated from ground truth perfusion (right axis). (a) Black, dotted line with filled squares shows that surface normalized flow estimated from ground truth perfusion $P_{\mathrm{s}}$ is dependent on discretization level. Subdivision of the domain into smaller voxels leads to substantial overestimation of surface normalized flow for both reconstruction methods bSVD and MS. (b) Black, dotted line with filled squares shows that surface normalized flow estimated from local perfusion $P_{\mathrm{v}}$ is also dependent on discretization level. A further subdivision of the domain leads to substantial underestimation of the flow for both reconstruction methods bSVD and MS.}
+\label{fig:surfnormperf}
+\end{figure}
+
+
+
+%    \begin{figure*}[!htb]
+%    	\centering
+%    	\fwd = .46\textwidth
+%    	\begin{tabular}{c c}
+%    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-S.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-S.eps}\\	
+%    		(a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$.
+%    	\end{tabular}
+%    	\caption{Comparison of surface normalized reconstructed flow [\SI{}{\milli\litre\per\minute/\milli\meter\squared}] to the ground truth as a function of varying voxel size. Dotted, blue lines show surface normalized flow (left axis). Solid, red lines are average, relative errors as compared to flow estimated from ground truth perfusion (right axis). (a) Black, dotted line with filled squares shows that surface normalized flow estimated from ground truth perfusion $P_{\mathrm{s}}$ is dependent on discretization level. Subdivision of the domain into smaller voxels leads to substantial overestimation of surface normalized flow for both reconstruction methods bSVD and MS. (b) Black, dotted line with filled squares shows that surface normalized flow estimated from local perfusion $P_{\mathrm{v}}$ is also dependent on discretization level. A further subdivision of the domain leads to substantial underestimation of the flow for both reconstruction methods bSVD and MS.}
+%            \label{fig:surfnormperf}
+%    \end{figure*}
+
 %	Results from deconvolution by traditional methods are displayed in Table~\ref{tab:resultsSim}. 
 %	For the complete domain (i.e. block size $64 \times 64$), both the MS method as well as the convolution method were able to restore the ground truth perfusion of \SI{50}{\milli\litre\per\minute\per100\milli\litre} accurately with errors of $<1\%$ and $<4\%$ respectively (column header 'Entire ROI').
 %	However, the errors are increasing as methods are applied to smaller blocks of the system.
@@ -762,32 +919,6 @@ Reconstruction results of surface normalized flow is shown in Figure \ref{fig:su
 %	Also, a clear advantage of the bSVD method as compared to MS can be observed for larger block sizes.
 
 	%are also shown in Table~\ref{tab:resultsSim}. The errors are low, independent of block size.
-%	\begin{table}[h!tb]
-%		\scriptsize
-%		\caption{Mean relative error $RE$ and standard deviation (both in \%) of reconstructed perfusion using traditional methods compared to the ground truth values $P_{\mathrm{v}}$, CBV, and $P_{\mathrm{s}}$ from the digital phantom. The traditional models MS and bSVD are able to restore the perfusion for the entire domain, but fail when dividing the domain into smaller block sizes. On the other hand, the blood volume $\phi$ is recovered accurately, independent of block size. $P_{\mathrm{s}}$ is only defined within a coupled system having streamlines and can therefore not be compared with restored perfusion for the entire domain.
-%		} 
-%		\centering
-%		% \begin{tabular}{p{2cm} c c c c c}
-%		% 				& \multicolumn{2}{c}{$P_{\mathrm{v}}$} & CBV & \multicolumn{2}{c}{$P_{\mathrm{s}}$}  \\
-%		% 	block size (mm)	& bSVD				& MS 			&  		& bSVD				& MS 					\\ \toprule
-%		% 	(0.05,0.05) 		& -93\%$\pm$4\%	& -98\%$\pm$2\%	& <1\%  & 753\% $\pm$ 926\%	& 124\% $\pm$ 79\%		\\
-%		% 	(0.23,0.23) 		& -67\%$\pm$16\%& -88\%$\pm$6\%	& <1\% 	& 650\% $\pm$ 757\%	& 114\% $\pm$ 66\% 		\\
-%		% 	(0.5,0.5) 			& -50\%$\pm$23\%& -79\%$\pm$11\%& <1\% 	& 476\% $\pm$ 507\% & 103\% $\pm$ 51\%		\\
-%		% 	entire domain   	& 4\%			& <1\%  & <1\%	& 		&
-%		% \end{tabular}		
-%		\begin{tabular}{p{.3cm} l l l l l}
-%			& & \multicolumn{4}{c}{block size (\si{\mm})} \\
-%										& 		& (0.05,0.05) 		& (0.23,0.23) 	& 	(0.47,0.47)			& Entire ROI \\ \toprule
-%			\multirow{2}{*}{$P_{\mathrm{v}}$}	& bSVD 	& -93\%$\pm$4\% 	& -67\%$\pm$16\%	& -50\%$\pm$23\%	& 4\% 	\\ 
-%									   	& MS 	& -98\%$\pm$2\% 	& -88\%$\pm$6\%		& -79\%$\pm$11\%	& <1\% 	\\ \midrule
-%									CBV & 		& <1\% 				& <1\% 				& <1\% 				& <1\% 	\\ \midrule
-%			\multirow{2}{*}{$P_{\mathrm{s}}$}	& bSVD	& 753\% $\pm$ 926\%	& 650\% $\pm$ 757\%	& 476\% $\pm$ 507\% & 		\\
-%										& MS 	& 124\% $\pm$ 79\%  & 114\% $\pm$ 66\%	& 103\% $\pm$ 51\% 	& 		\\
-%		\end{tabular}
-%
-%		\label{tab:resultsSim}
-%	\end{table}
-
 	
 	%--------------------------------------------------
 	%--------------------------------------------------
@@ -798,27 +929,30 @@ Reconstruction results of surface normalized flow is shown in Figure \ref{fig:su
 	 Perfusion for the entire brain by averaging the concentration time curves first and then performing the bSVD yielded a perfusion of $P_{\mathrm{bSVD}}$ = \SI{24.79}{\milli\litre\per\minute\per100\milli\litre}. As a second step, voxelwise perfusion was estimated, depicted in Figure~\ref{fig:RealData}. These values yielded an average perfusion of $\overline{P}_{\mathrm{bSVD}} = $\SI{64.36}{\milli\litre\per\minute\per100\milli\litre}, corresponding to an overestimation of perfusion with $RE = 159.60\%$ compared to the value obtained for the entire brain.	
 
 
-	\begin{figure*}[!htb]
-		\fwd = .21\textwidth
-		\centering
-		\begin{tabular}{ccc}
-		 {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
-		 (a) & (b) & (c) 
-		\end{tabular}
-		\caption{Real-data reconstruction of perfusion (see Section \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of restored voxelwise CBF [\si{\milli\litre\per\minute\per100\milli\litre}] from a 3D volume of interest. (c) Mean concentration time curve for the complete 3D volume of interest and the curve approximation by bSVD (rel. = relative).}
-	\label{fig:RealData}
-	\end{figure*}
+\begin{figure}[!h]
+\caption{{\bf Reconstructed perfusion in real data.}
+Real-data reconstruction of perfusion (see Section \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of restored voxelwise CBF [\si{\milli\litre\per\minute\per100\milli\litre}] from a 3D volume of interest. (c) Mean concentration time curve for the complete 3D volume of interest and the curve approximation by bSVD (rel. = relative).}
+\label{fig:RealData}
+\end{figure}
 
 
+%	\begin{figure*}[!htb]
+%		\fwd = .21\textwidth
+%		\centering
+%		\begin{tabular}{ccc}
+%		 {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
+%		 (a) & (b) & (c) 
+%		\end{tabular}
+%		\caption{Real-data reconstruction of perfusion (see Section \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of restored voxelwise CBF [\si{\milli\litre\per\minute\per100\milli\litre}] from a 3D volume of interest. (c) Mean concentration time curve for the complete 3D volume of interest and the curve approximation by bSVD (rel. = relative).}
+%	\label{fig:RealData}
+%	\end{figure*}
+
 	
-	
-	%--------------------------------------------------
-	%--------------------------------------------------
-	% Section: Discussion
-	%--------------------------------------------------
-	%--------------------------------------------------	
-	\section{Discussion}
-	\label{sec:conclusion}
+
+%PLOS does not support heading levels beyond the 3rd (no 4th level headings).
+
+\section{Discussion}
+\label{sec:conclusion}
 
 It has previously been shown that perfusion reconstructed from traditional 1C models in a coupled system is discretization dependent (cfr. Figure \ref{fig:perfusion-problem}) \cite{Henkelman1990,Guibert2013,sourbron14}. As a consequence, the obtained results will strongly depend on acquisitions parameters and post-processing tools. It is unknown to which extent the pharmacokinetic modelling overestimates perfusion and whether the error is homogeneously distributed or not. Considering this, the shortcoming of existing perfusion formulations has not been sufficiently well accounted for within clinical studies \cite{Mokin16,Kickingereder15}. To clarify the potential impact of limitations seen within existing perfusion models, our main contribution of the current work is to quantify the observed error. To the best of our knowledge, such quantification has not been carried out previously.
 	%To establish ground truth values, we developed a PDE based digital phantom to simulate blood flow as porous media flow within a slab of capillary tissue.
@@ -861,45 +995,123 @@ In addition to the observed global error we also observed inhomogeneous reconstr
 %The reason for this discrepancy is dispersion of the AIF within the capillary system, not accounted for in traditional 1C models. 
 In analyses of voxelwise perfusion with high resolution the local error can become large within each capillary patch.
  
-	Regarding the CBV estimates, estimation of blood volume is stable, and varying voxel size had little impact on the results. These results are in agreement with the analyses in Section \ref{sec:CBV} supporting the usage of \eqref{eq:CBV} for computing voxelwise CBV with high accuracy for any voxel size.
+Regarding the CBV estimates, estimation of blood volume is stable, and varying voxel size had little impact on the results. These results are in agreement with the analyses in Section \ref{sec:CBV} supporting the usage of \eqref{eq:CBV} for computing voxelwise CBV with high accuracy for any voxel size.
 	
-	\section{Conclusion}
-	Our experiments confirm that traditional 1C models for perfusion perform well if they are applied to the entire domain.
+
+
+\section{Conclusion}
+
+Our experiments confirm that traditional 1C models for perfusion perform well if they are applied to the entire domain.
 	However, when they are applied to fractions within a coupled domain, perfusion becomes scale dependent.
 	We quantified substantial and increasing reconstruction errors of perfusion as a function of smaller voxel size, and we also found similar effects in real data. The observed reconstruction error for a resolution found in clinical MR scanners was between $\sim$$20\%$ to $\sim$$40\%$. The reason for the observed errors is not numerical instabilities in the deconvolution but rather that traditional 1C models will not account for correct distribution volume within smaller fractions of the region of interest. As a consequence, interpretation of absolute perfusion for the purpose of diagnosis and disease monitoring must be undertaken with care, and comparison of perfusion values from individual dynamic data sets with different resolution is not recommended. 
 	%The scale-dependency is expected to become more pronounced in future as imaging hardware is constantly improving in spatial resolution.
 	%We expect to find overestimation also in pathological tissue, and recommend to be take this effect into consideration for clinical evaluation of such data. 
 
-\section*{Conflict of interest}
-None of the authors have a financial and personal relationships with other people or organisations that could inappropriately influence (bias) the work.
-There were no study sponsors in the current study. The work was supported by the University of Bergen, University of L\"ubeck and Christian Michelsen Research.
+%\section{Supporting information}
 
-%% The Appendices part is started with the command \appendix;
-%% appendix sections are then done as normal sections
-%% \appendix
+%\section{Acknowledgments}
+%Cras egestas velit mauris, eu mollis turpis pellentesque sit amet. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam id pretium nisi. Sed ac quam id nisi malesuada congue. Sed interdum aliquet augue, at pellentesque quam rhoncus vitae.
 
-%% \section{}
-%% \label{}
+%
+%\fwd = .4\textwidth
+%\fht = .1\textheight	
+%\begin{figure*}[p]
+%	{
+%	\small
+%	% \begin{tabular}{p{\fwd} p{\fwd}}
+%	\begin{tabular}{c c}
+%		\input{./figs/ConvVsPDE.tikz} & \input{./figs/IDecVSIAna.tikz}\\
+%	\end{tabular}
+%	}
+%	\caption*{}
+%	\label{fig:VoxelCompFIG}
+%\end{figure*}
+%\clearpage
+%
+%	\begin{figure*}[p]
+%	    \centering
+%	    \begin{overpic}[scale=0.3]{figs/perfusion-problem.eps}
+%	    	\put(10,70){\color{black}$F_0$}
+%			\put(48,70){\color{black}$F_0$}
+%			\put(84,70){\color{black}$\Delta F_0$}
+%			\put(10,33){\color{black}$2V$}
+%			\put(49,20){\color{black}$V$}
+%			\put(49,45){\color{black}$V$}
+%			\put(91,42){\color{black}$\Delta V$}
+%		\end{overpic}
+%	    \caption*{}
+%	    \label{fig:perfusion-problemFIG}
+%	\end{figure*}
+%\clearpage
+%
+%\begin{figure*}[p]
+%	\centering
+%	\fwd = .23\textwidth
+%	\begin{tabular}{c c c c}
+%		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none-raw.eps} 
+%		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none-raw.eps}
+%		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-bSVD-scaleto-none-raw.eps}
+%		& \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-MS-scaleto-none-raw.eps}\\
+%		(a) $P_{\mathrm{s}}(\mathbf{x})$. & (b) $P_{\mathrm{v}}(\mathbf{x})$ & (c) $P_{\mathrm{bSVD}}(\mathbf{x})$. & (d) $P_{\mathrm{MS}}(\mathbf{x})$.
+%	\end{tabular}
+%	\caption*{} 
+%        \label{fig:perfusionmapsFIG}
+%\end{figure*}	
+%\clearpage
+%
+%    \begin{figure*}[p]
+%    	\centering
+%    	\fwd = .46\textwidth
+%    	\begin{tabular}{c c}
+%    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none.eps}\\	
+%    		(a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$. \\
+%    	\end{tabular}
+%    	\caption*{}
+%            \label{fig:volnormperfFIG}
+%    \end{figure*}
+%\clearpage
+%
+%    \begin{figure*}[p]
+%    	\centering
+%    	\fwd = .46\textwidth
+%    	\begin{tabular}{c c}
+%    		\includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-S.eps} & \includegraphics[width=\fwd]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-S.eps}\\	
+%    		(a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$.
+%    	\end{tabular}
+%    	\caption*{}
+%            \label{fig:surfnormperfFIG}
+%    \end{figure*}
+%\clearpage
+%
+%	\begin{figure*}[p]
+%		\fwd = .21\textwidth
+%		\centering
+%		\begin{tabular}{ccc}
+%		 {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = \fwd]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
+%		 (a) & (b) & (c) 
+%		\end{tabular}
+%		\caption*{}
+%	\label{fig:RealDataFIG}
+%	\end{figure*}
+%
+\nolinenumbers
 
-%% If you have bibdatabase file and want bibtex to generate the
-%% bibitems, please use
-%%
+% Either type in your references using
+% \begin{thebibliography}{}
+% \bibitem{}
+% Text
+% \end{thebibliography}
+%
+% or
+%
+% Compile your BiBTeX database using our plos2015.bst
+% style file and paste the contents of your .bbl file
+% here. See http://journals.plos.org/plosone/s/latex for 
+% step-by-step instructions.
+% 
 \bibliography{./bibliography}
-\bibliographystyle{elsarticle-num} 
-%%  \bibliography{<your bibdatabase>}
+\bibliographystyle{plos2015} 
 
-%% else use the following coding to input the bibitems directly in the
-%% TeX file.
 
-%\begin{thebibliography}{00}
-
-%% \bibitem{label}
-%% Text of bibliographic item
-
-%\bibitem{}
-
-%\end{thebibliography}
 \end{document}
-\endinput
-%%
-%% End of file `elsarticle-template-num.tex'.
+

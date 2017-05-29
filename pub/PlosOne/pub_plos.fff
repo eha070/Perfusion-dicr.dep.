@@ -1,0 +1,42 @@
+\begin{figure}[!h]
+\caption{{\bf Upstream dependency within traditional models.}
+Left: Red curve shows the tissue concentrations ($C$) of the continuous PDE model at location [32,35]. Blue curve shows recursive convolution by \eqref{eq:voxelcurve} with experimental value of $P_{\mathrm{v}}=\SI{5328}{\milli\litre\per\minute\per100\milli\litre}$ at the given location and $c_{\mathrm{in}}$ taken locally from upstream voxels around the simulated voxel. The two curves have an almost perfect overlap. Note that the numbers used for the perfusion is unrealisticely high since normalization is performed with respect to the volume of only one voxel. Right: Red curve shows the computed impulse response functions (IR) at location [1,20] using the global arterial input function. Blue curve shows the analytic impulse response function given by a convolution over all upstream flow. The two curves have an almost perfect overlap. These numerical experiments support that the computed impulse response function by traditional methods is not the directly feeding impulse response function, but rather a recursive impulse response function depending on all upstream voxels.}
+\label{fig:VoxelComp}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}[!h]
+\caption{{\bf Perfusion as a discretization dependent measure.}
+Perfusion within a small volume. Left: A compartment with volume $2V$ is exposed to a flow $F_0$ [$\si{\milli\meter\cubed\per\second}$] of fluid. By definition, the perfusion within this compartment becomes $P_{1} = F_0/(2V)$. Middle: The same volume is divided into two compartments (e.g. voxels), and the perfusion for each of the compartments becomes $P_{2} = F_0/V = 2P_{1}$. Discrepancy between the two discretizations occurs because the flow is counted twice as it is fed from one voxel to the other. Right: As a solution to the described problem we rather pick out a true distribution volume $\Delta V$ (area in this 2D sketch), which is a small area around a given streamline along the centre line of the grey area. This is the true distribution volume (area in this 2D sketch) which is fed with arterial blood from the incoming fractional flow $\Delta F_0$. The correct perfusion within $\Delta V$ is therefore $\Delta F_0/\Delta V$. The entire compartment can further be divided into similar infinitesimal distribution volumes, thus providing locally correct perfusion estimates.}
+\label{fig:perfusion-problem}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}[!h]
+\caption{{\bf Ground truth and reconstructed perfusion maps.}
+Ground truth (a-b) and reconstructed (c-d) perfusion maps [\SI{}{\milli\litre\per\minute\per 100\milli\litre}] at the lowest discretization scale. The reconstructed perfusion maps have substantially varying characteristics compared to any of the two grond truth perfusion maps. (a) Global perfusion $P_{\mathrm{s}}(\mathbf{x})$ along the streamlines according to \eqref{eq:flux2perf}. (c) Local perfusion $P_{\mathrm{v}}(\mathbf{x})$ according to \eqref{eq:perflocal}. (c) Reconstructed perfusion $P_{\mathrm{bSVD}}$ according to \eqref{eq:conv}. (d) Reconstructed perfusion $P_{\mathrm{MS}}$ according to \eqref{eq:MS}.}
+\label{fig:perfusionmaps}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}[!h]
+\caption{{\bf Restored perfusion as a function of voxel size}
+Comparison of restored perfusion with ground truth perfusion as a function of varying voxel size. Dotted, blue lines show average perfusion (left axis). Solid, red lines are average, relative errors (RE) of restored perfusion as compared to ground truth perfusion (right axis). (a) Global perfusion $P_{\mathrm{s}}$ is independent of discretization.  Subdivision of the domain into smaller cells leads to a substantial overestimation of perfusion for both reconstruction methods. (b) Local perfusion $P_{\mathrm{v}}$ is dependent on discretization level. A subdivision of the domain leads to substantial underestimation of perfusion when compared to $P_{\mathrm{v}}$ for both reconstruction methods.}
+\label{fig:volnormperf}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}[!h]
+\caption{{\bf Surface normalized flow.}
+Comparison of surface normalized reconstructed flow [\SI{}{\milli\litre\per\minute/\milli\meter\squared}] to the ground truth as a function of varying voxel size. Dotted, blue lines show surface normalized flow (left axis). Solid, red lines are average, relative errors as compared to flow estimated from ground truth perfusion (right axis). (a) Black, dotted line with filled squares shows that surface normalized flow estimated from ground truth perfusion $P_{\mathrm{s}}$ is dependent on discretization level. Subdivision of the domain into smaller voxels leads to substantial overestimation of surface normalized flow for both reconstruction methods bSVD and MS. (b) Black, dotted line with filled squares shows that surface normalized flow estimated from local perfusion $P_{\mathrm{v}}$ is also dependent on discretization level. A further subdivision of the domain leads to substantial underestimation of the flow for both reconstruction methods bSVD and MS.}
+\label{fig:surfnormperf}
+\end{figure}
+\efloatseparator
+ 
+\begin{figure}[!h]
+\caption{{\bf Reconstructed perfusion in real data.}
+Real-data reconstruction of perfusion (see Section \ref{sec:RealData} for details). (a) AIF manually selected from the MCA. (b) One slice of restored voxelwise CBF [\si{\milli\litre\per\minute\per100\milli\litre}] from a 3D volume of interest. (c) Mean concentration time curve for the complete 3D volume of interest and the curve approximation by bSVD (rel. = relative).}
+\label{fig:RealData}
+\end{figure}
+\efloatseparator
+ 

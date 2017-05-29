@@ -1,0 +1,67 @@
+\begin{figure*}[]
+    \centering
+    \begin{overpic}[scale=0.3]{figs/perfusion-problem.eps}
+     \put(10,70){\color{black}$F_0$}
+\put(48,70){\color{black}$F_0$}
+\put(84,70){\color{black}$\Delta F_0$}
+\put(10,33){\color{black}$2V$}
+\put(49,20){\color{black}$V$}
+\put(49,45){\color{black}$V$}
+\put(91,42){\color{black}$\Delta V$}
+\end{overpic}
+    \caption*{}
+    \label{fig:perfusion-problemFIG}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[]
+\centering
+0.4\textwidth = .23\textwidth
+\begin{tabular}{c c c c}
+\includegraphics[width=0.4\textwidth]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none-raw.eps}
+& \includegraphics[width=0.4\textwidth]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none-raw.eps}
+& \includegraphics[width=0.4\textwidth]{figs/E110_CBFOnDifferentResolutions_plot-bSVD-scaleto-none-raw.eps}
+& \includegraphics[width=0.4\textwidth]{figs/E110_CBFOnDifferentResolutions_plot-MS-scaleto-none-raw.eps}\\
+(a) $P_{\mathrm{s}}(\mathbf{x})$. & (b) $P_{\mathrm{v}}(\mathbf{x})$ & (c) $P_{\mathrm{bSVD}}(\mathbf{x})$. & (d) $P_{\mathrm{MS}}(\mathbf{x})$.
+\end{tabular}
+\caption*{}
+        \label{fig:perfusionmapsFIG}
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[]
+     \centering
+     0.4\textwidth = .46\textwidth
+     \begin{tabular}{c c}
+     \includegraphics[width=0.4\textwidth]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-none.eps} & \includegraphics[width=0.4\textwidth]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-none.eps}\\
+     (a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$. \\
+     \end{tabular}
+     \caption*{}
+            \label{fig:volnormperfFIG}
+    \end{figure*}
+\clearpage
+
+    \begin{figure*}[]
+     \centering
+     0.4\textwidth = .46\textwidth
+     \begin{tabular}{c c}
+     \includegraphics[width=0.4\textwidth]{figs/E110_CBFOnDifferentResolutions_plot-Ps-scaleto-S.eps} & \includegraphics[width=0.4\textwidth]{figs/E110_CBFOnDifferentResolutions_plot-Pv-scaleto-S.eps}\\
+     (a) Comparison to global perfusion $P_{\mathrm{s}}$. & (b) Comparison to local perfusion $P_{\mathrm{v}}$.
+     \end{tabular}
+     \caption*{}
+            \label{fig:surfnormperfFIG}
+    \end{figure*}
+\clearpage
+
+\begin{figure*}[]
+0.4\textwidth = .21\textwidth
+\centering
+\begin{tabular}{ccc}
+ {\small\input{./figs/real_AIF.tikz}} & \includegraphics[width = 0.4\textwidth]{./figs/real_axial160.pdf} & {\small\input{./figs/real_meanC.tikz}} \\
+ (a) & (b) & (c)
+\end{tabular}
+\caption*{}
+\label{fig:RealDataFIG}
+\end{figure*}
+\efloatseparator
+ 

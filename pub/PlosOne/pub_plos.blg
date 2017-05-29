@@ -1,0 +1,56 @@
+This is BibTeX, Version 0.99d (TeX Live 2012)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: pub_plos.aux
+The style file: plos2015.bst
+Illegal, another \bibstyle command---line 83 of file pub_plos.aux
+ : \bibstyle
+ :          {plos2015}
+I'm skipping whatever remains of this command
+Database file #1: ./bibliography.bib
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Warning--empty pages in Mori1998
+You've used 27 entries,
+            3058 wiz_defined-function locations,
+            822 strings with 9068 characters,
+and the built_in function-call counts, 28302 in all, are:
+= -- 3617
+> -- 232
+< -- 5
++ -- 114
+- -- 57
+* -- 2103
+:= -- 3221
+add.period$ -- 106
+call.type$ -- 27
+change.case$ -- 6
+chr.to.int$ -- 12
+cite$ -- 28
+duplicate$ -- 2758
+empty$ -- 2636
+format.name$ -- 77
+if$ -- 6602
+int.to.chr$ -- 0
+int.to.str$ -- 27
+missing$ -- 206
+newline$ -- 138
+num.names$ -- 27
+pop$ -- 346
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 343
+stack$ -- 0
+substring$ -- 4514
+swap$ -- 549
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 1
+while$ -- 225
+width$ -- 29
+write$ -- 294
+(There was 1 error message)
