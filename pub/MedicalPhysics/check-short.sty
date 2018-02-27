@@ -1,0 +1,106 @@
+%% load necessary packages
+\RequirePackage[T1]{fontenc}
+\RequirePackage[english]{babel}
+\RequirePackage{mathtools,amsfonts,amsthm}
+\RequirePackage{graphicx}
+\RequirePackage{float} 			%exact placement of graphics with H
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{datetime}
+\RequirePackage{ifdraft}
+\RequirePackage{lastpage}
+\RequirePackage{scrpage2}
+\RequirePackage{siunitx}
+\RequirePackage{booktabs}
+\RequirePackage{pgfplots} 
+\RequirePackage{xargs}
+\RequirePackage{xcolor} 
+\RequirePackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+
+
+
+%set pfgplots for matlab2tikz
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
+
+%setup siunitx. Hint: \si{\milli\litre\per100\gram} and \SI{20}{\milli\litre\per100\gram}
+\sisetup{per-mode = symbol,qualifier-mode=brackets}
+\DeclareSIQualifier{\blood}{blood}
+
+%default page-style
+\pagestyle{scrheadings}
+\cfoot{}
+\ofoot{ \thepage/\pageref{LastPage} }
+
+%% if draft: set heading
+\ifdraft{
+\setheadsepline{.5pt}
+\ihead{\pagemark}
+\ohead{\textcolor{yellow}{\today, \currenttime}}
+}
+
+
+%commands for signature
+%good width for my signature is 28ex
+\newcommand{\signature}[1]{
+			\begin{minipage}[t]{#1}
+				\emph{
+				Constantin Heck\\
+				MIC, University of Lübeck\\
+				heck@mic.uni-luebeck.de\\
+				\today}
+			\end{minipage}
+}
+\newcommand{\signatureAl}[2]{
+			\begin{minipage}[t]{#1}
+				\emph{#2}
+			\end{minipage}
+}
+
+
+
+%% set text layout
+\frenchspacing
+
+%% set math commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\diff}{\mathrm{d}}
+\newcommand{\diffint}{\,\mathrm{d}}
+\newcommand{\diffop}[1]{\frac{\diff}{\diff #1}}
+\newcommand{\diffopcal}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\ip}[1]{\left\langle #1 \right\rangle}
+
+%different commands
+\newcommand{\CHalert}[1]{\textcolor{red}{CH: #1}}
+
+%reviewers
+\newcommandx{\roNote}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{\textbf{R1:} #2}}
+\newcommand{\roAlert}[1]{\textcolor{red}{#1}}
+
+\newcommandx{\rtNote}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{\textbf{R2:} #2}}
+\newcommand{\rtAlert}[1]{\textcolor{blue}{#1}}
+
+\newcommandx{\rthNote}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,#1]{\textbf{R3:} #2}}
+\newcommand{\rthAlert}[1]{\textcolor{green}{#1}}
+
+%% define theorems
+\theoremstyle{plain} %theoremstyle theorem
+\newtheorem{theorem}{Theorem}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem{corrolary}{Corrolary}
+\newtheorem*{corrolary*}{Corrolary}
+
+\theoremstyle{definition} %theoremstyle definition
+\newtheorem{definition}{Definition}
+\newtheorem*{definition*}{Definition}
+\newtheorem{assumptions}{Assumptions}
+\newtheorem*{assumptions*}{Assumptions}
+
+\theoremstyle{remark} %theoremstyle plain
+\newtheorem{remark}{Remark}
+\newtheorem*{remark*}{Remark}

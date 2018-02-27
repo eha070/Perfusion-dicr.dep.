@@ -1,0 +1,625 @@
+% This file was created with JabRef 2.10.
+% Encoding: MacRoman
+
+
+@Article{ostergaard96,
+  Title                    = {High resolution measurement of cerebral blood flow using intravascular tracer bolus passages. Part {I}: Mathematical approach and statistical analysis},
+  Author                   = {{\O}stergaard, L and others},
+  Journal                  = {Magn Reson Med},
+  Year                     = {1996},
+  Number                   = {5},
+  Pages                    = {715--25},
+  Volume                   = {36},
+
+  Publisher                = {Wiley Online Library}
+}
+
+@Book{Aarnes2007,
+  Title                    = {An introduction to the numerics of flow in porous media using {M}atlab},
+  Author                   = {Aarnes, J E and Gimse, T and Lie, K-A},
+  Publisher                = {Springer Verlag},
+  Year                     = {2007},
+
+  Booktitle                = {Geometric Modelling, Numerical Simulation, and Optimization},
+  Pages                    = {265--306}
+}
+
+@Article{abels10,
+  Title                    = {Perfusion {CT} in acute ischemic stroke: a qualitative and quantitative comparison of deconvolution and maximum slope approach},
+  Author                   = {Abels, B and others},
+  Journal                  = {Am J Neuroradiol},
+  Year                     = {2010},
+  Number                   = {9},
+  Pages                    = {1690--98},
+  Volume                   = {31},
+
+  Publisher                = {Am Soc Neuroradiology}
+}
+
+@Article{Akkouchi08,
+  Title                    = {On the convolution of exponential distributions},
+  Author                   = {Akkouchi, M},
+  Journal                  = {J Chungcheong Math Soc},
+  Year                     = {2008},
+  Number                   = {4},
+  Pages                    = {501--10},
+  Volume                   = {21}
+}
+
+@Article{Arkink2012,
+  Title                    = {Cerebral perfusion changes in migraineurs: a voxelwise comparison of interictal dynamic susceptibility contrast {MRI} measurements},
+  Author                   = {Arkink, E B and others},
+  Journal                  = {Cephalalgia},
+  Year                     = {2012},
+
+  Month                    = {Jan},
+  Number                   = {4},
+  Pages                    = {279–88},
+  Volume                   = {32},
+
+  Doi                      = {10.1177/0333102411435985},
+  ISSN                     = {1468-2982},
+  Owner                    = {erlend},
+  Publisher                = {SAGE Publications},
+  Timestamp                = {2015.05.19},
+  Url                      = {http://dx.doi.org/10.1177/0333102411435985}
+}
+
+@Article{axel80,
+  Title                    = {Cerebral blood flow determination by rapid-sequence computed tomography: theoretical analysis.},
+  Author                   = {Axel, L},
+  Journal                  = {Radiology},
+  Year                     = {1980},
+  Number                   = {3},
+  Pages                    = {679--86},
+  Volume                   = {137}
+}
+
+@Article{bivard13,
+  Title                    = {Perfusion {CT} in acute stroke: a comprehensive analysis of infarct and penumbra},
+  Author                   = {Bivard, A and others},
+  Journal                  = {Radiology},
+  Year                     = {2013},
+  Number                   = {2},
+  Pages                    = {543--50},
+  Volume                   = {267},
+
+  Publisher                = {Radiological Society of North America, Inc.}
+}
+
+@Article{boutelier12,
+  Title                    = {Bayesian hemodynamic parameter estimation by bolus tracking perfusion weighted imaging},
+  Author                   = {Boutelier, T and others},
+  Journal                  = {IEEE T Med Imaging},
+  Year                     = {2012},
+  Number                   = {7},
+  Pages                    = {1381--95},
+  Volume                   = {31},
+
+  Publisher                = {IEEE}
+}
+
+@Article{calamante99,
+  Title                    = {Measuring cerebral blood flow using magnetic resonance imaging techniques},
+  Author                   = {Calamante, F and others},
+  Journal                  = {J Cerebr Blood F Met},
+  Year                     = {1999},
+  Number                   = {7},
+  Pages                    = {701--35},
+  Volume                   = {19},
+
+  Publisher                = {Nature Publishing Group}
+}
+
+@Article{calamante03,
+  Title                    = {Estimation of bolus dispersion effects in perfusion {MRI} using image-based computational fluid dynamics},
+  Author                   = {Calamante, F and Yim, PJ and Cebral, JR},
+  Journal                  = {Neuroimage},
+  Year                     = {2003},
+  Number                   = {2},
+  Pages                    = {341--53},
+  Volume                   = {19},
+
+  Publisher                = {Elsevier}
+}
+
+@InProceedings{chan04,
+  Title                    = {Simplified gamma-variate fitting of perfusion curves},
+  Author                   = {Chan, A A and Nelson, S J},
+  Booktitle                = {ISBI},
+  Year                     = {2004},
+  Organization             = {IEEE},
+  Pages                    = {1067--70}
+}
+
+@Article{Chen2011,
+  Title                    = {Voxel-level comparison of arterial spin-labeled perfusion {MRI} and {FDG-PET} in Alzheimer disease},
+  Author                   = {Chen, Y and others},
+  Journal                  = {Neurology},
+  Year                     = {2011},
+  Number                   = {22},
+  Pages                    = {1977--85},
+  Volume                   = {77},
+  Owner                    = {erlend},
+  Publisher                = {AAN Enterprises},
+  Timestamp                = {2015.05.19}
+}
+
+@Article{Cho2011,
+  Title                    = {Hemorheology and microvascular disorders},
+  Author                   = {Cho, Y-I and Cho, D J},
+  Journal                  = {Korean Circ J},
+  Year                     = {2011},
+  Number                   = {6},
+  Pages                    = {287--95},
+  Volume                   = {41},
+
+  Owner                    = {erlend},
+  Timestamp                = {2016.03.21}
+}
+
+@Article{Cookson2012,
+  Title                    = {A novel porous mechanical framework for modelling the interaction between coronary perfusion and myocardial mechanics},
+  Author                   = {Cookson, A N and others},
+  Journal                  = {J Biomech},
+  Year                     = {2012},
+  Number                   = {5},
+  Pages                    = {850--55},
+  Volume                   = {45},
+
+  Owner                    = {erlend},
+  Publisher                = {Elsevier},
+  Timestamp                = {2016.03.22}
+}
+
+@Article{Darcy56,
+  Title                    = {Les Fontaines Publiques de la Ville de Dijon},
+  Author                   = {Darcy, H},
+  Journal                  = {Victor Dalmont},
+  Year                     = {1856}
+}
+
+@Article{Eknoyan2002,
+  Title                    = {K/DOQI clinical practice guidelines for chronic kidney disease: evaluation, classification, and stratification-foreword},
+  Author                   = {Eknoyan, G and Levin, N W},
+  Journal                  = {Am J Kidney Dis},
+  Year                     = {2002},
+  Number                   = {2},
+  Pages                    = {S14--S266},
+  Volume                   = {39},
+
+  Owner                    = {erlend},
+  Publisher                = {WB SAUNDERS CO-ELSEVIER INC 1600 JOHN F KENNEDY BOULEVARD, STE 1800, PHILADELPHIA, PA 19103-2899 USA},
+  Timestamp                = {2016.02.24}
+}
+
+@Book{evans98,
+  Title                    = {Partial differential equations},
+  Author                   = {Evans, L},
+  Publisher                = {American Mathematical Society},
+  Year                     = {1998},
+
+  Address                  = {Providence, Rhode Island},
+  Edition                  = {2nd}
+}
+
+@Article{Feng2013,
+  Title                    = {Voxel-level comparison of arterial spin-labeled perfusion magnetic resonance imaging in adolescents with internet gaming addiction},
+  Author                   = {Feng, Q and others},
+  Journal                  = {Behav Brain Funct},
+  Year                     = {2013},
+  Number                   = {1},
+  Pages                    = {33},
+  Volume                   = {9},
+  Owner                    = {erlend},
+  Timestamp                = {2015.05.19}
+}
+
+
+@Article{hunziker79,
+  Title                    = {The aging human cerebral cortex: a stereological characterization of changes in the capillary net},
+  Author                   = {Hunziker, O and Abdel'al, S and Schulz, U},
+  Journal                  = {J Gerontol},
+  Year                     = {1979},
+  Number                   = {3},
+  Pages                    = {345--50},
+  Volume                   = {34},
+
+  Publisher                = {Oxford University Press}
+}
+
+@Article{kenner89,
+  Title                    = {The measurement of blood density and its meaning},
+  Author                   = {Kenner, T},
+  Journal                  = {Basic Res Cardiol},
+  Year                     = {1989},
+  Number                   = {2},
+  Pages                    = {111--24},
+  Volume                   = {84}
+}
+
+@Article{klotz99,
+  Title                    = {Perfusion measurements of the brain: using dynamic {CT} for the quantitative assessment of cerebral ischemia in acute stroke},
+  Author                   = {Klotz, E and K{\"o}nig, M},
+  Journal                  = {Eur J Radiol},
+  Year                     = {1999},
+  Number                   = {3},
+  Pages                    = {170--84},
+  Volume                   = {30},
+
+  Publisher                = {Elsevier}
+}
+
+@Article{Kordecki97,
+  Title                    = {Reliability bounds for multistage structures with independent components},
+  Author                   = {Kordecki, W},
+  Journal                  = {Stat Probabil Lett},
+  Year                     = {1997},
+  Number                   = {1},
+  Pages                    = {43--51},
+  Volume                   = {34},
+
+  Publisher                = {Elsevier}
+}
+
+@Article{kudo10,
+  Title                    = {Differences in {CT} Perfusion Maps Generated by Different Commercial Software: Quantitative Analysis by Using Identical Source Data of Acute Stroke Patients 1},
+  Author                   = {Kudo, K and others},
+  Journal                  = {Radiology},
+  Year                     = {2010},
+  Number                   = {1},
+  Pages                    = {200--09},
+  Volume                   = {254},
+
+  Publisher                = {Radiological Society of North America, Inc.}
+}
+
+@Article{Meier54,
+  Title                    = {On the Theory of the Indicator-Dilution Method for measurement of Blood Flow and Volume},
+  Author                   = {Meier, P and Zierler, K L},
+  Journal                  = {J Appl Physiol},
+  Year                     = {1954},
+  Number                   = {12},
+  Pages                    = {731--44},
+  Volume                   = {6}
+}
+
+@Article{Michler2013,
+  Title                    = {A computationally efficient framework for the simulation of cardiac perfusion using a multi-compartment {Darcy} porous-media flow model},
+  Author                   = {Michler, C and others},
+  Journal                  = {Int J Numer Method Biomed Eng},
+  Year                     = {2013},
+  Number                   = {2},
+  Pages                    = {217--32},
+  Volume                   = {29},
+
+  Owner                    = {erlend},
+  Publisher                = {Wiley Online Library},
+  Timestamp                = {2016.03.22}
+}
+
+@Article{miles91,
+  Title                    = {Measurement of tissue perfusion by dynamic computed tomography},
+  Author                   = {Miles, K A},
+  Journal                  = {Br J Radiol},
+  Year                     = {1991},
+  Number                   = {761},
+  Pages                    = {409--12},
+  Volume                   = {64},
+
+  Publisher                = {The British Institute of Radiology}
+}
+
+@InProceedings{Mori1998,
+  Title                    = {3{D} brain fiber reconstruction from diffusion {MRI}},
+  Author                   = {Mori, S and Crain, BJ and van Zijl, P C},
+  Booktitle                = {Proceedings of International Conference on Functional Mapping of the Human Brain},
+  Year                     = {1998}
+}
+
+@Article{mouridsen06,
+  Title                    = {Bayesian estimation of cerebral perfusion using a physiological model of microvasculature},
+  Author                   = {Mouridsen, K and others},
+  Journal                  = {Neuroimage},
+  Year                     = {2006},
+  Number                   = {2},
+  Pages                    = {570--79},
+  Volume                   = {33},
+
+  Publisher                = {Elsevier}
+}
+
+@Article{Obrist1984,
+  Title                    = {Cerebral blood flow and metabolism in comatose patients with acute head injury: relationship to intracranial hypertension},
+  Author                   = {Obrist, W D and others},
+  Journal                  = {J Neurosurg},
+  Year                     = {1984},
+  Number                   = {2},
+  Pages                    = {241--53},
+  Volume                   = {61},
+
+  __markedentry            = {[erlend:]},
+  Owner                    = {erlend},
+  Publisher                = {Journal of Neurosurgery Publishing Group},
+  Timestamp                = {2016.03.23}
+}
+
+@Book{Patankar80,
+  Title                    = {Numerical Heat Transfer and Fluid Flow},
+  Author                   = {Patankar, S},
+  Publisher                = {Hemishpere Publishing Corporation},
+  Year                     = {1980},
+  Edition                  = {1st}
+}
+
+@Article{Petrella2000,
+  Title                    = {MR perfusion imaging of the brain: techniques and applications},
+  Author                   = {Petrella, J R and Provenzale, J M},
+  Journal                  = {Am J Roentgenol},
+  Year                     = {2000},
+  Number                   = {1},
+  Pages                    = {207--19},
+  Volume                   = {175},
+
+  __markedentry            = {[erlend:]},
+  Owner                    = {erlend},
+  Publisher                = {Am Roentgen Ray Soc},
+  Timestamp                = {2016.02.22}
+}
+
+@Article{rosencranz06,
+  Title                    = {Clinical laboratory measurement of serum, plasma, and blood viscosity},
+  Author                   = {Rosencranz, R and Bogen, S A},
+  Journal                  = {Am J Clin Pathol},
+  Year                     = {2006},
+
+  Month                    = {Jun},
+  Pages                    = {78--86},
+  Volume                   = {125 Suppl}
+}
+
+@Article{sasaki13,
+  Title                    = {Assessment of the accuracy of a Bayesian estimation algorithm for perfusion {CT} by using a digital phantom},
+  Author                   = {Sasaki, M and others},
+  Journal                  = {Neuroradiology},
+  Year                     = {2013},
+  Number                   = {10},
+  Pages                    = {1197--1203},
+  Volume                   = {55},
+
+  Publisher                = {Springer}
+}
+
+@Article{Smith00,
+  Title                    = {Whole brain quantitative {CBF}, {CBV}, and {MTT} measurements using {MRI} bolus tracking: Implementation and application to data acquired from hyperacute stroke patients},
+  Author                   = {Smith, A M and others},
+  Journal                  = {J Magn Reson Imaging},
+  Year                     = {2000},
+  Number                   = {3},
+  Pages                    = {400--10},
+  Volume                   = {12},
+
+  Publisher                = {Wiley-Liss Inc.}
+}
+
+@Article{sourbron14,
+  Title                    = {A tracer-kinetic field theory for medical imaging},
+  Author                   = {Sourbron, S P},
+  Journal                  = {IEEE Trans Med Imaging},
+  Year                     = {2014},
+
+  Publisher                = {IEEE}
+}
+
+@Article{sourbron13,
+  Title                    = {Classic Models for Dynamic Contrast-Enhanced {MRI}},
+  Author                   = {Sourbron, S P and Buckley, D L},
+  Journal                  = {NMR Biomed},
+  Year                     = {2013},
+  Number                   = {8},
+  Pages                    = {1004--27},
+  Volume                   = {26},
+
+  Publisher                = {Wiley Online Library}
+}
+
+@Article{straka10,
+  Title                    = {Real-time diffusion-perfusion mismatch analysis in acute stroke},
+  Author                   = {Straka, M and others},
+  Journal                  = {J Magn Reson Imaging},
+  Year                     = {2010},
+  Number                   = {5},
+  Pages                    = {1024--37},
+  Volume                   = {32},
+
+  Publisher                = {Wiley Online Library}
+}
+
+@Article{thacker03,
+  Title                    = {Can dynamic susceptibility contrast magnetic resonance imaging perfusion data be analyzed using a model based on directional flow?},
+  Author                   = {Thacker, N A and Scott, M L J and Jackson, A},
+  Journal                  = {J Magn Reson Imaging},
+  Year                     = {2003},
+  Number                   = {2},
+  Pages                    = {241--55},
+  Volume                   = {17},
+
+  Publisher                = {Wiley Online Library}
+}
+
+@Article{Townsley2012,
+  Title                    = {Structure and composition of pulmonary arteries, capillaries, and veins},
+  Author                   = {Townsley, M I},
+  Journal                  = {Compr Physiol},
+  Year                     = {2012},
+  Owner                    = {erlend},
+  Publisher                = {Wiley Online Library},
+  Timestamp                = {2016.03.23}
+}
+
+@Article{Warwick2008,
+  Title                    = {Resting brain perfusion in social anxiety disorder: A voxel-wise whole brain comparison with healthy control subjects},
+  Author                   = {Warwick, J M and others},
+  Journal                  = {Prog Neuro-Psychoph},
+  Year                     = {2008},
+
+  Month                    = {Jul},
+  Number                   = {5},
+  Pages                    = {1251--56},
+  Volume                   = {32},
+
+  Doi                      = {10.1016/j.pnpbp.2008.03.017},
+  ISSN                     = {0278-5846},
+  Owner                    = {erlend},
+  Publisher                = {Elsevier BV},
+  Timestamp                = {2015.05.19},
+  Url                      = {http://dx.doi.org/10.1016/j.pnpbp.2008.03.017}
+}
+
+@Article{White2012,
+  Title                    = {Regional and Voxel-Wise Comparisons of Blood Flow Measurements Between Dynamic Susceptibility Contrast Magnetic Resonance Imaging ({DS}C-{MRI}) and Arterial Spin Labeling (ASL) in Brain Tumors},
+  Author                   = {White, C and others},
+  Journal                  = {J Neuroimaging},
+  Year                     = {2012},
+
+  Month                    = {Jun},
+  Number                   = {1},
+  Pages                    = {23–30},
+  Volume                   = {24},
+
+  Doi                      = {10.1111/j.1552-6569.2012.00703.x},
+  ISSN                     = {1051-2284},
+  Owner                    = {erlend},
+  Publisher                = {Wiley-Blackwell},
+  Timestamp                = {2015.05.19},
+  Url                      = {http://dx.doi.org/10.1111/j.1552-6569.2012.00703.x}
+}
+
+@Article{wirestam00,
+  Title                    = {Assessment of regional cerebral blood flow by dynamic susceptibility contrast {MRI} using different deconvolution techniques},
+  Author                   = {Wirestam, R and others},
+  Journal                  = {Magn Reson Med},
+  Year                     = {2000},
+  Number                   = {5},
+  Pages                    = {691--700},
+  Volume                   = {43},
+
+  Publisher                = {Wiley Online Library}
+}
+
+@Article{Wu05,
+  Title                    = {Technical aspects of perfusion-weighted imaging},
+  Author                   = {Wu, O and {\O}stergaard, L and Sorensen, A G},
+  Journal                  = {Neuroimag Clin N Am},
+  Year                     = {2005},
+  Number                   = {3},
+  Pages                    = {623--37},
+  Volume                   = {15},
+
+  Publisher                = {Elsevier}
+}
+
+@Article{wu03,
+  Title                    = {Tracer arrival timing-insensitive technique for estimating flow in MR perfusion-weighted imaging using singular value decomposition with a block-circulant deconvolution matrix},
+  Author                   = {Wu, O and others},
+  Journal                  = {Magn Reson Med},
+  Year                     = {2003},
+  Number                   = {1},
+  Pages                    = {164--74},
+  Volume                   = {50},
+
+  Publisher                = {Wiley Online Library}
+}
+
+@Article{zierler00,
+  Title                    = {Indicator dilution methods for measuring blood flow, volume, and other properties of biological systems: a brief history and memoir},
+  Author                   = {Zierler, K L},
+  Journal                  = {Ann Biomed Eng},
+  Year                     = {2000},
+  Number                   = {8},
+  Pages                    = {836--48},
+  Volume                   = {28},
+
+  Publisher                = {Springer}
+}
+
+@Article{zierler62,
+  Title                    = {Theoretical basis of indicator-dilution methods for measuring flow and volume},
+  Author                   = {Zierler, K L},
+  Journal                  = {Circ Res},
+  Year                     = {1962},
+  Number                   = {3},
+  Pages                    = {393--07},
+  Volume                   = {10},
+
+  Publisher                = {Am Heart Assoc}
+}
+
+
+
+@article{Henkelman1990,
+  title={Does {IVIM} measure classical perfusion?},
+  author={Henkelman, R M},
+  journal={Magn Reson Med},
+  volume={16},
+  number={3},
+  pages={470--75},
+  year={1990},
+  publisher={Wiley Online Library}
+}
+
+
+
+@article{Mokin16,
+ title={Whole-Brain Computed Tomographic Perfusion Imaging in Acute Cerebral Venous Sinus Thrombosis},
+ author={Mokin, M and Ciambella, C C and Masud, MW and others},
+ journal={Interv Neurol},
+ volume={4},
+ number={3-4},
+ pages={104--12},
+ year={2016},
+ publisher={Karger Publishers}
+}
+
+
+
+@article{Man15,
+ title={Delay-sensitive and delay-insensitive deconvolution perfusion-{CT}: similar ischemic core and penumbra volumes if appropriate threshold selected for each},
+ author={Man, F and Patrie, J T and Xin, W and others},
+ journal={Neuroradiology},
+ volume={57},
+ number={6},
+ pages={573--81},
+ year={2015},
+ publisher={Springer}
+}
+
+
+@article{Kickingereder15,
+ title={{MR} Perfusion--derived Hemodynamic Parametric Response Mapping of {Bevacizumab} Efficacy in Recurrent Glioblastoma},
+ author={Kickingereder, P and Radbruch, A and Burth, S and others},
+ journal={Radiology},
+ pages={542-52},
+ year={2015},
+ publisher={Radiological Society of North America}
+}
+
+
+@unpublished{Manniesing16,
+	title 	= {White and Gray Matter Segmentation in {4D} {CT}},
+	author	= {Manniesing, R and Oei, M T H and Oostveen, L J and others},
+	note 	= {under review},
+	year	= {2016}
+}
+
+
+@article{Mendrik11,
+  title={{TIPS} bilateral noise reduction in {4D} {CT} perfusion scans produces high-quality cerebral blood flow maps},
+  author={Mendrik, A M and Vonken, E-J and van Ginneken, B and others},
+  journal={Phys Med Biol},
+  volume={56},
+  number={13},
+  pages={3857--72},
+  year={2011},
+  publisher={IOP Publishing}
+}

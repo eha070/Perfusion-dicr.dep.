@@ -1,0 +1,20 @@
+\BOOKMARK [1][-]{section*.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section*.2}{Methods}{}% 2
+\BOOKMARK [2][-]{section*.3}{Traditional one-compartment models}{section*.2}% 3
+\BOOKMARK [3][-]{section*.4}{The convolution model}{section*.3}% 4
+\BOOKMARK [3][-]{section*.5}{The maximum slope model}{section*.3}% 5
+\BOOKMARK [2][-]{section*.6}{A synthetic model for capillary flow}{section*.2}% 6
+\BOOKMARK [2][-]{section*.7}{A model for indicator dilution}{section*.2}% 7
+\BOOKMARK [2][-]{section*.8}{Relating the transport equation model with the traditional deconvolution model for perfusion}{section*.2}% 8
+\BOOKMARK [2][-]{section*.9}{Relating flux with perfusion}{section*.2}% 9
+\BOOKMARK [2][-]{section*.10}{A method to estimate local porosity}{section*.2}% 10
+\BOOKMARK [2][-]{section*.11}{Simulation of capillary flow}{section*.2}% 11
+\BOOKMARK [2][-]{section*.12}{Numerical Implementation}{section*.2}% 12
+\BOOKMARK [2][-]{section*.13}{Reconstruction of perfusion within real data}{section*.2}% 13
+\BOOKMARK [1][-]{section*.14}{Numerical results}{}% 14
+\BOOKMARK [2][-]{section*.15}{Reconstruction of perfusion within synthetic data}{section*.14}% 15
+\BOOKMARK [2][-]{section*.16}{Reconstruction of perfusion within real data}{section*.14}% 16
+\BOOKMARK [1][-]{section*.17}{Discussion}{}% 17
+\BOOKMARK [1][-]{section*.18}{Conclusion}{}% 18
+\BOOKMARK [1][-]{section*.19}{Conflict of interest}{}% 19
+\BOOKMARK [1][-]{section*.20}{References}{}% 20
